@@ -135,9 +135,18 @@ def setup_memory_controllers(system, ruby, dir_cntrls, options):
         dir_ranges = []
         for r in system.mem_ranges:
             mem_type = ObjectList.mem_list.get(options.mem_type)
-            dram_intf = MemConfig.create_mem_intf(mem_type, r, index,
-                int(math.log(options.num_dirs, 2)),
-                intlv_size, options.xor_low_bit)
+
+            # if not a proper power of two then use block memory
+            if(math.log(options.num_dirs, 2) > \
+                int(math.log(options.num_dirs, 2))):
+                dram_intf = MemConfig.create_blocked_mem_intf(mem_type, r,
+                            options.num_dirs,
+                            index)
+            # if power of two then use normal, interleaved memory
+            else:
+                dram_intf = MemConfig.create_mem_intf(mem_type, r, index,
+                    int(math.log(options.num_dirs, 2)),
+                    intlv_size, options.xor_low_bit)
             if issubclass(mem_type, DRAMInterface):
                 mem_ctrl = m5.objects.MemCtrl(dram = dram_intf)
             else:
