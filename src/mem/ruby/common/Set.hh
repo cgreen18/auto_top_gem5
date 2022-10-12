@@ -39,6 +39,9 @@
 #include "base/logging.hh"
 #include "mem/ruby/common/TypeDefines.hh"
 
+// Conor
+#define NUMBER_BITS_PER_SET 128
+
 namespace gem5
 {
 
