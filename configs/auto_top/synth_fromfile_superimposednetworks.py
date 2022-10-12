@@ -85,7 +85,8 @@ parser.add_argument("--inj-vnet", type=int, default=-1,
 parser.add_argument("--router_map_file", type=str, default="configs/topologies/sol_files/kite_small.sol",
                     help=".sol file with n routers/ports and router map.")
 
-
+parser.add_argument("--num_mems", type=int, default=16,
+                         help="Number of memory-like controllers. They are senders")
 
 #
 # Add the ruby specific and protocol specific options
@@ -93,6 +94,10 @@ parser.add_argument("--router_map_file", type=str, default="configs/topologies/s
 Ruby.define_options(parser)
 
 args = parser.parse_args()
+
+n_targs_cpus = args.num_cpus + args.num_dirs
+
+n_targs_mems = args.num_cpus
 
 cpus = [ GarnetSyntheticTraffic(
                      num_packets_max=args.num_packets_max,
@@ -103,7 +108,7 @@ cpus = [ GarnetSyntheticTraffic(
                      inj_rate=args.injectionrate,
                      inj_vnet=args.inj_vnet,
                      precision=args.precision,
-                     num_dest=args.num_dirs) \
+                     num_dest=n_targs_cpus) \
          for i in range(args.num_cpus) ]
 
 
@@ -119,10 +124,13 @@ cpus += [ GarnetSyntheticTraffic(
                      inj_rate=args.injectionrate,
                      inj_vnet=vnet,
                      precision=args.precision,
-                     num_dest=args.num_dirs) \
-         for i in range(args.num_cpus) ]
+                     num_dest=n_targs_mems) \
+         for i in range(args.num_mems) ]
 
 print(f'cpus({len(cpus)}={cpus})')
+
+# pass this along the ruby chain lol
+args.num_cpus = len(cpus)
 
 # create the desired simulated system
 system = System(cpu = cpus, mem_ranges = [AddrRange(args.mem_size)])
