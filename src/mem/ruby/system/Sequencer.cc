@@ -82,6 +82,7 @@ Sequencer::Sequencer(const Params &p)
     m_unaddressedTransactionCnt = 0;
 
     m_runningGarnetStandalone = p.garnet_standalone;
+    m_runningGarnetCohMem = p.garnet_cohmem;
 
 
     // These statistical variables are not for display.
@@ -477,12 +478,19 @@ Sequencer::writeCallback(Addr address, DataBlock& data,
 
         if (ruby_request) {
             assert(seq_req.m_type != RubyRequestType_LD);
+            // if it cant be a LD it cant be a CPU/MEM_LD either
+            assert(seq_req.m_type != RubyRequestType_CPU_LD);
+            assert(seq_req.m_type != RubyRequestType_MEM_LD);
             assert(seq_req.m_type != RubyRequestType_Load_Linked);
             assert(seq_req.m_type != RubyRequestType_IFETCH);
         }
 
         // handle write request
         if ((seq_req.m_type != RubyRequestType_LD) &&
+            // if it cant be a LD it cant be a CPU/MEM_LD either
+            // write => not any time of load
+            (seq_req.m_type != RubyRequestType_CPU_LD) &&
+            (seq_req.m_type != RubyRequestType_MEM_LD) &&
             (seq_req.m_type != RubyRequestType_Load_Linked) &&
             (seq_req.m_type != RubyRequestType_IFETCH)) {
             // LL/SC support (tested with ARMv8)
@@ -568,12 +576,18 @@ Sequencer::readCallback(Addr address, DataBlock& data,
         SequencerRequest &seq_req = seq_req_list.front();
         if (ruby_request) {
             assert((seq_req.m_type == RubyRequestType_LD) ||
+                    // if it cant be a LD it cant be a CPU/MEM_LD either
+                   (seq_req.m_type == RubyRequestType_CPU_LD) ||
+                   (seq_req.m_type == RubyRequestType_MEM_LD) ||
                    (seq_req.m_type == RubyRequestType_Load_Linked) ||
                    (seq_req.m_type == RubyRequestType_IFETCH));
         } else {
             aliased_loads++;
         }
         if ((seq_req.m_type != RubyRequestType_LD) &&
+            // if it cant be a LD it cant be a CPU/MEM_LD either
+            (seq_req.m_type != RubyRequestType_CPU_LD) &&
+            (seq_req.m_type != RubyRequestType_MEM_LD) &&
             (seq_req.m_type != RubyRequestType_Load_Linked) &&
             (seq_req.m_type != RubyRequestType_IFETCH)) {
             // Write request: reissue request to the cache hierarchy
@@ -635,6 +649,9 @@ Sequencer::hitCallback(SequencerRequest* srequest, DataBlock& data,
         data.setData(pkt);
     } else if (!pkt->isFlush()) {
         if ((type == RubyRequestType_LD) ||
+            // if it cant be a LD it cant be a CPU/MEM_LD either
+            (type == RubyRequestType_CPU_LD) ||
+            (type == RubyRequestType_MEM_LD) ||
             (type == RubyRequestType_IFETCH) ||
             (type == RubyRequestType_RMW_Read) ||
             (type == RubyRequestType_Locked_RMW_Read) ||
@@ -819,13 +836,29 @@ Sequencer::makeRequest(PacketPtr pkt)
             // Note: M5 packets do not differentiate ST from RMW_Write
             //
             primary_type = secondary_type = RubyRequestType_ST;
+
+            // only for Garnet_cohmem protocol
+            if(pkt->req->isMemSynth()){
+                primary_type = secondary_type = RubyRequestType_MEM_ST;
+            }
+            else if (pkt->req->isCPUSynth()){
+                primary_type = secondary_type = RubyRequestType_CPU_ST;
+            }
         } else if (pkt->isRead()) {
             // hardware transactional memory commands
             if (pkt->req->isHTMCmd()) {
                 primary_type = secondary_type = htmCmdToRubyRequestType(pkt);
             } else if (pkt->req->isInstFetch()) {
                 primary_type = secondary_type = RubyRequestType_IFETCH;
-            } else {
+            }
+            // Garnet_cohmem protocol
+            else if (pkt->req->isMemSynth()){
+                primary_type = secondary_type = RubyRequestType_MEM_LD;
+            }
+            else if (pkt->req->isCPUSynth()){
+                primary_type = secondary_type = RubyRequestType_CPU_LD;
+            }
+            else {
                 if (pkt->req->isReadModifyWrite()) {
                     primary_type = RubyRequestType_RMW_Read;
                     secondary_type = RubyRequestType_ST;

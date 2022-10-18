@@ -161,6 +161,10 @@ enumeration(TransitionResult, desc="...") {
 enumeration(RubyRequestType, desc="...", default="RubyRequestType_NULL") {
   LD,                desc="Load";
   ST,                desc="Store";
+  CPU_LD,            desc="LD from cpu synth cache";
+  MEM_LD,            desc="LD from mem synth cache";
+  CPU_ST,            desc="ST from cpu synth cache";
+  MEM_ST,            desc="ST from mem synth cache";
   ATOMIC,            desc="Atomic Load/Store -- depricated. use ATOMIC_RETURN or ATOMIC_NO_RETURN";
   ATOMIC_RETURN,     desc="Atomic Load/Store, return data";
   ATOMIC_NO_RETURN,  desc="Atomic Load/Store, do not return data";

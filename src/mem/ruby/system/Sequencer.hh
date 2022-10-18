@@ -253,6 +253,7 @@ class Sequencer : public RubyPort
     uint64_t m_unaddressedTransactionCnt;
 
     bool m_runningGarnetStandalone;
+    bool m_runningGarnetCohMem;
 
     //! Histogram for number of outstanding requests per cycle.
     statistics::Histogram m_outstandReqHist;

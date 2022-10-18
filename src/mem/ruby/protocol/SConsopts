@@ -41,10 +41,11 @@ main.Append(ALL_PROTOCOLS=[
     'MOESI_CMP_token',
     'MOESI_hammer',
     'Garnet_standalone',
+    'Garnet_cohmem',
     'None'
     ])
 
-opt = BoolVariable('SLICC_HTML', 'Create HTML files', False)
+opt = BoolVariable('SLICC_HTML', 'Create HTML files', True)
 sticky_vars.Add(opt)
 
 main.Append(PROTOCOL_DIRS=[Dir('.')])

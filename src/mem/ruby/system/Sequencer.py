@@ -98,6 +98,7 @@ class RubySequencer(RubyPort):
         "max outstanding cycles for a request "
         "before deadlock/livelock declared")
     garnet_standalone = Param.Bool(False, "")
+    garnet_cohmem = Param.Bool(False, "")
     # id used by protocols that support multiple sequencers per controller
     # 99 is the dummy default value
     coreid = Param.Int(99, "CorePair core id")
