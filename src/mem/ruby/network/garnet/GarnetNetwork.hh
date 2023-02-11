@@ -166,6 +166,11 @@ class GarnetNetwork : public Network
     int m_routing_algorithm;
     bool m_enable_fault_model;
 
+    bool m_use_escape_vns;
+    int m_n_deadlock_free;
+    int m_vn_deadlock_partition;
+    int m_min_n_deadlock_free;
+
     // Statistical variables
     statistics::Vector m_packets_received;
     statistics::Vector m_packets_injected;

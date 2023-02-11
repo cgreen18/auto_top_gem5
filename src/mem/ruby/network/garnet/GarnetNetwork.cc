@@ -72,6 +72,17 @@ GarnetNetwork::GarnetNetwork(const Params &p)
     m_routing_algorithm = p.routing_algorithm;
     m_next_packet_id = 0;
 
+    // auto_top
+    // for escape vns
+    m_use_escape_vns = p.use_escape_vns;
+    m_n_deadlock_free = p.n_deadlock_free;
+    m_vn_deadlock_partition = p.vn_deadlock_partition;
+    m_min_n_deadlock_free = p.min_n_deadlock_free;
+
+    int total_desired_n_deadlock_free = m_max_vcs_per_vnet - m_vn_deadlock_partition;
+    int total_allowed_n_deadlock_free = m_min_n_deadlock_free*m_n_deadlock_free;
+    assert( total_desired_n_deadlock_free == total_allowed_n_deadlock_free);
+
     m_enable_fault_model = p.enable_fault_model;
     if (m_enable_fault_model)
         fault_model = p.fault_model;
