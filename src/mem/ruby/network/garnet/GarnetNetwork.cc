@@ -76,7 +76,7 @@ GarnetNetwork::GarnetNetwork(const Params &p)
     // for escape vns
     m_use_escape_vns = p.use_escape_vns;
     m_n_deadlock_free = p.n_deadlock_free;
-    m_vn_deadlock_partition = p.vn_deadlock_partition;
+    m_evn_deadlock_partition = p.evn_deadlock_partition;
     m_min_n_deadlock_free = p.min_n_deadlock_free;
 
     int total_desired_n_deadlock_free = m_max_vcs_per_vnet - m_vn_deadlock_partition;

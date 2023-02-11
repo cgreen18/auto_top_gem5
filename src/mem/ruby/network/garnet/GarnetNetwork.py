@@ -55,7 +55,7 @@ class GarnetNetwork(RubyNetwork):
     # for escape vns
     use_escape_vns = Param.Bool(False, "Whether to use escape VNs")
     n_deadlock_free = Param.Int32(1, "Number of deadlock free VNs per VN class")
-    vn_deadlock_partition = Param.Int32(2, "Number of free/no guarantee VNs")
+    evn_deadlock_partition = Param.Int32(2, "Number of free/no guarantee VNs. Value is equal to first escape VN")
     min_n_deadlock_free = Param.Int32(2, "Minimum number of deadlock free VNs required. Used for assertion")
     synth_traffic = Param.Bool(False,"Whether this netowrk is serving synthetic traffic. Changes address translation")
 
@@ -87,7 +87,7 @@ class GarnetRouter(BasicRouter):
     # for escape vns
     use_escape_vns = Param.Bool(Parent.use_escape_vns, "Whether to use escape VNs")
     n_deadlock_free = Param.Int32(Parent.n_deadlock_free, "Number of deadlock free VNs per VN class")
-    vn_deadlock_partition = Param.Int32(Parent.vn_deadlock_partition, "Number of free/no guarantee VNs")
+    evn_deadlock_partition = Param.Int32(Parent.evn_deadlock_partition, "Number of free/no guarantee VNs")
     min_n_deadlock_free = Param.Int32(Parent.min_n_deadlock_free, "Minimum number of deadlock free VNs required. Used for assertion")
     synth_traffic = Param.Bool(Parent.synth_traffic,"Whether this netowrk is serving synthetic traffic. Changes address translation")
 

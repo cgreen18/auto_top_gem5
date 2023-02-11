@@ -168,7 +168,7 @@ class GarnetNetwork : public Network
 
     bool m_use_escape_vns;
     int m_n_deadlock_free;
-    int m_vn_deadlock_partition;
+    int m_evn_deadlock_partition;
     int m_min_n_deadlock_free;
 
     // Statistical variables
