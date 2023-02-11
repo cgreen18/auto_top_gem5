@@ -1,0 +1,11 @@
+# edit lines 68-70 of src/proto/SConsopts to
+
+conf.env['HAVE_PROTOBUF'] = False
+
+
+# edit lines 44-48 of src/base/stats/SConsopts to
+
+conf.env['CONF']['HAVE_HDF5'] = 0
+
+# unknown how useful
+#export PYTHONPATH=$PYTHONPATH:/home/min/a/green456/heterogarnet/gem5/configs
