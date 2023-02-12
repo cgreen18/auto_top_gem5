@@ -46,7 +46,7 @@ class GarnetSyntheticTraffic(ClockedObject):
                                  Default depends on traffic_type")
     traffic_type = Param.String("uniform_random", "Traffic type")
     inj_rate = Param.Float(0.1, "Packet injection rate")
-    inj_vnet = Param.Int(-1, "Vnet to inject in. \
+    inj_vnet = Param.Int(-2, "Vnet to inject in. \
                               0 and 1 are 1-flit, 2 is 5-flit. \
                                 Default is to inject in all three vnets")
     precision = Param.Int(3, "Number of digits of precision \

@@ -110,12 +110,14 @@ GarnetSyntheticTraffic::GarnetSyntheticTraffic(const Params &p)
     DPRINTF(GarnetSyntheticTraffic,"Config Created: Name = %s , and id = %d\n",
             name(), id);
 
+    // DPRINTF(GarnetSyntheticTraffic,"GarnetSyntheticTraffic:: GarnetSyntheticTraffic():: injvnet = %d\n",
+    //         injVnet);
 
-    DPRINTF(GarnetSyntheticTraffic,"FLAG dest_list (size: %d (=%d?))=\n",dest_list.size(),n_dests);
-    for (int i =0; i<dest_list.size();i++){
-        DPRINTF(GarnetSyntheticTraffic," %u",dest_list[i]);
-    }
-    DPRINTF(GarnetSyntheticTraffic,"\n");
+    // DPRINTF(GarnetSyntheticTraffic,"FLAG dest_list (size: %d (=%d?))=\n",dest_list.size(),n_dests);
+    // for (int i =0; i<dest_list.size();i++){
+    //     DPRINTF(GarnetSyntheticTraffic," %u",dest_list[i]);
+    // }
+    // DPRINTF(GarnetSyntheticTraffic,"\n");
 
 }
 
@@ -316,7 +318,7 @@ GarnetSyntheticTraffic::generatePkt()
     // Vnet 2 is for data packets (5-flit)
     int injReqType = injVnet;
 
-    if (injReqType < 0 || injReqType > 2)
+    if (injReqType == -1 || injReqType > 2)
     {
         // randomly inject in any vnet
         injReqType = random_mt.random(0, 2);
