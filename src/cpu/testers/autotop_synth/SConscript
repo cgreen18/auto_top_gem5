@@ -26,13 +26,15 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-Import('*')
 
-if env['CONF']['PROTOCOL'] == 'None':
-    Return()
+# ignore for now
+# Import('*')
 
-SimObject('AutoTopSynth.py', sim_objects=['AutoTopSynth'])
+# if env['CONF']['PROTOCOL'] == 'None':
+#     Return()
 
-Source('AutoTopSynth.cc')
+# SimObject('AutoTopSynth.py', sim_objects=['AutoTopSynth'])
 
-DebugFlag('AutoTopSynth')
+# Source('AutoTopSynth.cc')
+
+# DebugFlag('AutoTopSynth')
