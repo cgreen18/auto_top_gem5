@@ -62,7 +62,8 @@ namespace garnet
  */
 
 GarnetNetwork::GarnetNetwork(const Params &p)
-    : Network(p)
+    : Network(p),
+      m_flat_src_dest_to_evn(p.flat_src_dest_to_evn)
 {
     m_num_rows = p.num_rows;
     m_ni_flit_size = p.ni_flit_size;
@@ -74,12 +75,15 @@ GarnetNetwork::GarnetNetwork(const Params &p)
 
     // auto_top
     // for escape vns
+    m_vcs_per_flow_vnet = p.vcs_per_vnet;
     m_use_escape_vns = p.use_escape_vns;
     m_n_deadlock_free = p.n_deadlock_free;
     m_evn_deadlock_partition = p.evn_deadlock_partition;
     m_min_n_deadlock_free = p.min_n_deadlock_free;
 
-    int total_desired_n_deadlock_free = m_max_vcs_per_vnet - m_vn_deadlock_partition;
+    DPRINTF(RubyNetwork,"GarnetNetwork:: GarnetNetwork():: rx params: use_escape_vns %d, # dl free $d, dl partition %d\n",m_use_escape_vns,m_n_deadlock_free,m_evn_deadlock_partition);
+
+    int total_desired_n_deadlock_free = m_vcs_per_flow_vnet - m_evn_deadlock_partition;
     int total_allowed_n_deadlock_free = m_min_n_deadlock_free*m_n_deadlock_free;
     assert( total_desired_n_deadlock_free == total_allowed_n_deadlock_free);
 
@@ -112,6 +116,7 @@ GarnetNetwork::GarnetNetwork(const Params &p)
         NetworkInterface *ni = safe_cast<NetworkInterface *>(*i);
         m_nis.push_back(ni);
         ni->init_net_ptr(this);
+        ni->init_deadlock_params(m_evn_deadlock_partition, m_n_deadlock_free, m_use_escape_vns);
     }
 
     // Print Garnet version
@@ -218,8 +223,8 @@ GarnetNetwork::makeExtInLink(NodeID global_src, SwitchID dest, BasicLink* link,
     }
 
     if (garnet_link->intBridgeEn) {
-        DPRINTF(RubyNetwork, "Enable internal bridge for %s\n",
-            garnet_link->name());
+        // DPRINTF(RubyNetwork, "Enable internal bridge for %s\n",
+        //     garnet_link->name());
         m_routers[dest]->
             addInPort(dst_inport_dirn,
                       garnet_link->intNetBridge[LinkDirection_In],
@@ -379,6 +384,14 @@ GarnetNetwork::get_router_id(int global_ni, int vnet)
     NodeID local_ni = getLocalNodeID(global_ni);
 
     return m_nis[local_ni]->get_router_id(vnet);
+}
+
+int
+GarnetNetwork::get_evn_for_src_dest(int src, int dest)
+{
+    // just hardcode to 20 for now. the flat map is already hardcoded
+    int index = src*20 + dest;
+    return m_flat_src_dest_to_evn[index];
 }
 
 void

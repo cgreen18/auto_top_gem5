@@ -79,6 +79,14 @@ class NetworkInterface : public ClockedObject, public Consumer
     int get_vnet(int vc);
     void init_net_ptr(GarnetNetwork *net_ptr) { m_net_ptr = net_ptr; }
 
+    // auto_top
+    // for escape vns
+    void init_deadlock_params(int evn_part, int n_df, bool uevn){
+        m_evn_deadlock_partition = evn_part;
+        m_n_deadlock_free = n_df;
+        m_use_escape_vns = uevn;
+    }
+
     uint32_t functionalWrite(Packet *);
 
     void scheduleFlit(flit *t_flit);
@@ -278,6 +286,12 @@ class NetworkInterface : public ClockedObject, public Consumer
     int m_deadlock_threshold;
     std::vector<OutVcState> outVcState;
 
+    // auto_top
+    // for escape vns
+    int m_evn_deadlock_partition;
+    int m_n_deadlock_free;
+    int m_use_escape_vns;
+
     std::vector<int> m_stall_count;
 
     // Input Flit Buffers
@@ -295,7 +309,7 @@ class NetworkInterface : public ClockedObject, public Consumer
     void checkStallQueue();
     bool flitisizeMessage(MsgPtr msg_ptr, int vnet);
     int calculateVC(int vnet);
-
+    int calculate_valid_evn(int vnet, int evn_class);
 
     void scheduleOutputPort(OutputPort *oPort);
     void scheduleOutputLink();

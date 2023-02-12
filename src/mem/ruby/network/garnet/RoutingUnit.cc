@@ -197,6 +197,8 @@ RoutingUnit::outportCompute(RouteInfo route, int inport,
             lookupRoutingTable(route.vnet, route.net_dest); break;
     }
 
+    DPRINTF(RubyNetwork, "RoutingUnit:: outportCompute():: at end of function, returning outport = %d\n", outport);
+
     assert(outport != -1);
     return outport;
 }
@@ -267,7 +269,25 @@ RoutingUnit::outportComputeCustom(RouteInfo route,
                                  int inport,
                                  PortDirection inport_dirn)
 {
-    panic("%s placeholder executed", __FUNCTION__);
+
+    int dest_r = route.dest_router;
+    int src_r = route.src_router;
+
+    int next_router = m_router->calc_next_router(src_r, dest_r);
+
+    DPRINTF(RubyNetwork, "RoutingUnit:: outportComputeCustom():: Found next router of %d for self %d along route for %d->...->%d\n",next_router , m_router->get_id(), src_r, dest_r);
+
+
+    // src outport named
+    PortDirection outport_dirn = "src" + std::to_string(m_router->get_id()) + "_dest" + std::to_string(next_router);
+
+    DPRINTF(RubyNetwork, "RoutingUnit:: outportComputeCustom():: Looking for outprt %s (%d) for self=%d and dest_r=%d\n",
+                outport_dirn.c_str(), next_router, m_router->get_id(),dest_r);
+
+    int outport = m_outports_dirn2idx[outport_dirn];
+
+    return outport;
+
 }
 
 } // namespace garnet

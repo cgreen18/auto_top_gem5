@@ -53,7 +53,12 @@ Router::Router(const Params &p)
     m_virtual_networks(p.virt_nets), m_vc_per_vnet(p.vcs_per_vnet),
     m_num_vcs(m_virtual_networks * m_vc_per_vnet), m_bit_width(p.width),
     m_network_ptr(nullptr), routingUnit(this), switchAllocator(this),
-    crossbarSwitch(this)
+    crossbarSwitch(this),
+    m_flat_src_dest_to_evn(p.flat_src_dest_to_evn),
+    m_flat_next_router_map(p.flat_next_router_map),
+    m_evn_deadlock_partition(p.evn_deadlock_partition),
+    m_n_deadlock_free(p.n_deadlock_free),
+    m_use_escape_vns(p.use_escape_vns)
 {
     m_input_unit.clear();
     m_output_unit.clear();

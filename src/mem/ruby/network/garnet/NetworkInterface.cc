@@ -56,6 +56,7 @@ NetworkInterface::NetworkInterface(const Params &p)
     m_virtual_networks(p.virt_nets), m_vc_per_vnet(0),
     m_vc_allocator(m_virtual_networks, 0),
     m_deadlock_threshold(p.garnet_deadlock_threshold),
+    m_use_escape_vns(p.use_escape_vns),
     vc_busy_counter(m_virtual_networks, 0)
 {
     m_stall_count.resize(m_virtual_networks);
@@ -68,8 +69,8 @@ NetworkInterface::addInPort(NetworkLink *in_link,
 {
     InputPort *newInPort = new InputPort(in_link, credit_link);
     inPorts.push_back(newInPort);
-    DPRINTF(RubyNetwork, "Adding input port:%s with vnets %s\n",
-    in_link->name(), newInPort->printVnets());
+    // DPRINTF(RubyNetwork, "Adding input port:%s with vnets %s\n",
+    // in_link->name(), newInPort->printVnets());
 
     in_link->setLinkConsumer(this);
     credit_link->setSourceQueue(newInPort->outCreditQueue(), this);
@@ -117,8 +118,8 @@ NetworkInterface::addOutPort(NetworkLink *out_link,
         name(), consumerVcs, m_vc_per_vnet);
     }
 
-    DPRINTF(RubyNetwork, "OutputPort:%s Vnet: %s\n",
-    out_link->name(), newOutPort->printVnets());
+    // DPRINTF(RubyNetwork, "OutputPort:%s Vnet: %s\n",
+    // out_link->name(), newOutPort->printVnets());
 
     out_link->setSourceQueue(newOutPort->outFlitQueue(), this);
     out_link->setVcsPerVnet(m_vc_per_vnet);
@@ -389,7 +390,29 @@ NetworkInterface::flitisizeMessage(MsgPtr msg_ptr, int vnet)
     for (int ctr = 0; ctr < dest_nodes.size(); ctr++) {
 
         // this will return a free output virtual channel
-        int vc = calculateVC(vnet);
+        int vc;
+        if(m_use_escape_vns){
+
+            // use src, dest routers to decide evn_class
+    
+            // get original source. Its the router attacked to this
+            int src_r = oPort->routerID();
+
+            NodeID destID = dest_nodes[ctr];
+            int dest_r = m_net_ptr->get_router_id(destID, vnet);
+
+            int evn_class = m_net_ptr->get_evn_for_src_dest(src_r, dest_r);
+
+
+            vc = calculate_valid_evn(vnet, evn_class);
+            DPRINTF(RubyNetwork, "NetworkInterface:: flitisizeMessage():: Calculated valid VC %d for evn_class %d\n",
+                vc,evn_class);
+        }   
+        else{
+            vc = calculateVC(vnet);
+            DPRINTF(RubyNetwork, "NetworkInterface:: flitisizeMessage():: Calculated any VC %d for evn_class %d\n",
+                vc);
+        }
 
         if (vc == -1) {
             return false ;
@@ -454,6 +477,69 @@ NetworkInterface::flitisizeMessage(MsgPtr msg_ptr, int vnet)
     }
     return true ;
 }
+
+int 
+NetworkInterface::calculate_valid_evn(int vnet, int evn_class)
+{
+    // absolute vc across all req/resp type VNs
+    int abs_vc_base = vnet*m_vc_per_vnet;
+
+    // check the no guarantee VCs
+    // [0,m_evn_deadlock_partition)
+    for (int i = 0; i < m_evn_deadlock_partition; i++) {
+        int delta = m_vc_allocator[vnet];
+        m_vc_allocator[vnet]++;
+
+        // rollover
+        // m_vc_allocator[vnet] elem of [0,m_evn_deadlock_partition)
+        if (m_vc_allocator[vnet] == m_evn_deadlock_partition)
+            m_vc_allocator[vnet] = 0;
+
+        if (outVcState[abs_vc_base + delta].isInState(
+                    IDLE_, curTick())) {
+            vc_busy_counter[vnet] = 0;
+            return ((vnet*m_vc_per_vnet) + delta);
+        }
+    }
+
+    // else, check DL-free escape VNs
+
+    // DL-free VNs are blocked
+    // class 0 : [m_evn_deadlock_partition, m_evn_deadlock_partition + m_n_deadlock_free)
+    // class 1 : [m_evn_deadlock_partition + m_n_deadlock_free, m_evn_deadlock_partition + 2*m_n_deadlock_free)
+    // ...
+
+    // this_class (arg) : [m_evn_deadlock_partition + evn_class*m_n_deadlock_free, m_evn_deadlock_partition + (evn_class + 1)*m_n_deadlock_free)
+
+    // iter through all avail
+    // will be m_n_deadlock_free for this class
+
+    int class_rel_vc_base = m_evn_deadlock_partition + evn_class*m_n_deadlock_free;
+
+    for(int i = 0; i < m_n_deadlock_free; i++){
+
+        // dont do round-robin. it gets weird with the different eVNs
+        // just check through this class' options
+        int delta = class_rel_vc_base + i;
+
+        // delta is relative vc
+        if (outVcState[abs_vc_base + delta].isInState(
+                    IDLE_, curTick())) {
+            vc_busy_counter[vnet] = 0;
+            return ((vnet*m_vc_per_vnet) + delta);
+        }
+
+    }
+
+    vc_busy_counter[vnet] += 1;
+    panic_if(vc_busy_counter[vnet] > m_deadlock_threshold,
+        "%s: Possible network deadlock in vnet: %d at time: %llu \n",
+        name(), vnet, curTick());
+
+    return -1;
+
+}
+
 
 // Looking for a free output vc
 int
@@ -592,9 +678,9 @@ NetworkInterface::scheduleFlit(flit *t_flit)
     OutputPort *oPort = getOutportForVnet(t_flit->get_vnet());
 
     if (oPort) {
-        DPRINTF(RubyNetwork, "Scheduling at %s time:%ld flit:%s Message:%s\n",
-        oPort->outNetLink()->name(), clockEdge(Cycles(1)),
-        *t_flit, *(t_flit->get_msg_ptr()));
+        // DPRINTF(RubyNetwork, "Scheduling at %s time:%ld flit:%s Message:%s\n",
+        // oPort->outNetLink()->name(), clockEdge(Cycles(1)),
+        // *t_flit, *(t_flit->get_msg_ptr()));
         oPort->outFlitQueue()->insert(t_flit);
         oPort->outNetLink()->scheduleEventAbsolute(clockEdge(Cycles(1)));
         return;

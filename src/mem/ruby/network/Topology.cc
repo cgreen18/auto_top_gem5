@@ -437,11 +437,11 @@ Topology::shortest_path_to_node(SwitchID src, SwitchID next,
         }
     }
 
-    DPRINTF(RubyNetwork, "Returning shortest path\n"
-            "(src-(2*max_machines)): %d, (next-(2*max_machines)): %d, "
-            "src: %d, next: %d, vnet:%d result: %s\n",
-            (src-(2*max_machines)), (next-(2*max_machines)),
-            src, next, vnet, result);
+    // DPRINTF(RubyNetwork, "Returning shortest path\n"
+    //         "(src-(2*max_machines)): %d, (next-(2*max_machines)): %d, "
+    //         "src: %d, next: %d, vnet:%d result: %s\n",
+    //         (src-(2*max_machines)), (next-(2*max_machines)),
+    //         src, next, vnet, result);
 
     return result;
 }

@@ -93,6 +93,7 @@ class GarnetNetwork : public Network
     }
     int getNumRouters();
     int get_router_id(int ni, int vnet);
+    int get_evn_for_src_dest(int src, int dest);
 
 
     // Methods used by Topology to setup the network
@@ -167,9 +168,11 @@ class GarnetNetwork : public Network
     bool m_enable_fault_model;
 
     bool m_use_escape_vns;
+    int m_vcs_per_flow_vnet;
     int m_n_deadlock_free;
     int m_evn_deadlock_partition;
     int m_min_n_deadlock_free;
+    std::vector<int > m_flat_src_dest_to_evn;
 
     // Statistical variables
     statistics::Vector m_packets_received;

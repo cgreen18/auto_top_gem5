@@ -73,7 +73,7 @@ NetworkBridge::NetworkBridge(const Params &p)
 void
 NetworkBridge::setVcsPerVnet(uint32_t consumerVcs)
 {
-    DPRINTF(RubyNetwork, "VcsPerVnet VC: %d\n", consumerVcs);
+    // DPRINTF(RubyNetwork, "VcsPerVnet VC: %d\n", consumerVcs);
     NetworkLink::setVcsPerVnet(consumerVcs);
     lenBuffer.resize(consumerVcs * m_virt_nets);
     sizeSent.resize(consumerVcs * m_virt_nets);
