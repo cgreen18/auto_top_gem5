@@ -126,6 +126,8 @@ def init_network(options, network, InterfaceClass):
         network.routing_algorithm = options.routing_algorithm
         network.garnet_deadlock_threshold = options.garnet_deadlock_threshold
 
+        network.synth_traffic = options.synth_traffic
+
         # Create Bridges and connect them to the corresponding links
         for intLink in network.int_links:
             intLink.src_net_bridge = NetworkBridge(

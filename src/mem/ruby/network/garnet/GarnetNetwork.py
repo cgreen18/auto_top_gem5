@@ -57,7 +57,7 @@ class GarnetNetwork(RubyNetwork):
     n_deadlock_free = Param.Int32(1, "Number of deadlock free VNs per VN class")
     evn_deadlock_partition = Param.Int32(2, "Number of free/no guarantee VNs. Value is equal to first escape VN")
     min_n_deadlock_free = Param.Int32(2, "Minimum number of deadlock free VNs required. Used for assertion")
-    synth_traffic = Param.Bool(False,"Whether this netowrk is serving synthetic traffic. Changes address translation")
+    # synth_traffic = Param.Bool(Parent.synth_traffic,"Whether this netowrk is serving synthetic traffic. (changes address translation)")
 
     # same across all routers
     flat_src_dest_to_evn = VectorParam.Int32([0]*400, "2D src, dest indexed => flattened 400 20*src+dest indexed")

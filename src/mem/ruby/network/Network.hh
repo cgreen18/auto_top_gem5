@@ -176,6 +176,8 @@ class Network : public ClockedObject
     // Global NodeID to local node map. If there are not multiple networks in
     // the same RubySystem, this is a one-to-one mapping of global to local.
     std::unordered_map<NodeID, NodeID> globalToLocalMap;
+
+    bool m_synth_traffic;
 };
 
 inline std::ostream&

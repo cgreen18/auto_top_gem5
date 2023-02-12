@@ -218,6 +218,7 @@ GarnetSyntheticTraffic::generatePkt()
     if (singleDest >= 0)
     {
         destination = singleDest;
+        DPRINTF(GarnetSyntheticTraffic, "GarnetSyntheticTraffic:: generatePkt():: Single dest = %d\n",destination);
     }
     else if (traffic == VC_TEST_){
         // possible destinations given by dest_list and n_dests

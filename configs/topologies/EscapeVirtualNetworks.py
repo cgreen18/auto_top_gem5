@@ -110,13 +110,19 @@ class EscapeVirtualNetworks(SimpleTopology):
             for i in range(n_routers)]
 
         # important, set network stuff
+        ############################################################################################################################3
 
         network.flat_src_dest_to_evn = flat_vn_map
         network.use_escape_vns = options.use_escape_vns
         network.n_deadlock_free = options.evn_n_deadlock_free
         network.evn_deadlock_partition = options.evn_deadlock_partition
         network.min_n_deadlock_free = options.evn_min_n_deadlock_free
+
         network.synth_traffic = options.synth_traffic
+
+
+        ############################################################################################################################3
+
 
         for r in range(n_noi_routers):
             routers[r].clk_domain = noi_clk_domain
@@ -345,6 +351,7 @@ class EscapeVirtualNetworks(SimpleTopology):
             # for _router in range(0,n_routers):
             #     row = in_file.readline()
             for row in in_file:
+
                 row = row.replace('\n','')
                 r_conns = row.split(" ")
                 if '' in r_conns:

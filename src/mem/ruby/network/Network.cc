@@ -45,6 +45,8 @@
 #include "mem/ruby/network/BasicLink.hh"
 #include "mem/ruby/system/RubySystem.hh"
 
+#include "debug/GarnetSyntheticTraffic.hh"
+
 namespace gem5
 {
 
@@ -60,6 +62,10 @@ Network::Network(const Params &p)
 {
     m_virtual_networks = p.number_of_virtual_networks;
     m_control_msg_size = p.control_msg_size;
+
+    DPRINTF(GarnetSyntheticTraffic,"Network(.cc):: Network():: In init, setting synth_traffic to %d\n",p.synth_traffic);
+
+    m_synth_traffic = p.synth_traffic;
 
     fatal_if(p.data_msg_size > p.ruby_system->getBlockSizeBytes(),
              "%s: data message size > cache line size", name());
@@ -234,6 +240,18 @@ Network::setFromNetQueue(NodeID global_id, bool ordered, int network_num,
 NodeID
 Network::addressToNodeID(Addr addr, MachineType mtype)
 {
+
+    // Fix for non power of two number of nodes
+    // also seems to work for all types (because of striping) but unsure
+    // this comes from something else (cache line size) but I wont mess with that
+    int bits_for_block = 6;
+    if(m_synth_traffic){
+        // for uneven number of nodes...
+        int dest_id = addr>>bits_for_block;
+        DPRINTF(GarnetSyntheticTraffic,"Network:: addressToNodeID():: addr 0x%x -> node #%d\n", addr, dest_id);
+        return dest_id;
+    }
+
     // Look through the address maps for entries with matching machine
     // type to get the responsible node for this address.
     const auto &matching_ranges = addrMap.equal_range(mtype);

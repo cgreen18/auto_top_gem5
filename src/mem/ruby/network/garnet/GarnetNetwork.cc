@@ -81,7 +81,7 @@ GarnetNetwork::GarnetNetwork(const Params &p)
     m_evn_deadlock_partition = p.evn_deadlock_partition;
     m_min_n_deadlock_free = p.min_n_deadlock_free;
 
-    DPRINTF(RubyNetwork,"GarnetNetwork:: GarnetNetwork():: rx params: use_escape_vns %d, # dl free $d, dl partition %d\n",m_use_escape_vns,m_n_deadlock_free,m_evn_deadlock_partition);
+    DPRINTF(RubyNetwork,"GarnetNetwork:: GarnetNetwork():: rx params: use_escape_vns %d, # dl free %d, dl partition %d\n",m_use_escape_vns,m_n_deadlock_free,m_evn_deadlock_partition);
 
     int total_desired_n_deadlock_free = m_vcs_per_flow_vnet - m_evn_deadlock_partition;
     int total_allowed_n_deadlock_free = m_min_n_deadlock_free*m_n_deadlock_free;
