@@ -23,7 +23,7 @@ home = '/home/min/a/green456/heterogarnet/gem5'
 setup = ['cd', home, ';', 'module','load','gcc',';']
 
 # TODO change
-gem5_build = './build/Garnet_standalone/gem5.opt'
+gem5_build = './build/Garnet_standalone/gem5.fast'
 conf_script = 'configs/auto_top/auto_top_synth.py'
 topo_conf_script = 'EscapeVirtualNetworks'
 topology_to_n_routers_dict = {
@@ -59,15 +59,17 @@ desired_topologies=[
 
     # 'ns_s_latop.map','ns_s_bwop.map',
     # 'ns_m_latop.map',
-    'ns_m_bwop.map',
-    # 'ns_l_latop.map','ns_l_bwop.map',
+    # 'ns_m_bwop.map',
+    'ns_l_latop.map',
+    #'ns_l_bwop.map',
     # 'ns_s_memopt.map','ns_m_memopt.map','ns_l_memopt.map',
 
     # 'ft_x.map',
 
     # 'butter_donut_x.map', 'dbl_bfly_x.map',
 
-    # 'kite_large.map', 'kite_medium.map', 'kite_small.map',
+    'kite_large.map',
+    #'kite_medium.map', 'kite_small.map',
 
     # 'cmesh_x.map', 'mesh.map'
     ]
@@ -107,17 +109,17 @@ base_flags = ['--network','garnet',
         '--mem-type', 'SimpleMemory',
         '--garnet-deadlock-threshold','50000000',
         '--routing-algorithm', '2',
-        '--use_escape_vcs',
-        '--vcs-per-vnet','6',
-        '--vc_deadlock_partition','0',
-        '--vc_n_deadlock_free','2',
-        '--vc_min_n_deadlock_free','3',
+        '--use_escape_vns',
+        '--vcs-per-vnet','4',
+        '--evn_deadlock_partition','1',
+        '--evn_n_deadlock_free','1',
+        '--evn_min_n_deadlock_free','3',
         '--synth_traffic'  # allows non power of two # of directories
         ]
 
 
 global outdir
-outdir = './paper_outputs/synth_20r_simplest_large_coh_sat_2'
+outdir = './paper_outputs/synth_20r_compare_routing_algs/'
 
 class BenchmarkRun:
 
@@ -137,7 +139,7 @@ class BenchmarkRun:
             return f'{sc//1000000000}b'
 
 
-    def __init__(self, sol_file, memcoh, sim_cycle, inj_rate, hetero, use_vll):
+    def __init__(self, sol_file, memcoh, sim_cycle, inj_rate, hetero, routing_alg, load_balance_type):
         self.mem_or_coh = memcoh
         self.topology_sol_file = 'configs/topologies/paper_solutions/' + sol_file
         self.sim_cycles = sim_cycle
@@ -146,25 +148,25 @@ class BenchmarkRun:
         self.topology = ((sol_file).split('.')[0])
 
 
-        self.topology_vn_file = f'configs/topologies/vn_maps/{self.topology}_naive_none.vn'
+        self.topology_vn_file = f'configs/topologies/vn_maps/{self.topology}_{routing_alg}_{load_balance_type}.vn'
 
-        self.topology_nrl_file = f'configs/topologies/nr_list/{self.topology}_naive.nrl'
+        self.topology_nrl_file = f'configs/topologies/nr_list/{self.topology}_{routing_alg}.nrl'
 
         self.hetero = hetero
-        self.use_vll = use_vll
+        # self.use_vll = use_vll
 
         inj_rate_str = inj_rate.replace('.','_')
 
-        uvl = ''
-        if use_vll:
-            uvl = '_use_vll'
+        # uvl = ''
+        # if use_vll:
+        #     uvl = '_use_vll'
 
         sd_str = 'mixed'
         if not hetero:
             sd_str = 'same'
 
-
-        self.output_dir = f'{outdir}/{self.name_sim_cycles(self.sim_cycles)}/{sd_str}/{self.mem_or_coh}/{self.topology}/{inj_rate_str}/'
+        out_path_file = f'{self.name_sim_cycles(self.sim_cycles)}/{sd_str}/{self.mem_or_coh}/{self.topology}/{routing_alg}/{load_balance_type}/{inj_rate_str}/'
+        self.output_dir = os.path.join(outdir,out_path_file)
         # self.output_dir = f'{outdir}/{self.name_sim_cycles(self.sim_cycles)}/{sd_str}/{self.mem_or_coh}/{self.topology}/'
 
         top_type = self.topology
@@ -231,8 +233,8 @@ class BenchmarkRun:
                 '--ruby-clock',self.noc_clk,
                 '--noi_clk',self.noi_clk,
                 '--router_map_file',self.topology_sol_file,
-                '--vc_map_file',self.topology_vn_file,
-                '--nr_map_file',self.topology_nrl_file,
+                '--flat_vn_map_file',self.topology_vn_file,
+                '--flat_nr_map_file',self.topology_nrl_file,
                 '--ruby'
                 ]
 
@@ -260,8 +262,8 @@ class BenchmarkRun:
         cmd += ['--num-cpus',self.n_routers]
         # cmd += ['--num-cpus','40']
 
-        if self.use_vll:
-            cmd += ['--use_vll']
+        # if self.use_vll:
+        #     cmd += ['--use_vll']
 
 
         cmd += base_flags
@@ -392,11 +394,16 @@ def main():
 
     use_vll = args.use_vll
 
+    r_algs = ['naive','bsorm','bsorm_zindexed','cload','cload_zindexed']
+    lb_types = ['none','paths','hops']
+
     for het in het_tf:
         for mc in memcoh:
             for ir in inj_rates:
                 for sf in map_files:
-                    runs += [BenchmarkRun(sf, mc, sim_cycle, ir, het, use_vll)]
+                    for ralg in r_algs:
+                        for lbt in lb_types:
+                            runs += [BenchmarkRun(sf, mc, sim_cycle, ir, het, ralg, lbt)]
 
     threads = [threading.Thread(target=run_benchmark, args=(x,)) for x in runs]
 
