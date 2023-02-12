@@ -55,3 +55,7 @@ class GarnetSyntheticTraffic(ClockedObject):
                                             due to lack of progress")
     test = RequestPort("Port to the memory system to test")
     system = Param.System(Parent.any, "System we belong to")
+
+    if_sender = Param.UInt64(0,"If a valid senders")
+    dest_list = VectorParam.UInt32([0]*64,"Valid destinations")
+    n_dests = Param.UInt32(0,"# valid destinations")

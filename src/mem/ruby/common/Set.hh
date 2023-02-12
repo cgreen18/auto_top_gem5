@@ -40,7 +40,7 @@
 #include "mem/ruby/common/TypeDefines.hh"
 
 // Conor
-#define NUMBER_BITS_PER_SET 256
+// #define NUMBER_BITS_PER_SET 256
 
 namespace gem5
 {

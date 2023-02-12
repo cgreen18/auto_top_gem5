@@ -51,6 +51,7 @@ enum TrafficType {BIT_COMPLEMENT_ = 0,
                   TORNADO_ = 5,
                   TRANSPOSE_ = 6,
                   UNIFORM_RANDOM_ = 7,
+                  VC_TEST_ = 8,
                   NUM_TRAFFIC_PATTERNS_};
 
 class Packet;
@@ -130,6 +131,10 @@ class GarnetSyntheticTraffic : public ClockedObject
     double injRate;
     int injVnet;
     int precision;
+
+    uint if_sender;
+    uint n_dests;
+    std::vector< uint> dest_list;
 
     const Cycles responseLimit;
 

@@ -102,6 +102,47 @@ def create_mem_intf(intf, r, i, intlv_bits, intlv_size,
                                       intlvMatch = i)
     return interface
 
+
+
+def create_blocked_mem_intf(intf, r, num_blocks, index):
+    """
+    Helper function for creating a single memoy controller from the given
+    options.  This function is invoked multiple times in config_mem function
+    to create an array of controllers.
+    """
+
+    import math
+   
+    # Create an instance so we can figure out the address
+    # mapping and row-buffer size
+    interface = intf()
+
+    size = r.size()
+
+    per_block = size // num_blocks
+    # print(f' size // num_blocks = { size // num_blocks}')
+    # print(f' size % num_blocks = { size % num_blocks}')
+
+    block_start = index*per_block
+    block_end = (index + 1)*per_block
+
+    # print(f' start = {block_start}')
+    # print(f' end = {block_end}')
+
+    masks = []
+    
+
+    interface.range = m5.objects.AddrRange(start=block_start, end=block_end)
+    # interface.range = m5.objects.AddrRange(start, size = per_block,
+                                    
+    #                                   intlvHighBit = 1,
+    #                                   xorHighBit = 1,
+    #                                   intlvBits = 1,
+    #                                   intlvMatch = 1)
+    
+    return interface
+
+
 def config_mem(options, system):
     """
     Create the memory controllers based on the options and attach them.
