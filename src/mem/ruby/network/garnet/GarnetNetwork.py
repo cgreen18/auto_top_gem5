@@ -60,7 +60,10 @@ class GarnetNetwork(RubyNetwork):
     # synth_traffic = Param.Bool(Parent.synth_traffic,"Whether this netowrk is serving synthetic traffic. (changes address translation)")
 
     # same across all routers
-    flat_src_dest_to_evn = VectorParam.Int32([0]*400, "2D src, dest indexed => flattened 400 20*src+dest indexed")
+    # hardcoded
+    # flat_src_dest_to_evn = VectorParam.Int32([0]*400, "2D src, dest indexed => flattened 400 20*src+dest indexed")
+    flat_src_dest_to_evn = VectorParam.Int32( "2D src, dest indexed => flattened 400 20*src+dest indexed")
+
 
 class GarnetNetworkInterface(ClockedObject):
     type = 'GarnetNetworkInterface'
@@ -100,6 +103,6 @@ class GarnetRouter(BasicRouter):
     min_n_deadlock_free = Param.Int32(Parent.min_n_deadlock_free, "Minimum number of deadlock free VNs required. Used for assertion")
     synth_traffic = Param.Bool(Parent.synth_traffic,"Whether this netowrk is serving synthetic traffic. Changes address translation")
 
-    # currently hardcoded for 20 routers...
-    flat_next_router_map = VectorParam.Int32([0]*400, "2D src, dest indexed => flattened 400 20*src+dest indexed")
+    # no default size/values
+    flat_next_router_map = VectorParam.Int32("2D src, dest indexed => flattened 400 20*src+dest indexed")
     flat_src_dest_to_evn = VectorParam.Int32(Parent.flat_src_dest_to_evn, "2D src, dest indexed => flattened 400 20*src+dest indexed")
