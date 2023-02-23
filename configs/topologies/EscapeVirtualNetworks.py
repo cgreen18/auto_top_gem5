@@ -236,7 +236,7 @@ class EscapeVirtualNetworks(SimpleTopology):
                                     dst_inport=d_name,
                                     latency = this_link_latency,
                                     # weight=w,
-                                    clk_domain=noi_clk_domain,
+                                    # clk_domain=noi_clk_domain,
                                     ))
                     # print(f'Adding internal link (id:{n_int_links}) {s_name} ({src_r})->{d_name} ({dest_r}) latency: {this_link_latency} and weight: {w}')
                     link_count += 1

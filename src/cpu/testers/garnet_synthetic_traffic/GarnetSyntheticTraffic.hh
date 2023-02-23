@@ -132,9 +132,6 @@ class GarnetSyntheticTraffic : public ClockedObject
     int injVnet;
     int precision;
 
-    uint if_sender;
-    uint n_dests;
-    std::vector< uint> dest_list;
 
     const Cycles responseLimit;
 

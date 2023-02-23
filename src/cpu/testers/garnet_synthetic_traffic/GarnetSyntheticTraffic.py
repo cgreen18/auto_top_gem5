@@ -46,7 +46,7 @@ class GarnetSyntheticTraffic(ClockedObject):
                                  Default depends on traffic_type")
     traffic_type = Param.String("uniform_random", "Traffic type")
     inj_rate = Param.Float(0.1, "Packet injection rate")
-    inj_vnet = Param.Int(-2, "Vnet to inject in. \
+    inj_vnet = Param.Int(-1, "Vnet to inject in. \
                               0 and 1 are 1-flit, 2 is 5-flit. \
                                 Default is to inject in all three vnets")
     precision = Param.Int(3, "Number of digits of precision \
@@ -55,7 +55,3 @@ class GarnetSyntheticTraffic(ClockedObject):
                                             due to lack of progress")
     test = RequestPort("Port to the memory system to test")
     system = Param.System(Parent.any, "System we belong to")
-
-    if_sender = Param.UInt64(0,"If a valid senders")
-    dest_list = VectorParam.UInt32([0]*64,"Valid destinations")
-    n_dests = Param.UInt32(0,"# valid destinations")

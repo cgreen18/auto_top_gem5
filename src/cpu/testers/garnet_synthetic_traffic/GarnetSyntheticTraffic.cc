@@ -91,10 +91,7 @@ GarnetSyntheticTraffic::GarnetSyntheticTraffic(const Params &p)
       injVnet(p.inj_vnet),
       precision(p.precision),
       responseLimit(p.response_limit),
-      requestorId(p.system->getRequestorId(this)),
-      if_sender(p.if_sender),
-      dest_list(p.dest_list),
-      n_dests(p.n_dests)
+      requestorId(p.system->getRequestorId(this))
 {
     // set up counters
     noResponseCycles = 0;
@@ -109,15 +106,6 @@ GarnetSyntheticTraffic::GarnetSyntheticTraffic(const Params &p)
     id = TESTER_NETWORK++;
     DPRINTF(GarnetSyntheticTraffic,"Config Created: Name = %s , and id = %d\n",
             name(), id);
-
-    // DPRINTF(GarnetSyntheticTraffic,"GarnetSyntheticTraffic:: GarnetSyntheticTraffic():: injvnet = %d\n",
-    //         injVnet);
-
-    // DPRINTF(GarnetSyntheticTraffic,"FLAG dest_list (size: %d (=%d?))=\n",dest_list.size(),n_dests);
-    // for (int i =0; i<dest_list.size();i++){
-    //     DPRINTF(GarnetSyntheticTraffic," %u",dest_list[i]);
-    // }
-    // DPRINTF(GarnetSyntheticTraffic,"\n");
 
 }
 
@@ -180,17 +168,17 @@ GarnetSyntheticTraffic::tick()
         if (singleSender >= 0 && id != singleSender)
             senderEnable = false;
 
-        // if traffic type is vc_test
-        // and this sender is not part of sender list
-        if (traffic == VC_TEST_){
-            // uint if_sender = 1 & (sender_list>>((uint)id));
-            // DPRINTF(GarnetSyntheticTraffic, "FLAG sender %d says %u (%u>>%u = %u)\n",
-                    // id,if_sender,sender_list,(uint)id,(sender_list>>((uint)id)));
-            senderEnable = false;
-            if (if_sender == 1){
-                senderEnable = true;
-            }
-        }
+        // // if traffic type is vc_test
+        // // and this sender is not part of sender list
+        // if (traffic == VC_TEST_){
+        //     // uint if_sender = 1 & (sender_list>>((uint)id));
+        //     // DPRINTF(GarnetSyntheticTraffic, "FLAG sender %d says %u (%u>>%u = %u)\n",
+        //             // id,if_sender,sender_list,(uint)id,(sender_list>>((uint)id)));
+        //     senderEnable = false;
+        //     if (if_sender == 1){
+        //         senderEnable = true;
+        //     }
+        // }
 
         if (senderEnable)
             generatePkt();
@@ -220,17 +208,16 @@ GarnetSyntheticTraffic::generatePkt()
     if (singleDest >= 0)
     {
         destination = singleDest;
-        DPRINTF(GarnetSyntheticTraffic, "GarnetSyntheticTraffic:: generatePkt():: Single dest = %d\n",destination);
     }
-    else if (traffic == VC_TEST_){
-        // possible destinations given by dest_list and n_dests
-        DPRINTF(GarnetSyntheticTraffic, "Choosing from self=%u and n_dests=%u\n",id,n_dests);
-        uint idx = random_mt.random<unsigned>(0, n_dests - 1);
-        DPRINTF(GarnetSyntheticTraffic,"Will use idx %d %u\n",idx,idx);
-        destination = dest_list[idx];
-        DPRINTF(GarnetSyntheticTraffic,"Chose %u\n",destination);
-        assert(destination < num_destinations);
-    }
+    // else if (traffic == VC_TEST_){
+    //     // possible destinations given by dest_list and n_dests
+    //     DPRINTF(GarnetSyntheticTraffic, "Choosing from self=%u and n_dests=%u\n",id,n_dests);
+    //     uint idx = random_mt.random<unsigned>(0, n_dests - 1);
+    //     DPRINTF(GarnetSyntheticTraffic,"Will use idx %d %u\n",idx,idx);
+    //     destination = dest_list[idx];
+    //     DPRINTF(GarnetSyntheticTraffic,"Chose %u\n",destination);
+    //     assert(destination < num_destinations);
+    // }
     else if (traffic == UNIFORM_RANDOM_) {
         destination = random_mt.random<unsigned>(0, num_destinations - 1);
     } else if (traffic == BIT_COMPLEMENT_) {
@@ -323,18 +310,17 @@ GarnetSyntheticTraffic::generatePkt()
         // randomly inject in any vnet
         injReqType = random_mt.random(0, 2);
     }
+    else if(injReqType == -2){
+        // 0 or 2
+        injReqType = 2*random_mt.random(0, 1);
+    }
 
     if (injReqType == 0) {
         // generate packet for virtual network 0
         requestType = MemCmd::ReadReq;
         req = std::make_shared<Request>(paddr, access_size, flags,
                                         requestorId);
-    }
-    else if(injReqType == -2){
-        // 0 or 2
-        injReqType = 2*random_mt.random(0, 1);
-    }
-    else if (injReqType == 1) {
+    } else if (injReqType == 1) {
         // generate packet for virtual network 1
         requestType = MemCmd::ReadReq;
         flags.set(Request::INST_FETCH);

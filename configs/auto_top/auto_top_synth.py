@@ -1,3 +1,4 @@
+# Copyright (c) 2023 Purdue University
 # Copyright (c) 2016 Georgia Institute of Technology
 # All rights reserved.
 #
@@ -24,7 +25,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Author: Tushar Krishna
+# Author: Conor Green
 
 import m5
 from m5.objects import *
@@ -36,7 +37,6 @@ addToPath('../')
 
 from common import Options
 from ruby import Ruby
-
 
 
 def ingest_map(path_name):
@@ -72,10 +72,6 @@ def ingest_map(path_name):
     # assert(len(r_map) == n_routers)
 
     return r_map
-
-
-
-
 
 
 
@@ -196,128 +192,16 @@ Ruby.define_options(parser)
 
 args = parser.parse_args()
 
-print(args.sys_clock)
-print(args.ruby_clock)
-#quit(-1)
 cpus = []
 
-print(args.single_sender_id)
-print(args.single_dest_id)
 
-# quit()
-
+# VN map
 flat_vn_map = ingest_map(args.flat_vn_map_file)
-print(flat_vn_map)
-
 
 
 n_noi = args.noi_routers
-
 np = args.num_cpus
 
-
-
-
-
-dest_list = [[] for _ in range(np)]
-
-# fill w/ zeros
-num_dests_list = [0 for _ in range(np)]
-
-# lsit of CPU senders
-sender_list = []
-
-
-router_dests = [ [] for _ in range(n_noi + np) ]
-
-edge_router_to_dir_map = {}
-
-if args.vc_to_test == -1:
-    for i in range(np):
-        sender_list.append(1)
-
-
-
-elif args.mem_or_coh == 'coh':
-
-    for i in range(np):
-        sender_list.append(1)
-
-    for cpu_src in range(np):
-
-        r_src = n_noi + cpu_src
-
-        for cpu_dest in range(args.num_dirs):
-
-            r_dest = n_noi + cpu_dest
-
-            # check vc map based on router indices
-            if vc_map[r_src][r_dest] == args.vc_to_test:
-
-                # modify cpu dest list according to cpu indices
-                dest_list[cpu_src].append(cpu_dest)
-
-                router_dests[r_src].append(r_dest)
-
-                num_dests_list[cpu_src] += 1
-                sender_list[cpu_src] = 1
-
-else:
-    e = [0,4,5,9,10,14,15,19]
-    edge_router_to_dir_map = {}
-    concentration_factor = 2
-    edges = [elem for elem in e for i in range(concentration_factor)]
-
-    print(f'edges={edges}')
-    # quit()
-    for e in edges:
-        edge_router_to_dir_map.update({ e : [] })
-
-    i = 0
-    for e in edges:
-        edge_router_to_dir_map[e].append(i)
-        i += 1
-
-    for i in range(np):
-        sender_list.append(0)
-
-    for cpu_src in range(np):
-
-        r_src = n_noi + cpu_src
-
-        # these are interposer destinations
-        for r_dest in edges:
-
-            # r_dest = n_noi + cpu_dest
-
-            # check vc map based on router indices
-            if vc_map[r_src][r_dest] == args.vc_to_test:
-
-                # modify cpu dest list according to cpu indices
-                dir_dest_list = edge_router_to_dir_map[r_dest]
-                for dir_dest in dir_dest_list:
-                    if dir_dest in dest_list[cpu_src]:
-                        continue
-                    dest_list[cpu_src].append(dir_dest)
-                    num_dests_list[cpu_src] += 1
-                    sender_list[cpu_src] = 1
-
-
-                router_dests[r_src].append(r_dest)
-
-print(f'edge to dir {edge_router_to_dir_map}')
-print(f'dest_list({len(dest_list)})={dest_list}')
-print(f'sender_lsit({len(sender_list)})={sender_list}')
-sum = 0
-for e in num_dests_list:
-    sum+=e
-print(f'e={sum}')
-print(f'num_dests={num_dests_list}')
-
-for src,dests in enumerate(router_dests):
-    print(f'src={src} : {dests}')
-
-#quit(1)
 
 # reads and writes
 # vnet 0 and 1 = -2
@@ -331,9 +215,6 @@ cpus += [ GarnetSyntheticTraffic(
                      inj_vnet=args.inj_vnet,
                      precision=args.precision,
                      num_dest=args.num_dirs,
-                     if_sender=sender_list[i],
-                     dest_list=dest_list[i],
-                     n_dests=num_dests_list[i]
                      ) \
          for i in range(args.num_cpus) ]
 
