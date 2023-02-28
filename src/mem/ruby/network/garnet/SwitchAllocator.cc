@@ -53,12 +53,6 @@ SwitchAllocator::SwitchAllocator(Router *router)
     m_num_vcs = m_router->get_num_vcs();
     m_vc_per_vnet = m_router->get_vc_per_vnet();
 
-    // auto_top
-    // using escape vns
-    // local/this class references
-    m_use_escape_vns = m_router->get_use_escape_vns();
-    m_evn_deadlock_partition = m_router->get_deadlock_partition();
-    m_n_deadlock_free = m_router->get_n_deadlock_free();
 
     m_input_arbiter_activity = 0;
     m_output_arbiter_activity = 0;
@@ -83,6 +77,15 @@ SwitchAllocator::init()
     for (int i = 0; i < m_num_outports; i++) {
         m_round_robin_inport[i] = 0;
     }
+
+    // auto_top
+    // using escape vns
+    // local/this class references
+    m_use_escape_vns = m_router->get_use_escape_vns();
+    m_evn_deadlock_partition = m_router->get_deadlock_partition();
+    m_n_deadlock_free = m_router->get_n_deadlock_free();
+
+
 }
 
 /*
@@ -151,9 +154,11 @@ SwitchAllocator::arbitrate_inports()
 
                 // be selective if using escape vns
                 // do not be selective if at destination
-                if(m_router->get_use_escape_vns() && !at_dest){
+
+                // removed at_dest condition for sankey
+                if(m_use_escape_vns){ // && !at_dest){
                     make_request = valid_send_allowed(inport, invc, outport, outvc, evn_class);
-                    DPRINTF(RubyNetwork,"SwitchAllocator::arbitrate_inports():: For evn class %d, send_allowed=%d\n",evn_class ,make_request);
+                    DPRINTF(RubyNetwork,"SwitchAllocator::arbitrate_inports():: For evn class %d, invc %d, send_allowed=%d\n",evn_class,invc , make_request);
                 }
 
                 else{
@@ -230,7 +235,9 @@ SwitchAllocator::arbitrate_outports()
 
                     // be selective if using escape vns
                     // do not be selective if at destination
-                    if(m_router->get_use_escape_vns() && !at_dest){
+
+                    // removed at_dest condition for sankey
+                    if(m_use_escape_vns){ // && !at_dest){
                         outvc = vc_allocate_valid(outport, inport, invc, evn_class);
                     }
                     else{
@@ -254,6 +261,8 @@ SwitchAllocator::arbitrate_outports()
                             *t_flit,
                         m_router->curCycle());
 
+                // for Sankey
+                t_flit->set_last_vnvc(outvc);
 
                 // Update outport field in the flit since this is
                 // used by CrossbarSwitch code to send it out of
@@ -417,12 +426,7 @@ SwitchAllocator::valid_send_allowed(int inport, int invc, int outport, int outvc
 
         bool has_free_vc = false;
 
-        if(m_use_escape_vns){
-            has_free_vc = output_unit->has_free_valid_evn(vnet, evn_class, rel_invc);
-        }
-        else{
-            has_free_vc = output_unit->has_free_vc(vnet);
-        }
+        has_free_vc = output_unit->has_free_valid_evn(vnet, evn_class, rel_invc);
 
         if (has_free_vc) {
 
@@ -487,11 +491,11 @@ SwitchAllocator::vc_allocate_valid(int outport, int inport, int invc, int evn_cl
     // convert to relative
     int vnet = get_vnet(invc);
     int abs_vc_base = vnet*m_vc_per_vnet;
-    int current_vc = invc - abs_vc_base;
+    int rel_vc = invc - abs_vc_base;
 
     // Select a free VC from the output port
     int outvc =
-        m_router->getOutputUnit(outport)->select_free_valid_evn(get_vnet(invc), evn_class, current_vc);
+        m_router->getOutputUnit(outport)->select_free_valid_evn(get_vnet(invc), evn_class, rel_vc);
 
     // has to get a valid VC since it checked before performing SA
     assert(outvc != -1);

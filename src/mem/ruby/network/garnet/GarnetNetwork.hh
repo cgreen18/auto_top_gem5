@@ -153,6 +153,12 @@ class GarnetNetwork : public Network
         m_total_hops += hops;
     }
 
+    void
+    increment_sankey(int a, int b)
+    {
+        *(m_sankey[a][b]) += 1;
+    }
+
     void update_traffic_distribution(RouteInfo route);
     int getNextPacketID() { return m_next_packet_id++; }
 
@@ -208,6 +214,9 @@ class GarnetNetwork : public Network
 
     std::vector<std::vector<statistics::Scalar *>> m_data_traffic_distribution;
     std::vector<std::vector<statistics::Scalar *>> m_ctrl_traffic_distribution;
+
+    // 2D mat of scalars
+    std::vector<std::vector<statistics::Scalar *>> m_sankey;
 
   private:
     GarnetNetwork(const GarnetNetwork& obj);

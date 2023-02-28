@@ -561,6 +561,21 @@ GarnetNetwork::regStats()
             m_ctrl_traffic_distribution[source].push_back(ctrl_packets);
         }
     }
+
+    // for Sankey
+    int n_total_vcs = m_virtual_networks* m_vcs_per_flow_vnet;
+
+    for(int source=0; source<n_total_vcs; source++){
+        m_sankey.push_back(
+            std::vector<statistics::Scalar* >() );
+        for(int dest=0; dest<n_total_vcs; dest++){
+            statistics::Scalar* vnvc_freq = new statistics::Scalar();
+
+            vnvc_freq->name(name() + ".sankey." + "vcvn" +
+                    std::to_string(source) + "." + "vcvn" + std::to_string(dest));
+            m_sankey[source].push_back(vnvc_freq);
+        }
+    }
 }
 
 void

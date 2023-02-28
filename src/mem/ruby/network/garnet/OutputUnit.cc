@@ -101,11 +101,16 @@ OutputUnit::has_credit(int out_vc)
 bool
 OutputUnit::has_free_vc(int vnet)
 {
+
+    DPRINTF(RubyNetwork, "OutputUnit:: has_free_VC():: in function??\n");
+
     int vc_base = vnet*m_vc_per_vnet;
     for (int vc = vc_base; vc < vc_base + m_vc_per_vnet; vc++) {
         if (is_vc_idle(vc, curTick()))
             return true;
     }
+
+
 
     return false;
 }
@@ -124,7 +129,10 @@ OutputUnit::has_free_valid_evn(int vnet, int evn_class, int current_vc)
 
     if (current_vc >= m_evn_deadlock_partition){
         restricted_to_escape = true;
-        DPRINTF(RubyNetwork, "OutputUnit:: has_free_valid_evn():: current_vc = %d (abs %d) is in escape VNs ( >= %d)", current_vc, current_vc + abs_vc_base, m_evn_deadlock_partition);
+        DPRINTF(RubyNetwork, "OutputUnit:: has_free_valid_evn():: current_vc = %d (abs %d) is in escape VNs ( >= %d)\n", current_vc, current_vc + abs_vc_base, m_evn_deadlock_partition);
+    }
+    else{
+        DPRINTF(RubyNetwork, "OutputUnit:: has_free_valid_evn():: current_vc = %d (abs %d) is NOT in escape VNs ( < %d)\n", current_vc, current_vc + abs_vc_base, m_evn_deadlock_partition);
     }
 
     // if not currently in an escape VN then
@@ -190,7 +198,10 @@ OutputUnit::select_free_valid_evn(int vnet, int evn_class, int current_vc)
 
     if (current_vc >= m_evn_deadlock_partition){
         restricted_to_escape = true;
-        DPRINTF(RubyNetwork, "OutputUnit:: select_free_valid_evn():: current_vc = %d (abs %d) is in escape VNs ( >= %d)", current_vc, current_vc + abs_vc_base, m_evn_deadlock_partition);
+        DPRINTF(RubyNetwork, "OutputUnit:: select_free_valid_evn():: current_vc = %d (abs %d) is in escape VNs ( >= %d)\n", current_vc, current_vc + abs_vc_base, m_evn_deadlock_partition);
+    }
+    else{
+        DPRINTF(RubyNetwork, "OutputUnit:: select_free_valid_evn():: current_vc = %d (abs %d) is NOT in escape VNs ( < %d)\n", current_vc, current_vc + abs_vc_base, m_evn_deadlock_partition);
     }
 
     // if not currently in an escape VN then

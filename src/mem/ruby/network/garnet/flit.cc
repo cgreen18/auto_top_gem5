@@ -71,6 +71,10 @@ flit::flit(int packet_id, int id, int  vc, int vnet, RouteInfo route, int size,
         m_type = TAIL_;
     else
         m_type = BODY_;
+
+    // for sankey
+    m_first_vnvc = -1;
+    m_last_vnvc = -1;
 }
 
 flit *

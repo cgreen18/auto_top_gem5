@@ -176,6 +176,19 @@ NetworkInterface::incrementStats(flit *t_flit)
 
     // Hops
     m_net_ptr->increment_total_hops(t_flit->get_route().hops_traversed);
+
+    // for Sankey tracking
+
+
+    // get src/first and dest/last VNs
+    int src_vn = t_flit->get_first_vnvc();
+    int dest_vn = t_flit->get_last_vnvc();
+
+    DPRINTF(RubyNetwork, "NetworkInterface:: incrementStats():: about to increment sankey[%d][%d]\n",
+        src_vn, dest_vn);
+
+    // track in 2d matrix the src, dest VC/VNs
+    m_net_ptr->increment_sankey(src_vn, dest_vn);
 }
 
 /*
@@ -470,6 +483,10 @@ NetworkInterface::flitisizeMessage(MsgPtr msg_ptr, int vnet)
 
             fl->set_src_delay(curTick() - msg_ptr->getTime());
             niOutVcs[vc].insert(fl);
+
+            // for Sankey
+            fl->set_first_vnvc(vc);
+            fl->set_last_vnvc(vc);
         }
 
         m_ni_out_vcs_enqueue_time[vc] = curTick();

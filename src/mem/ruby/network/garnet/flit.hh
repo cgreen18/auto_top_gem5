@@ -82,6 +82,25 @@ class flit
     void increment_hops() { m_route.hops_traversed++; }
     virtual void print(std::ostream& out) const;
 
+    // for Sankey
+    int
+    get_first_vnvc(){ return m_first_vnvc; }
+
+    int
+    get_last_vnvc() { return m_last_vnvc; }
+
+    void
+    set_first_vnvc(int val) { m_first_vnvc = val;}
+
+    void
+    set_last_vnvc(int val) {
+        // if (m_last_vnvc != val){
+        //     printf("flit:: set_last_vnvc():: changing from %d -> %d\n",
+        //     m_last_vnvc, val);
+        // }
+        
+        m_last_vnvc = val;}
+
     bool
     is_stage(flit_stage stage, Tick time)
     {
@@ -128,6 +147,10 @@ class flit
     int m_outport;
     Tick src_delay;
     std::pair<flit_stage, Tick> m_stage;
+
+    // for Sankey
+    int m_first_vnvc;
+    int m_last_vnvc;
 };
 
 inline std::ostream&
