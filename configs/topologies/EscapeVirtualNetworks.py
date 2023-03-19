@@ -134,7 +134,7 @@ class EscapeVirtualNetworks(SimpleTopology):
         # l1s/dirs -> routers
         link_count = 0
         for i in range(n_cpus):
-            # print(f'Adding external link: l1 cache node {i} <-> router {i} ')
+            print(f'Adding external link: l1 cache node {i} <-> router {i} ')
             idx = i % n_routers
             ext_links.append(ExtLink(link_id=link_count,
                                     ext_node= caches[i],
@@ -147,7 +147,7 @@ class EscapeVirtualNetworks(SimpleTopology):
         # if coh
         if is_mem_or_coh == 'coh':
             for i in range(n_dirs):
-                # print(f'Adding external link (id {link_count}): dir node {i} <-> noc router {i}')
+                print(f'Adding external link (id {link_count}): dir node {i} <-> noc router {i}')
                 idx = i % n_routers
                 ext_links.append(ExtLink(link_id=link_count,
                                         ext_node= dirs[i],
@@ -216,8 +216,10 @@ class EscapeVirtualNetworks(SimpleTopology):
                     if options.use_vll:
                         this_link_latency = weight_mat[src_r][dest_r]
 
-                    s_name = f'r{src_r}_lc{link_count}'
-                    d_name = f'r{dest_r}_lc{link_count}'
+
+                    # # useless?
+                    # s_name = f'r{src_r}_lc{link_count}'
+                    # d_name = f'r{dest_r}_lc{link_count}'
 
                     s_row = src_r // per_row
                     s_col = src_r % per_row
