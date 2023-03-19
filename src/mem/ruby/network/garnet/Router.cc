@@ -62,6 +62,8 @@ Router::Router(const Params &p)
 {
     m_input_unit.clear();
     m_output_unit.clear();
+
+    m_post_dlock = false;
 }
 
 void
@@ -99,6 +101,63 @@ Router::wakeup()
 
     // Switch Traversal
     crossbarSwitch.wakeup();
+
+    // tried moving it here but didnt help
+    // for (int outport = 0; outport < m_output_unit.size(); outport++) {
+    //     m_output_unit[outport]->wakeup();
+    // }
+
+    if(get_net_ptr()->is_post_dlock()){
+    // if(true){
+        DPRINTF(RubyNetwork,"======================================================\n");
+        DPRINTF(RubyNetwork,"Post deadlock life. Printing status of router %d\n",m_id);
+
+        DPRINTF(RubyNetwork,"\tInput units:\n");
+
+        for (int inport = 0; inport < m_input_unit.size(); inport++) {
+            int n_vcs_for_iu = m_input_unit[inport]->get_n_vcs();
+
+            DPRINTF(RubyNetwork,"\t\tInput unit %d (direction %s) has %d vcs\n",
+                inport,m_input_unit[inport]->get_direction() ,n_vcs_for_iu);
+            
+            for (int vc=0; vc<n_vcs_for_iu; vc++){
+                if (!m_input_unit[inport]->hasTopFlit(vc)){
+                    // DPRINTF(RubyNetwork,"\t\t\tNo top flit for VC %d\n",
+                    //     vc);
+                    continue;
+                }
+                flit* peeked_flit = m_input_unit[inport]->peekTopFlit(vc);
+                RouteInfo ri = peeked_flit->get_route();
+                int src_r = ri.src_router;
+                int dest_r = ri.dest_router;
+                DPRINTF(RubyNetwork,"\t\t\tVC %d : flit=%s (%d->...->%d)\n",
+                    vc, *peeked_flit, src_r, dest_r);
+            }
+        }
+
+        DPRINTF(RubyNetwork,"\tOutput units:\n");
+        for (int outport = 0; outport < m_output_unit.size(); outport++) {
+            if (!m_output_unit[outport]->hasTopFlit()){
+                // DPRINTF(RubyNetwork,"\t\tNo top flit for output unit %d\n",
+                //     outport);
+                continue;
+            }
+            flit* peeked_flit = m_output_unit[outport]->peekTopFlit();
+            RouteInfo ri = peeked_flit->get_route();
+            int src_r = ri.src_router;
+            int dest_r = ri.dest_router;
+            DPRINTF(RubyNetwork,"\t\tOutput buffer %d (direction %s) : flit=%s (%d->...->%d)\n",
+                outport,m_output_unit[outport]->get_direction() , *peeked_flit, src_r, dest_r);
+
+            for (int vc=0; vc<m_vc_per_vnet; vc++){
+                DPRINTF(RubyNetwork,"\t\t\tVC %d : credit_count = %d\n",
+                    vc, m_output_unit[outport]->get_credit_count(vc));
+            }
+        }
+        DPRINTF(RubyNetwork,"======================================================\n");
+
+    }
+
 }
 
 void

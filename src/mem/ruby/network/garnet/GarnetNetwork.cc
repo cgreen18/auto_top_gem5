@@ -80,6 +80,7 @@ GarnetNetwork::GarnetNetwork(const Params &p)
     m_n_deadlock_free = p.n_deadlock_free;
     m_evn_deadlock_partition = p.evn_deadlock_partition;
     m_min_n_deadlock_free = p.min_n_deadlock_free;
+    m_post_dlock = false;
 
     DPRINTF(RubyNetwork,"GarnetNetwork:: GarnetNetwork():: rx params: use_escape_vns %d, # dl free %d, dl partition %d\n",m_use_escape_vns,m_n_deadlock_free,m_evn_deadlock_partition);
 
@@ -389,8 +390,8 @@ GarnetNetwork::get_router_id(int global_ni, int vnet)
 int
 GarnetNetwork::get_evn_for_src_dest(int src, int dest)
 {
-    // just hardcode to 20 for now. the flat map is already hardcoded
-    int index = src*20 + dest;
+    int n_routers = getNumRouters();
+    int index = src*n_routers + dest;
     return m_flat_src_dest_to_evn[index];
 }
 
@@ -568,12 +569,36 @@ GarnetNetwork::regStats()
     for(int source=0; source<n_total_vcs; source++){
         m_sankey.push_back(
             std::vector<statistics::Scalar* >() );
+
+        m_dlock_sankey.push_back(
+            std::vector<statistics::Scalar* >() );
+
         for(int dest=0; dest<n_total_vcs; dest++){
             statistics::Scalar* vnvc_freq = new statistics::Scalar();
 
             vnvc_freq->name(name() + ".sankey." + "vcvn" +
                     std::to_string(source) + "." + "vcvn" + std::to_string(dest));
             m_sankey[source].push_back(vnvc_freq);
+
+            // after deadlock detected
+            statistics::Scalar* vnvc_freq_dlock = new statistics::Scalar();
+
+            vnvc_freq_dlock->name(name() + ".dlock_sankey." + "vcvn" +
+                    std::to_string(source) + "." + "vcvn" + std::to_string(dest));
+            m_dlock_sankey[source].push_back(vnvc_freq_dlock);
+        }
+    }
+
+    int n_routers = m_routers.size();
+    for(int i=0;i<n_routers;i++){
+        m_dlock_srcdest.push_back(
+            std::vector<statistics::Scalar* >() );
+        for(int j=0;j<n_routers;j++){
+            statistics::Scalar* dl_sd = new statistics::Scalar();
+
+            dl_sd->name(name() + ".dlock_srcdest." + "n" +
+                    std::to_string(i) + "." + "n" + std::to_string(j));
+            m_dlock_srcdest[i].push_back(dl_sd);
         }
     }
 }
@@ -628,6 +653,24 @@ void
 GarnetNetwork::print(std::ostream& out) const
 {
     out << "[GarnetNetwork]";
+}
+
+Router*
+GarnetNetwork::get_router_ptr(int id){
+    return m_routers[id];
+}
+
+int
+GarnetNetwork::get_post_dlock_of_router(int id){
+    return m_routers[id]->get_post_dlock();
+}
+
+void
+GarnetNetwork::set_post_dlock_of_router(int id){
+    m_routers[id]->set_post_dlock();
+
+    // also self
+    m_post_dlock = true;
 }
 
 void

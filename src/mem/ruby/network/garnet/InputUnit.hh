@@ -113,10 +113,21 @@ class InputUnit : public Consumer
         return virtualChannels[vc].peekTopFlit();
     }
 
+    int
+    get_n_vcs(){
+        return virtualChannels.size();
+    }
+
     inline flit*
     getTopFlit(int vc)
     {
         return virtualChannels[vc].getTopFlit();
+    }
+
+    inline bool
+    hasTopFlit(int vc)
+    {
+        return virtualChannels[vc].hasTopFlit();
     }
 
     inline bool

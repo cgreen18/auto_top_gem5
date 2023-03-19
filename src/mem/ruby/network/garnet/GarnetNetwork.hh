@@ -159,6 +159,31 @@ class GarnetNetwork : public Network
         *(m_sankey[a][b]) += 1;
     }
 
+    void
+    increment_dlock_sankey(int a, int b)
+    {
+        *(m_dlock_sankey[a][b]) += 1;
+    }
+
+    void
+    increment_dlock_srcdest(int a, int b){
+        *(m_dlock_srcdest[a][b]) += 1;
+    }
+
+    Router *
+    get_router_ptr(int id);
+
+
+    int get_post_dlock_of_router(int id);
+
+    void
+    set_post_dlock_of_router(int id);
+
+    bool
+    is_post_dlock(){
+        return m_post_dlock;
+    }
+
     void update_traffic_distribution(RouteInfo route);
     int getNextPacketID() { return m_next_packet_id++; }
 
@@ -179,6 +204,7 @@ class GarnetNetwork : public Network
     int m_evn_deadlock_partition;
     int m_min_n_deadlock_free;
     std::vector<int > m_flat_src_dest_to_evn;
+    bool m_post_dlock;
 
     // Statistical variables
     statistics::Vector m_packets_received;
@@ -215,8 +241,11 @@ class GarnetNetwork : public Network
     std::vector<std::vector<statistics::Scalar *>> m_data_traffic_distribution;
     std::vector<std::vector<statistics::Scalar *>> m_ctrl_traffic_distribution;
 
+    // for sankey
     // 2D mat of scalars
     std::vector<std::vector<statistics::Scalar *>> m_sankey;
+    std::vector<std::vector<statistics::Scalar *>> m_dlock_sankey;
+    std::vector<std::vector<statistics::Scalar *>> m_dlock_srcdest;
 
   private:
     GarnetNetwork(const GarnetNetwork& obj);

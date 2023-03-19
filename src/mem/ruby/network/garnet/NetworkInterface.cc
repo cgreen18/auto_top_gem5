@@ -61,6 +61,9 @@ NetworkInterface::NetworkInterface(const Params &p)
 {
     m_stall_count.resize(m_virtual_networks);
     niOutVcs.resize(0);
+
+    // for sankey
+    m_post_dlock=false;
 }
 
 void
@@ -134,6 +137,9 @@ NetworkInterface::addNode(std::vector<MessageBuffer *>& in,
     inNode_ptr = in;
     outNode_ptr = out;
 
+    DPRINTF(RubyNetwork,"FLAGFLAG setting outNode_ptr (size %d) for NI %d\n",
+        outNode_ptr.size(),m_id);
+
     for (auto& it : in) {
         if (it != nullptr) {
             it->setConsumer(this);
@@ -179,16 +185,22 @@ NetworkInterface::incrementStats(flit *t_flit)
 
     // for Sankey tracking
 
-
     // get src/first and dest/last VNs
     int src_vn = t_flit->get_first_vnvc();
     int dest_vn = t_flit->get_last_vnvc();
 
-    DPRINTF(RubyNetwork, "NetworkInterface:: incrementStats():: about to increment sankey[%d][%d]\n",
-        src_vn, dest_vn);
-
     // track in 2d matrix the src, dest VC/VNs
     m_net_ptr->increment_sankey(src_vn, dest_vn);
+
+    int r_id = get_router_id(vnet);
+    bool after_dlock = m_net_ptr->get_post_dlock_of_router(r_id);
+    if(after_dlock){
+        m_net_ptr->increment_dlock_sankey(src_vn, dest_vn);
+        RouteInfo this_route = t_flit->get_route();
+        int src_r = this_route.src_router;
+        int dest_r = this_route.dest_router;
+        m_net_ptr->increment_dlock_srcdest(src_r, dest_r);
+    }
 }
 
 /*
@@ -249,6 +261,20 @@ NetworkInterface::wakeup()
             int vnet = t_flit->get_vnet();
             t_flit->set_dequeue_time(curTick());
 
+            DPRINTF(RubyNetwork,"FLAG vnet=%d   p\n",
+                vnet);
+
+            DPRINTF(RubyNetwork, "size of outNode_ptr = %d\n",outNode_ptr.size());
+
+            MessageBuffer * temp = outNode_ptr[vnet];
+
+            DPRINTF(RubyNetwork, "Error was not accessing butter ptr\n");
+
+            bool slots_avail = temp->areNSlotsAvailable(1, curTime);
+
+            DPRINTF(RubyNetwork, "Error was not accessing N slots avail\n");
+
+
             // If a tail flit is received, enqueue into the protocol buffers
             // if space is available. Otherwise, exchange non-tail flits for
             // credits.
@@ -256,6 +282,9 @@ NetworkInterface::wakeup()
                 t_flit->get_type() == HEAD_TAIL_) {
                 if (!iPort->messageEnqueuedThisCycle &&
                     outNode_ptr[vnet]->areNSlotsAvailable(1, curTime)) {
+
+                    // outNode_ptr[vnet]->areNSlotsAvailable(1, curTime) causing seg fault
+
                     // Space is available. Enqueue to protocol buffer.
                     outNode_ptr[vnet]->enqueue(t_flit->get_msg_ptr(), curTime,
                                                cyclesToTicks(Cycles(1)));
@@ -293,6 +322,8 @@ NetworkInterface::wakeup()
             }
         }
     }
+
+    DPRINTF(RubyNetwork, "Completed iteration of input ports\n");
 
     /****************** Check the incoming credit link *******/
 
@@ -418,8 +449,8 @@ NetworkInterface::flitisizeMessage(MsgPtr msg_ptr, int vnet)
 
 
             vc = calculate_valid_evn(vnet, evn_class);
-            DPRINTF(RubyNetwork, "NetworkInterface:: flitisizeMessage():: Calculated valid VC %d for evn_class %d\n",
-                vc,evn_class);
+            DPRINTF(RubyNetwork, "NetworkInterface:: flitisizeMessage():: Calculated valid VC %d for evn_class %d (%d->...->%d)\n",
+                vc,evn_class,src_r,dest_r);
         }   
         else{
             vc = calculateVC(vnet);
@@ -481,6 +512,8 @@ NetworkInterface::flitisizeMessage(MsgPtr msg_ptr, int vnet)
                 net_msg_ptr->getMessageSize()),
                 oPort->bitWidth(), curTick());
 
+            DPRINTF(RubyNetwork,"fl is %s\n",*fl);
+
             fl->set_src_delay(curTick() - msg_ptr->getTime());
             niOutVcs[vc].insert(fl);
 
@@ -507,6 +540,8 @@ NetworkInterface::calculate_valid_evn(int vnet, int evn_class)
         int delta = m_vc_allocator[vnet];
         m_vc_allocator[vnet]++;
 
+        DPRINTF(RubyNetwork, "Checking if vc %d available/idle\n",abs_vc_base + delta);
+
         // rollover
         // m_vc_allocator[vnet] elem of [0,m_evn_deadlock_partition)
         if (m_vc_allocator[vnet] == m_evn_deadlock_partition)
@@ -515,7 +550,7 @@ NetworkInterface::calculate_valid_evn(int vnet, int evn_class)
         if (outVcState[abs_vc_base + delta].isInState(
                     IDLE_, curTick())) {
             vc_busy_counter[vnet] = 0;
-            return ((vnet*m_vc_per_vnet) + delta);
+            return (abs_vc_base + delta);
         }
     }
 
@@ -539,19 +574,31 @@ NetworkInterface::calculate_valid_evn(int vnet, int evn_class)
         // just check through this class' options
         int delta = class_rel_vc_base + i;
 
+        DPRINTF(RubyNetwork, "Checking if vc %d available/idle\n",abs_vc_base + delta);
+
         // delta is relative vc
         if (outVcState[abs_vc_base + delta].isInState(
                     IDLE_, curTick())) {
             vc_busy_counter[vnet] = 0;
-            return ((vnet*m_vc_per_vnet) + delta);
+            return (abs_vc_base + delta);
         }
 
     }
 
     vc_busy_counter[vnet] += 1;
-    panic_if(vc_busy_counter[vnet] > m_deadlock_threshold,
-        "%s: Possible network deadlock in vnet: %d at time: %llu \n",
-        name(), vnet, curTick());
+    // panic_if(vc_busy_counter[vnet] > m_deadlock_threshold,
+    //     "%s: Possible network deadlock in vnet: %d, evn_class %d, at time: %llu \n",
+    //     name(), vnet,evn_class , curTick());
+    if (vc_busy_counter[vnet] > m_deadlock_threshold){
+        printf("Possible network deadlock in vnet: %d, evn_class %d, at time: %lu in NI %d and router %d \n",
+            vnet,evn_class , curTick(), m_id, get_router_id(vnet));
+        m_post_dlock = true;
+        int r_id = get_router_id(vnet);
+        m_net_ptr->set_post_dlock_of_router(r_id);
+
+        m_deadlock_threshold = 2*m_deadlock_threshold;
+        printf("post_dlock=%d and dlock thresh=%d in NI %d\n",m_post_dlock,m_deadlock_threshold,m_id);
+    }
 
     return -1;
 
@@ -614,33 +661,84 @@ NetworkInterface::scheduleOutputPort(OutputPort *oPort)
                            }
                        }
                    }
-               }
-               if (!is_candidate_vc)
-                   continue;
+                }
 
-               // Update the round robin arbiter
-               oPort->vcRoundRobin(vc);
 
-               outVcState[vc].decrement_credit();
+                int rel_vc = vc - vc_base;
 
-               // Just removing the top flit
-               flit *t_flit = niOutVcs[vc].getTopFlit();
-               t_flit->set_time(clockEdge(Cycles(1)));
+                bool restricted_to_escape = false;
 
-               // Scheduling the flit
-               scheduleFlit(t_flit);
+                if(rel_vc >= m_evn_deadlock_partition) restricted_to_escape = true;
 
-               if (t_flit->get_type() == TAIL_ ||
-                  t_flit->get_type() == HEAD_TAIL_) {
-                   m_ni_out_vcs_enqueue_time[vc] = Tick(INFINITE_);
-               }
+                bool has_top_flit = true;
 
-               // Done with this port, continue to schedule
-               // other ports
-               return;
-           }
-       }
-   }
+                if (oPort->hasTopFlit()){
+                    // DPRINTF(RubyNetwork,"\t\t\tNo top flit for VC %d\n",
+                    //     vc);
+                    has_top_flit = false;
+                }
+
+                if (restricted_to_escape && has_top_flit){
+
+
+
+                    // TODO: possibly here check if VC and flit valid?
+                    flit* peeked_flit = niOutVcs[vc].peekTopFlit();
+
+                    // check if valid...
+                    RouteInfo ri = peeked_flit->get_route();
+                    int src_r = ri.src_router;
+                    int dest_r = ri.dest_router;
+
+                    int evn_class = m_net_ptr->get_evn_for_src_dest(src_r, dest_r);
+
+
+                    // allowed if rel_vc elem of [partition + class*n_per_class,partition + (class+1)*n_per_class)
+                    int valid_low_bound = m_evn_deadlock_partition + evn_class*m_n_deadlock_free;
+                    int valid_high_bound = valid_low_bound + m_n_deadlock_free;
+
+                    if(rel_vc < valid_low_bound || rel_vc >= valid_high_bound){
+                        DPRINTF(RubyNetwork, "scheduleOutputPort():: Trying to schedule an invalid VC %d when class=%d for %d->...->%d\n",
+                            vc, evn_class, src_r, dest_r);
+                    }
+                    else{
+                        DPRINTF(RubyNetwork, "scheduleOutputPort():: Trying to schedule a valid VC %d when class=%d for %d->...->%d\n",
+                            vc, evn_class, src_r, dest_r);
+                    }
+                }
+                else{
+                    DPRINTF(RubyNetwork, "scheduleOutputPort():: Trying to schedule a NOT escape VC %d\n",vc);
+                }
+
+                DPRINTF(RubyNetwork,"scheduleOutputPort():: Trying to schedule VC %d\n",vc);
+
+
+                if (!is_candidate_vc)
+                    continue;
+
+                // Update the round robin arbiter
+                oPort->vcRoundRobin(vc);
+
+                outVcState[vc].decrement_credit();
+
+                // Just removing the top flit
+                flit *t_flit = niOutVcs[vc].getTopFlit();
+                t_flit->set_time(clockEdge(Cycles(1)));
+
+                // Scheduling the flit
+                scheduleFlit(t_flit);
+
+                if (t_flit->get_type() == TAIL_ ||
+                    t_flit->get_type() == HEAD_TAIL_) {
+                    m_ni_out_vcs_enqueue_time[vc] = Tick(INFINITE_);
+                }
+
+                // Done with this port, continue to schedule
+                // other ports
+                return;
+            }
+        }
+    }
 }
 
 
@@ -695,9 +793,9 @@ NetworkInterface::scheduleFlit(flit *t_flit)
     OutputPort *oPort = getOutportForVnet(t_flit->get_vnet());
 
     if (oPort) {
-        // DPRINTF(RubyNetwork, "Scheduling at %s time:%ld flit:%s Message:%s\n",
-        // oPort->outNetLink()->name(), clockEdge(Cycles(1)),
-        // *t_flit, *(t_flit->get_msg_ptr()));
+        DPRINTF(RubyNetwork, "Scheduling at %s time:%ld flit:%s Message:%s\n",
+        oPort->outNetLink()->name(), clockEdge(Cycles(1)),
+        *t_flit, *(t_flit->get_msg_ptr()));
         oPort->outFlitQueue()->insert(t_flit);
         oPort->outNetLink()->scheduleEventAbsolute(clockEdge(Cycles(1)));
         return;

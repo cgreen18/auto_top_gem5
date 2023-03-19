@@ -181,6 +181,12 @@ class NetworkInterface : public ClockedObject, public Consumer
               _vcRoundRobin = vc;
           }
 
+          bool
+          hasTopFlit(){
+            if (_outFlitQueue->getSize() == 0) return false;
+            return true;
+          }
+
 
       private:
           std::vector<int> _vnets;
@@ -291,6 +297,9 @@ class NetworkInterface : public ClockedObject, public Consumer
     int m_evn_deadlock_partition;
     int m_n_deadlock_free;
     int m_use_escape_vns;
+
+    // for sankey
+    bool m_post_dlock;
 
     std::vector<int> m_stall_count;
 

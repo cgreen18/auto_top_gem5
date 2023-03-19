@@ -139,7 +139,7 @@ OutputUnit::has_free_valid_evn(int vnet, int evn_class, int current_vc)
     if (!restricted_to_escape){
         // check the no guarantee VCs
         // [0,m_evn_deadlock_partition)
-        for (int i = 0; i < m_vc_per_vnet; i++) {
+        for (int i = 0; i < m_evn_deadlock_partition; i++) {
             int vc = abs_vc_base + i;
             if (is_vc_idle(vc, curTick()))
                 return true;
@@ -208,7 +208,7 @@ OutputUnit::select_free_valid_evn(int vnet, int evn_class, int current_vc)
     if (!restricted_to_escape){
         // check the no guarantee VCs
         // [0,m_evn_deadlock_partition)
-        for (int i = 0; i < m_vc_per_vnet; i++) {
+        for (int i = 0; i < m_evn_deadlock_partition; i++) {
             int vc = abs_vc_base + i;
             if (is_vc_idle(vc, curTick())) {
                 outVcState[vc].setState(ACTIVE_, curTick());

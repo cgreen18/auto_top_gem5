@@ -108,6 +108,19 @@ class OutputUnit : public Consumer
 
     uint32_t functionalWrite(Packet *pkt);
 
+    inline flit*
+    peekTopFlit()
+    {
+        return outBuffer.peekTopFlit();
+    }
+
+    inline bool
+    hasTopFlit()
+    {
+        if (outBuffer.getSize() == 0) return false;
+        return true;
+    }
+
   private:
     Router *m_router;
     GEM5_CLASS_VAR_USED int m_id;

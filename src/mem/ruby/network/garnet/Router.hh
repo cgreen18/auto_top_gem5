@@ -114,8 +114,8 @@ class Router : public BasicRouter, public Consumer
     // route calculation stuff
     int
     calc_next_router(int src, int dest){
-        // hardcode to 20 routers
-        int index = src*20 + dest;
+        int n_routers = m_network_ptr->getNumRouters();
+        int index = src*n_routers + dest;
 
         return m_flat_next_router_map[index];
     }
@@ -160,6 +160,10 @@ class Router : public BasicRouter, public Consumer
 
     uint32_t functionalWrite(Packet *);
 
+    void set_post_dlock(){ m_post_dlock = true; }
+
+    bool get_post_dlock(){ return m_post_dlock;}
+
   private:
     Cycles m_latency;
     uint32_t m_virtual_networks, m_vc_per_vnet, m_num_vcs;
@@ -178,6 +182,8 @@ class Router : public BasicRouter, public Consumer
     int m_evn_deadlock_partition;
     int m_n_deadlock_free;
     bool m_use_escape_vns;
+
+    bool m_post_dlock;
 
 
 
