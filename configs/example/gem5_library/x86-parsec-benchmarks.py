@@ -90,17 +90,19 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "--benchmark",
     type = str,
-    required=True,
+    # required=True,
     help = "Input the benchmark program to execute.",
     choices = benchmark_choices,
+    default='blackscholes'
 )
 
 parser.add_argument(
     "--size",
     type = str,
-    required=True,
+    # required=True,
     help = "Simulation size the benchmark program.",
     choices = size_choices,
+    default='simlarge'
 )
 args = parser.parse_args()
 
@@ -176,11 +178,13 @@ board.set_kernel_disk_workload(
     # PARSEC benchamarks were tested with kernel version 4.19.83
     kernel=Resource(
         "x86-linux-kernel-4.19.83",
+        resource_directory='/home/yara/mithuna2/green456/netsmith_autotop/auto_top_gem5/parsec_disk_image'
     ),
     # The x86-parsec image will be automatically downloaded to the
     # `~/.cache/gem5` directory if not already present.
     disk_image=Resource(
         "x86-parsec",
+        resource_directory='/home/yara/mithuna2/green456/netsmith_autotop/auto_top_gem5/parsec_disk_image'
     ),
     readfile_contents=command,
 )

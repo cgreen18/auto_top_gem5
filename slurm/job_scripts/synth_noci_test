@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task=32
+#SBATCH --output=slurm/outputs/synth_noci_100k_test
+
+cd $SLURM_SUBMIT_DIR
+
+echo "Running job $SLURM_JOBID\n"
+
+source setup.sh
+
+srun python3 python_scripts/run_synth_NoCI.py --sim_cycles 100000 --inj_start 0.01 --inj_end 0.06 --inj_step 0.04 --mixedfreq_only --coh_only

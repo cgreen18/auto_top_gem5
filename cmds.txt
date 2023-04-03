@@ -77,3 +77,43 @@ run --debug-break=3892 configs/auto_top/auto_top_synth.py --topology NoCI_Escape
 
 # noci deadlocks... lets debug
 ./build/Garnet_standalone/gem5.opt -d qt_opt_noci --debug-flags RubyNetwork,GarnetSyntheticTraffic --debug-start 28000000 configs/auto_top/auto_top_synth.py --topology NoCI_EscapeVirtualNetworks --noi_routers 20 --sim-cycles 30000000 --injectionrate 0.2 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 1.8GHz --router_map_file configs/topologies/paper_solutions/kite_large_noci.map --flat_vn_map_file configs/topologies/vn_maps/kite_large_noci_bsorm_zindexed_paths.vn --flat_nr_map_file configs/topologies/nr_list/kite_large_noci_bsorm_zindexed.nrl --ruby --num-dirs 64 --mem_or_coh coh --mem-size 536870900 --num-cpus 64 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 10 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 8 --synth_traffic > qt_opt_noci.txt
+
+
+# 
+./build/Garnet_standalone/gem5.fast -d ./synth_outputs/noci/100k/mixed/coh/ns_l_bwop_noci/cload_zindexed/paths/0_05/ configs/auto_top/auto_top_synth.py --topology NoCI_EscapeVirtualNetworks --noi_routers 20 --sim-cycles 20000000000 --injectionrate 0.05 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --router_map_file configs/topologies/paper_solutions/ns_l_bwop_noci.map --flat_vn_map_file configs/topologies/vn_maps/ns_l_bwop_noci_cload_zindexed_paths.vn --flat_nr_map_file configs/topologies/nr_list/ns_l_bwop_noci_cload_zindexed.nrl --ruby --num-dirs 64 --mem_or_coh coh --mem-size 536870900 --num-cpus 64 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 10 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 9 --synth_traffic
+
+
+
+./build/X86/gem5.fast -d ./qt_fs_noci configs/auto_top/auto_top_fs.py -I 100000000 --benchmark_parsec blackscholes -r 1 --checkpoint-dir ./parsec_checkpoints/largemem/blackscholes --router_map_file configs/topologies/paper_solutions_noci/kite_large_noci.map --flat_vn_map_file configs/topologies/vn_maps/ns_l_bwop_noci_cload_zindexed_paths.vn --flat_nr_map_file configs/topologies/nr_list/ns_l_bwop_noci_cload_zindexed.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 16 --num-l2caches 64 --l2_size 500kB --num_chiplets 4 --mem-size 32GB --caches --ruby --network garnet --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --restore-with-cpu X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 10 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 9
+
+
+
+
+./build/X86/gem5.fast -d ./test_kvm_multiprog configs/auto_top/auto_top_fs_old.py --num-cpus 8 --num-dirs 16 --ruby --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --first_parsec bodytrack --second_parsec dedup --work-begin-exit-count 1
+
+./build/X86/gem5.fast -d ./test_kvm_multiprog_none configs/auto_top/auto_top_fs_multiprog.py --num-cpus 8 --num-dirs 16 --ruby --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --first_parsec bodytrack --second_parsec dedup
+
+./build/X86/gem5.fast -d ./test_kvm_multiprog_none configs/auto_top/auto_top_fs_multiprog.py --num-cpus 8 --num-dirs 16 --ruby --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --first_parsec bodytrack --second_parsec dedup
+
+
+./build/X86/gem5.fast -d ./test_kvm_multiprog configs/auto_top/auto_top_fs_multiprog.py --num-cpus 8 --num-dirs 16 --ruby --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --first_parsec bodytrack --second_parsec dedup --work-begin-exit-count 1
+
+
+./build/X86/gem5.fast -d ./test_kvm_multiprog configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 8 --num-dirs 16 --ruby --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --first_parsec bodytrack --second_parsec dedup --work-begin-exit-count 1 
+
+
+# good for testing
+./build/X86/gem5.fast -d ./test_kvm_multiprog configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 8 --num-dirs 16 --ruby --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --first_parsec bodytrack --second_parsec bodytrack --multi_prog --work-begin-exit-count 1
+
+
+./build/X86/gem5.fast -d ./test_kvm_multiprog configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 64 --num-dirs 16 --ruby --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --first_parsec bodytrack --second_parsec dedup --multi_prog
+
+
+./build/X86/gem5.fast -d ./test_kvm_multiprog configs/auto_top/auto_top_fs_multiprog.py --num-cpus 64 --num-dirs 16 --ruby --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --first_parsec bodytrack --second_parsec dedup --multi_prog --work-begin-checkpoint-count 1 --checkpoint-at-end
+
+
+
+## old one
+
+
+./build/X86/gem5.fast -d ./outputs/parsec_checkpoints_noci_32GB_64cpus_16dirs_linux54/swaptions configs/auto_top/at_fs_2.py --num-cpus 64 --num-dirs 16 --benchmark_parsec swaptions --ruby --kernel parsec-disk-image/vmlinux-5.4.49 --disk-image parsec-disk-image/x86-parsec --checkpoint-at-end --work-begin-exit-count 1 --cpu-type X86KvmCPU --mem-size 32GB
