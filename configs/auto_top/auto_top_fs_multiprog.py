@@ -48,6 +48,9 @@ from m5.objects import *
 from m5.util import addToPath, fatal, warn
 from m5.util.fdthelper import *
 
+from os.path import join as joinpath
+
+
 addToPath('../')
 
 from ruby import Ruby
@@ -94,7 +97,6 @@ def writeRepeatedHomogenousMultiProgBenchScript(dir, bench, repetitions, size, n
     cmd += '; sleep 5; m5 exit;'
 
     print(f'writeRepeatedHomogenousMultiProgBenchScript():: cmd = {cmd}')
-    quit(-1)
 
     with open(file_name, "w+") as bench_file:
         bench_file.write(cmd)
@@ -493,10 +495,60 @@ if 'n' in cont_arg or 'N' in cont_arg:
 
 Simulation.run(args, root, test_sys, FutureClass)
 
-quit(-1)
+print(f'after Simulation.run() call')
+
+cont_arg = input('USER INPUT: continue?')
+
+if 'n' in cont_arg or 'N' in cont_arg:
+    quit(-1)
+
+do_chkpt = input('USER INPUT: checkpoint?')
+
+if 'y' in do_chkpt or 'Y' in do_chkpt:
+    if options.checkpoint_at_end:
+        m5.checkpoint(joinpath(cptdir, "cpt.%d"))
+
+    print(f'Wrote checkpoint to : {joinpath(cptdir, "cpt.%d")}')
+
+
+exit_event = m5.simulate()
 
 
 
+print("Done booting Linux")
+
+
+
+print("Exiting @ tick {} because {}.".format(
+        m5.curTick(),
+        exit_event.getCause() ))
+
+
+print("Done with the simulation")
+print()
+print("Performance statistics:")
+
+print("Ran a total of", m5.curTick()/1e12, "simulated seconds")
+
+if options.checkpoint_dir:
+    cptdir = options.checkpoint_dir
+elif m5.options.outdir:
+    cptdir = m5.options.outdir
+else:
+    cptdir = getcwd()
+
+do_chkpt = input('USER INPUT: checkpoint?')
+
+if 'y' in do_chkpt or 'Y' in do_chkpt:
+    if options.checkpoint_at_end:
+        m5.checkpoint(joinpath(cptdir, "cpt.%d"))
+
+    print(f'Wrote checkpoint to : {joinpath(cptdir, "cpt.%d")}')
+
+
+
+# 5 April
+########################################################################################################3
 
 
 

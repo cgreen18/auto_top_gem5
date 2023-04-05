@@ -162,3 +162,21 @@ run --debug-break=3892 configs/auto_top/auto_top_synth.py --topology NoCI_Escape
 
 
 ./build/X86/gem5.fast -d ./test_kvm_multiprog configs/auto_top/auto_top_fs_multiprog.py --num-cpus 64 --num-dirs 16 --ruby --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --benchmark_parsec bodytrack --repeated_multi_prog 4 --work-begin-checkpoint-count 1 --checkpoint-at-end
+
+
+
+
+# idea:
+# prioritize high load benchmarks:
+# 1) bodytrack
+# 
+
+# for each high load benchmark, get chkpt for:
+# a) no ruby, 64 cpu, 64 l2caches (500kB), 16 dirs, 128BG memory
+# b) ruby + garnet params passed, full 64 cpus sys as well
+
+# try various repetitions
+# i) 4 repetitions (16 cpus per program)
+
+# 1ai)
+./build/X86/gem5.fast -d ./parsec_noci_checkpoints/bodytrack/no_ruby/4reps configs/auto_top/auto_top_fs_multiprog.py --num-cpus 64 --num-dirs 16 --ruby --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --benchmark_parsec bodytrack --repeated_multi_prog 4 --work-begin-checkpoint-count 1 --checkpoint-at-end
