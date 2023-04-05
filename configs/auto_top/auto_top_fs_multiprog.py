@@ -74,6 +74,32 @@ def cmd_line_template():
         return open(args.command_line_file).read().strip()
     return None
 
+def writeRepeatedHomogenousMultiProgBenchScript(dir, bench, repetitions, size, ncpus):
+
+    cpus_per_prog = ncpus // repetitions
+
+    assert(ncpus % repetitions == 0)
+
+    file_name = f'{dir}/run_{bench}_repeated{repetitions}'
+
+    cmd = f'cd /home/gem5/parsec-benchmark; source env.sh;'
+    
+    for rep in range(repetitions):
+        cmd += f' parsecmgmt -a run -p {bench} -c gcc-hooks -i simlarge -n {cpus_per_prog}'
+
+        # not last rep
+        if rep + 1 < repetitions:
+            cmd += ' &'
+
+    cmd += '; sleep 5; m5 exit;'
+
+    print(f'writeRepeatedHomogenousMultiProgBenchScript():: cmd = {cmd}')
+    quit(-1)
+
+    with open(file_name, "w+") as bench_file:
+        bench_file.write(cmd)
+    
+    return file_name
 
 def writeMultiProgBenchScript(dir, bench_a, bench_b, size, ncpus):
 
@@ -349,6 +375,9 @@ parser.add_argument('--second_parsec',type=str,default='dedup')
 
 parser.add_argument('--multi_prog',action='store_true')
 
+parser.add_argument('--repeated_multi_prog',type=int,default=None)
+
+
 parser.add_argument('--max_insts_after_boot',type=int,default=1000000000)
 
 
@@ -382,8 +411,10 @@ bench_b = args.second_parsec
 
 if args.multi_prog:
     command_file_name = writeMultiProgBenchScript('configs/auto_top/runscripts',bench_a,bench_b,size,np)
+elif args.repeated_multi_prog is not None:
+    command_file_name = writeRepeatedHomogenousMultiProgBenchScript('configs/auto_top/runscripts',bench,args.repeated_multi_prog,size,np)
 else:
-    command_file_name = writeBenchScript('configs/auto_top/runscripts',bench_a,size,np)
+    command_file_name = writeBenchScript('configs/auto_top/runscripts',bench,size,np)
 
 test_sys = build_test_system(np, command_file_name , bm)
 
