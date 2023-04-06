@@ -479,6 +479,16 @@ test_sys.exit_on_work_items = True
 
 Simulation.setWorkCountOptions(test_sys, args)
 
+
+
+if args.checkpoint_dir:
+    cptdir = args.checkpoint_dir
+elif m5.options.outdir:
+    cptdir = m5.options.outdir
+else:
+    cptdir = getcwd()
+
+
 print("Running the simulation")
 
 print(f'Beginning {TestCPUClass} simulation')
