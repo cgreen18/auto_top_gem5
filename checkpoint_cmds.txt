@@ -12,9 +12,9 @@
 # ii) 8 repetitions (8 cpus per program)
 
 # 1ai)
-./build/X86/gem5.fast -d ./parsec_noci_checkpoints/bodytrack/no_ruby/4reps configs/auto_top/auto_top_fs_multiprog_loop.py --num-cpus 64 --num-dirs 16 --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --benchmark_parsec bodytrack --repeated_multi_prog 4 --work-begin-checkpoint-count 1
+./build/X86/gem5.fast -d ./parsec_noci_checkpoints/bodytrack/no_ruby/4reps configs/auto_top/auto_top_fs_multiprog_loop.py --num-cpus 64 --num-dirs 16 --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 128GB --benchmark_parsec bodytrack --repeated_multi_prog 4 --work-begin-checkpoint-count 1
 
 # results
 
 # 1aii
-./build/X86/gem5.fast -d ./parsec_noci_checkpoints/bodytrack/no_ruby/8reps configs/auto_top/auto_top_fs_multiprog_loop.py --num-cpus 64 --num-dirs 16 --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --benchmark_parsec bodytrack --repeated_multi_prog 8 --work-begin-checkpoint-count 1
+./build/X86/gem5.fast -d ./parsec_noci_checkpoints/bodytrack/no_ruby/8reps configs/auto_top/auto_top_fs_multiprog_loop.py --num-cpus 64 --num-dirs 16 --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 128GB --benchmark_parsec bodytrack --repeated_multi_prog 8 --work-begin-checkpoint-count 1
