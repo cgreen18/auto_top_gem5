@@ -484,126 +484,21 @@ print("Running the simulation")
 print(f'Beginning {TestCPUClass} simulation')
 print(f'Later, {FutureClass} simulation')
 
-print(f'Running: {args.first_parsec} & {args.second_parsec}')
+if args.repeated_multi_prog:
+    print(f'Running: {args.benchmark_parsec} x {args.repeated_multi_prog}')
+elif args.multi_prog:
+    print(f'Running: {args.first_parsec} & {args.second_parsec}')
+else:
+    print(f'Running: {args.benchmark_parsec}')
+
+
 
 cont_arg = input('USER INPUT: continue?')
 
 if 'n' in cont_arg or 'N' in cont_arg:
     quit(-1)
 
-
-
-Simulation.run(args, root, test_sys, FutureClass)
-
-print(f'after Simulation.run() call')
-
-cont_arg = input('USER INPUT: continue?')
-
-if 'n' in cont_arg or 'N' in cont_arg:
-    quit(-1)
-
-do_chkpt = input('USER INPUT: checkpoint?')
-
-if 'y' in do_chkpt or 'Y' in do_chkpt:
-    if options.checkpoint_at_end:
-        m5.checkpoint(joinpath(cptdir, "cpt.%d"))
-
-    print(f'Wrote checkpoint to : {joinpath(cptdir, "cpt.%d")}')
-
-
-exit_event = m5.simulate()
-
-
-
-print("Done booting Linux")
-
-
-
-print("Exiting @ tick {} because {}.".format(
-        m5.curTick(),
-        exit_event.getCause() ))
-
-
-print("Done with the simulation")
-print()
-print("Performance statistics:")
-
-print("Ran a total of", m5.curTick()/1e12, "simulated seconds")
-
-if options.checkpoint_dir:
-    cptdir = options.checkpoint_dir
-elif m5.options.outdir:
-    cptdir = m5.options.outdir
-else:
-    cptdir = getcwd()
-
-do_chkpt = input('USER INPUT: checkpoint?')
-
-if 'y' in do_chkpt or 'Y' in do_chkpt:
-    if options.checkpoint_at_end:
-        m5.checkpoint(joinpath(cptdir, "cpt.%d"))
-
-    print(f'Wrote checkpoint to : {joinpath(cptdir, "cpt.%d")}')
-
-quit(-1)
-
-# 5 April: dont do below
-########################################################################################################3
-
-
-
-m5.instantiate()
-
-if m5.options.outdir:
-    cptdir = m5.options.outdir
-
-print("Running the simulation")
-
-print(f'Beginning {TestCPUClass} simulation')
-print(f'Later, {FutureClass} simulation')
-start_tick = m5.curTick()
-end_tick = m5.curTick()
-m5.stats.reset()
-
-# We start the simulation
-
-exit_event = m5.simulate()
-
-
-
-print("Done booting Linux")
-
-
-
-print("Exiting @ tick {} because {}.".format(
-        m5.curTick(),
-        exit_event.getCause() ))
-
-
-print("Done with the simulation")
-print()
-print("Performance statistics:")
-
-print("Ran a total of", m5.curTick()/1e12, "simulated seconds")
-
-if options.checkpoint_dir:
-    cptdir = options.checkpoint_dir
-elif m5.options.outdir:
-    cptdir = m5.options.outdir
-else:
-    cptdir = getcwd()
-
-do_chkpt = input('USER INPUT: checkpoint?')
-
-if 'y' in do_chkpt or 'Y' in do_chkpt:
-    if options.checkpoint_at_end:
-        m5.checkpoint(joinpath(cptdir, "cpt.%d"))
-
-    print(f'Wrote checkpoint to : {joinpath(cptdir, "cpt.%d")}')
-
-
-while kvm_until_two_workbegins:
-
+while True:
     exit_event = m5.simulate()
 
 
@@ -619,7 +514,7 @@ while kvm_until_two_workbegins:
     do_chkpt = input('USER INPUT: checkpoint?')
 
     if 'y' in do_chkpt:
-        if options.checkpoint_at_end:
+        if args.checkpoint_at_end:
             m5.checkpoint(joinpath(cptdir, "cpt.%d"))
 
         print(f'Wrote checkpoint to : {joinpath(cptdir, "cpt.%d")}')
@@ -635,6 +530,8 @@ while kvm_until_two_workbegins:
     m5.stats.dump()
     m5.stats.reset()
     start_tick = m5.curTick()
+
+
 
 
 
