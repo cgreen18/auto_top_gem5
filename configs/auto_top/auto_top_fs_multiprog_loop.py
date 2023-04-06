@@ -508,6 +508,11 @@ cont_arg = input('USER INPUT: continue?')
 if 'n' in cont_arg or 'N' in cont_arg:
     quit(-1)
 
+
+m5.instantiate()
+
+
+
 while True:
     exit_event = m5.simulate()
 
