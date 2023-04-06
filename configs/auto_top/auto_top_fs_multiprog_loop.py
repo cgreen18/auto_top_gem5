@@ -514,7 +514,12 @@ m5.instantiate()
 
 
 while True:
+
+    start_tick = m5.curTick()
+
     exit_event = m5.simulate()
+
+    end_tick = m5.curTick()
 
 
     print("Exiting @ tick {} because {}.".format(
