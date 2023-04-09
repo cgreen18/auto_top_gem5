@@ -528,16 +528,15 @@ while True:
 
     print("Performance statistics:")
 
-    print("Simulated time in ROI: %.2fs" % ((end_tick-start_tick)/1e12))
-    print("Ran a total of", m5.curTick()/1e12, "simulated seconds")
+    print("Simulated time: %.2fs" % ((end_tick-start_tick)/1e12))
+    print("Total of", m5.curTick()/1e12, "simulated seconds")
 
     do_chkpt = input('USER INPUT: checkpoint?')
 
     if 'y' in do_chkpt:
-        if args.checkpoint_at_end:
-            m5.checkpoint(joinpath(cptdir, "cpt.%d"))
+        m5.checkpoint(joinpath(cptdir, f"cpt.{m5.curTick()}"))
 
-        print(f'Wrote checkpoint to : {joinpath(cptdir, "cpt.%d")}')
+        print(f'Wrote checkpoint to : {joinpath(cptdir, f"cpt.{m5.curTick()}")}')
 
 
 
