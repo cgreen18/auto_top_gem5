@@ -180,3 +180,21 @@ run --debug-break=3892 configs/auto_top/auto_top_synth.py --topology NoCI_Escape
 
 # 1ai)
 ./build/X86/gem5.fast -d ./parsec_noci_checkpoints/bodytrack/no_ruby/4reps configs/auto_top/auto_top_fs_multiprog.py --num-cpus 64 --num-dirs 16 --ruby --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --benchmark_parsec bodytrack --repeated_multi_prog 4 --work-begin-checkpoint-count 1 --checkpoint-at-end
+
+
+
+
+
+# readfiling
+
+# testing w/ 1 cpu
+
+./build/X86/gem5.fast -d ./test_readfile configs/auto_top/auto_top_fs_readfile.py --num-cpus 1 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB
+
+
+./build/X86/gem5.fast -d ./test_readfile_restore configs/auto_top/auto_top_fs.py --num-cpus 1 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --work-begin-checkpoint-count 1 -r 1 --checkpoint-dir ./test_readfile/ -I 10000
+
+./build/X86/gem5.fast -d ./test_readfile configs/auto_top/auto_top_fs_readfile.py --num-cpus 64 --num-dirs 16 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB
+
+
+./build/X86/gem5.fast -d ./test_readfile_restore configs/auto_top/auto_top_fs.py --num-cpus 64 --num-dirs 16 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB  --work-begin-checkpoint-count 1 -r 1 --checkpoint-dir ./test_readfile/ --script configs/auto_top/runscripts/guest_1_runscript
