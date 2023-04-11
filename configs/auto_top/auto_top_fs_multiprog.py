@@ -545,9 +545,9 @@ if 'y' in do_chkpt or 'Y' in do_chkpt:
 
     print(f'Wrote checkpoint to : {joinpath(cptdir, "cpt.%d")}')
 
+quit(-1)
 
-
-# 5 April
+# 5 April: dont do below
 ########################################################################################################3
 
 

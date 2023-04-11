@@ -440,6 +440,8 @@ bench = args.benchmark_parsec
 size = 'simlarge'
 command_file_name = writeBenchScript('configs/auto_top/runscripts',bench,size,np)
 
+command_file_name = None
+
 test_sys = build_test_system(np, command_file_name)
 
 
@@ -541,6 +543,26 @@ print(f'Later, {FutureClass} simulation')
 
 # quit(-1)
 Simulation.run(args, root, test_sys, FutureClass)
+
+quit(-1)
+
+while True:
+    cont = input('continue?')
+    if 'n' in cont:
+        quit(-1)
+
+
+    start_tick = m5.curTick()
+
+    exit_event = m5.simulate()
+
+    end_tick = m5.curTick()
+
+    print("Exiting @ tick {} because {}.".format(
+            m5.curTick(),
+            exit_event.getCause() ))
+
+
 quit(-1)
 # equivalently,
 

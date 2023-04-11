@@ -25,3 +25,7 @@
 
 # 5bi
 ./build/X86/gem5.fast -d ./parsec_noci_checkpoints/swaptions/no_ruby/4reps_nocaches configs/auto_top/auto_top_fs_multiprog_loop.py --num-cpus 64 --num-dirs 16 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --repeated_multi_prog 4 --work-begin-checkpoint-count 1 --benchmark_parsec swaptions
+
+
+# readfile
+./build/X86/gem5.fast -d ./test_readfile configs/auto_top/auto_top_fs_readfile.py --num-cpus 1 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB --work-begin-checkpoint-count 1
