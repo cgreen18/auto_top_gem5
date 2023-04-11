@@ -32,3 +32,6 @@ m5out
 configs/example/memcheck.cfg
 configs/dram/lowp_sweep.cfg
 .pyenv
+configs/topologies/vn_maps/*
+configs/topologies/nr_list/*
+configs/topologies/paper_solutions/*
