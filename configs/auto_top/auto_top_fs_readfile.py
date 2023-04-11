@@ -400,12 +400,11 @@ bm = [SysConfig(disks=args.disk_image, rootdev=args.root_device,
 
 
 np = args.num_cpus
-bench = args.benchmark_parsec
-size = 'simlarge'
-bench_a = args.first_parsec
-bench_b = args.second_parsec
 
-runscript_file_name, readfile_file_name = writeReadfileBenchScript('configs/auto_top/runscripts', 1)
+
+guest_number = 1
+
+runscript_file_name, _readfile_file_name = writeReadfileBenchScript('configs/auto_top/runscripts', guest_number)
 
 
 test_sys = build_test_system(np, runscript_file_name, bm)
@@ -479,18 +478,13 @@ else:
     cptdir = getcwd()
 
 
-print("Running the simulation")
+print("Completed setup")
 
 print(f'Beginning {TestCPUClass} simulation')
 print(f'Later, {FutureClass} simulation')
 
-if args.repeated_multi_prog:
-    print(f'Running: {args.benchmark_parsec} x {args.repeated_multi_prog}')
-elif args.multi_prog:
-    print(f'Running: {args.first_parsec} & {args.second_parsec}')
-else:
-    print(f'Running: {args.benchmark_parsec}')
 
+print(f'Running: boot up')
 
 
 cont_arg = input('USER INPUT: continue?')
