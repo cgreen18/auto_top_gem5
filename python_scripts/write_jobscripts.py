@@ -3,7 +3,7 @@ import os
 
 import sys
 
-DATE = 'mar20'
+DATE = 'apr9'
 
 
 # topologies
@@ -47,7 +47,7 @@ def name_num_insts(sc):
 
 
 
-def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_size):
+def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_size, nreps):
 
 
     outfile_name = f'{benchmark}_{topology}_{alg_type}_{lb_type}'
@@ -59,13 +59,16 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
 
     # outdir_name = f'slurm/job_scripts/parsec_noci_largemem_4GHzcpu_500MBL2/{inst_str}/'
     # outdir_name = f'slurm/job_scripts/parsec_noci_largemem/{inst_str}/'
-    outdir_name = f'slurm/job_scripts/parsec_noci_largemem_{clk_str}_{l2_size}/{inst_str}/'
+    # outdir_name = f'slurm/job_scripts/parsec_noci_32GB_l2caches_{clk_str}_{l2_size}/{inst_str}/'
+    outdir_name = f'slurm/job_scripts/parsec_noci_32GB_l2caches_{nreps}reps_{clk_str}_{l2_size}/{inst_str}/'
 
 
     outpath = outdir_name + outfile_name
 
     # slurm_out = f'parsec_noci/{benchmark}_{topology}_{inst_str}_4GHzcpu_500MBL2{DATE}.out'
-    slurm_out = f'parsec_noci/{benchmark}_{topology}_{alg_type}_{lb_type}_{inst_str}_{clk_str}_{l2_size}_{DATE}.out'
+    # slurm_out = f'parsec_noci/{benchmark}_{topology}_{alg_type}_{lb_type}_{inst_str}_{clk_str}_{l2_size}_32GB_l2l2caches_{DATE}.out'
+    slurm_out = f'parsec_noci/{benchmark}_{topology}_{alg_type}_{lb_type}_{inst_str}_{clk_str}_{l2_size}_32GB_l2caches_{nreps}reps_{DATE}.out'
+
     # defining what to write
     lines = []
 
@@ -116,7 +119,9 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
 
     # output dir
     # cmd += f' -d ./paper_outputs/parsec_noci_largemem_4GHzCPU_500MBL2/{inst_str}/{benchmark}/{topology}/'
-    cmd += f' -d ./parsec_results/parsec_noci_largemem_{clk_str}_{l2_size}/{inst_str}/{benchmark}/{topology}_{alg_type}_{lb_type}/'
+    # cmd += f' -d ./parsec_results/parsec_noci_32GB_nocaches_{clk_str}_{l2_size}/{inst_str}/{benchmark}/{topology}_{alg_type}_{lb_type}/'
+    cmd += f' -d ./parsec_results/parsec_noci_32GB_l2caches_{nreps}reps_{clk_str}_{l2_size}/{inst_str}/{benchmark}/{topology}_{alg_type}_{lb_type}/'
+
     # cmd += f' -d ./paper_outputs/parsec_noci_largemem/{inst_str}/{benchmark}/{topology}/'
 
     cmd += f' configs/auto_top/auto_top_fs.py'
@@ -132,7 +137,8 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
     cmd += f' -r 1'
     # cmd += f' --checkpoint-dir ./parsec_checkpoints/parsec_checkpoints_noci/{benchmark}'
 
-    cmd += f' --checkpoint-dir ./parsec_checkpoints/largemem/{benchmark}'
+    # cmd += f' --checkpoint-dir ./parsec_checkpoints/largemem/{benchmark}'
+    cmd += f' --checkpoint-dir ./parsec_noci_checkpoints/{benchmark}/no_ruby/4reps_nocaches'
 
 
     cmd += f' --router_map_file configs/topologies/paper_solutions/{topology}.map'
@@ -158,7 +164,7 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
         cmd += f' --noi_routers 64'
     else:
         cmd += f' --noi_routers 20'
-    
+
     # cmd += f' --noc_clk 3.0GHz --sys-clock 3.0GHz --ruby-clock 3.0GHz'
 
 
@@ -172,32 +178,41 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
     # cpu and mem config
     # cmd += ' --num-cpus 64 --mem_or_coh mem --num-dirs 16 --num-l2caches 4 --num_chiplets 4'
     cmd += ' --num-cpus 64 --mem_or_coh mem --num-dirs 16'
-    
-    cmd += f' --num-l2caches 64 --l2_size {l2_size} --num_chiplets 4'
+
+    # TODO uncomment for other benchmark types
+    cmd += f' --caches'
+    cmd += f' --num-l2caches 64 --l2_size {l2_size}'
+
+    cmd += f' --num_chiplets 4'
     # cmd += ' --num-l2caches 64 --num_chiplets 4'
     # cmd += ' --num-cpus 64 --mem_or_coh coh --num-dirs 64 --num-l2caches 4 --num_chiplets 4'
 
     cmd += ' --mem-size 32GB'
 
     # ruby stuff
-    cmd += ' --caches --ruby --network garnet'
+    cmd += ' --ruby --network garnet'
 
     # FS linux stuff
     # x264 bodytrack facesim
-    
+
     # these were taken with a different kernel. shouldnt matter but just in case
-    if  benchmark == 'bodytrack' or benchmark == 'facesim':
-        cmd += f' --kernel parsec_disk_image/vmlinux-5.4.49'
-    elif benchmark == 'x264' or benchmark == 'dedup':
-        cmd += f' --kernel parsec_disk_image/x86-linux-kernel-4.19.83'
-    else:
-        cmd += f' --kernel parsec_disk_image/vmlinux-4.4.186'
+    # if  benchmark == 'bodytrack' or benchmark == 'facesim':
+    #     cmd += f' --kernel parsec_disk_image/vmlinux-5.4.49'
+    # elif benchmark == 'x264' or benchmark == 'dedup':
+    #     cmd += f' --kernel parsec_disk_image/x86-linux-kernel-4.19.83'
+    # else:
+    #     cmd += f' --kernel parsec_disk_image/vmlinux-4.4.186'
+
+    cmd += f' --kernel parsec_disk_image/vmlinux-5.4.49'
 
     cmd += f' --disk-image parsec_disk_image/x86-parsec'
 
     # simulation (restore)
     # cmd += f' --cpu-type X86TimingSimpleCPU --restore-with-cpu X86TimingSimpleCPU'
-    cmd += f' --cpu-type X86O3CPU --restore-with-cpu X86O3CPU'
+    cmd += f' --cpu-type X86O3CPU'
+    # cmd += f' --restore-with-cpu X86KvmCPU'
+    cmd += f' --restore-with-cpu X86O3CPU'
+
 
     # cmd += f' --garnet-deadlock-threshold 5000000'
 
@@ -205,13 +220,13 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
 
     cmd += ' --use_escape_vns'
 
-    cmd += ' --vcs-per-vnet 10'
+    cmd += ' --vcs-per-vnet 8'
 
-    cmd += ' --evn_deadlock_partition 1'
+    cmd += ' --evn_deadlock_partition 2'
 
     cmd += ' --evn_n_deadlock_free 1'
 
-    cmd += ' --evn_min_n_deadlock_free 9'
+    cmd += ' --evn_min_n_deadlock_free 6'
 
 
     cmd += '\n'
@@ -241,6 +256,9 @@ def main():
                          "facesim", "ferret", "freqmine",
                          "raytrace", "streamcluster",
                          "dedup",  "x264"]
+
+    benchmarks = ['bodytrack', 'dedup','freqmine','streamcluster',
+                    'fluidanimate','ferret']
 
     # benchmarks = ["facesim",
     #                      "raytrace", ]
@@ -284,11 +302,13 @@ def main():
 
     cpu_freqs = [1.8]
 
-    l2_sizes = ['250kB','500kB','2MB']
+    # l2_sizes = ['250kB','500kB','2MB']
     l2_sizes = ['500kB']
 
-    alg_types = ['cload']
+    alg_types = ['naive']
     lb_types = ['hops']
+
+    reps = [4]
 
     for bench in benchmarks:
         for topo in topologies:
@@ -296,8 +316,9 @@ def main():
                 for lb in lb_types:
                     for cf in cpu_freqs:
                         for l2s in l2_sizes:
-                            print(f'{bench:20} : {topo:20} : {alg:20} : {lb:20} : {str(cf):20} : {l2s:20} : {n_inst}')
-                            write_jobscript(n_inst, topo, alg, lb, bench, cf, l2s)
+                            for rs in reps:
+                                print(f'{bench:20} : {topo:20} : {alg:20} : {lb:20} : {str(cf):20} : {l2s:20} : {n_inst}')
+                                write_jobscript(n_inst, topo, alg, lb, bench, cf, l2s, rs)
 
 if __name__ == '__main__':
     main()

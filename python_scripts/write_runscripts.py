@@ -15,7 +15,7 @@ desired_topologies=[
 
     'butter_donut_x_noci', 'dbl_bfly_x_noci',
 
-    'kite_large_noci', 'kite_medium_noci', 
+    'kite_large_noci', 'kite_medium_noci',
     'kite_small_noci',
 
     'cmesh_x_noci', 'mesh_noci'
@@ -52,6 +52,10 @@ def main():
                          "raytrace", "streamcluster",
                          "dedup",  "x264"]
 
+    benchmarks = ['bodytrack', 'dedup','freqmine','streamcluster',
+                    'fluidanimate','ferret']
+
+
     # benchmarks = ["facesim",
     #                      "raytrace", ]
 
@@ -64,6 +68,8 @@ def main():
     description = 'injejallvcs'
     description = 'ft_2mb_20m'
     description = 'cload'
+
+    description = 'repeated_benchmarks'
 
     n_inst = 100000
     try:
@@ -94,7 +100,7 @@ def main():
     print(f'topologies={topologies}')
     # quit()
 
-    alg_types = ['cload']
+    alg_types = ['naive']
     lb_types = ['hops']
 
 
@@ -123,14 +129,19 @@ def main():
     l2_sizes = ['250kB','500kB','2MB']
     l2_sizes = ['500kB']
 
+    reps = [4]
+
     for js in jobscripts:
         for cf in cpu_freqs:
             for l2s in l2_sizes:
-                clk_str = f'{cf}GHz'.replace('.','')
-                s = f'sbatch --exclude=mnemosyne -t $TLIM slurm/job_scripts/parsec_noci_largemem_{clk_str}_{l2s}/{inst_str}/{js}\n'
-                # s = f'sbatch --exclude=mnemosyne -t $TLIM slurm/job_scripts/parsec_noci_largemem/{inst_str}/{js}\n'
+                for rs in reps:
+                    clk_str = f'{cf}GHz'.replace('.','')
+                    # s = f'sbatch --exclude=mnemosyne -t $TLIM slurm/job_scripts/parsec_noci_largemem_{clk_str}/{inst_str}/{js}\n'
+                    s = f'sbatch --exclude=mnemosyne -t $TLIM slurm/job_scripts/parsec_noci_32GB_l2caches_{rs}reps_{clk_str}_{l2s}/{inst_str}/{js}\n'
 
-                lines.append(s)
+                    # s = f'sbatch --exclude=mnemosyne -t $TLIM slurm/job_scripts/parsec_noci_largemem/{inst_str}/{js}\n'
+
+                    lines.append(s)
 
     print(lines)
 
