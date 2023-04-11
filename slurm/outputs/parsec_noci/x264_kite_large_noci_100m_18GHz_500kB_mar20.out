@@ -1,0 +1,148 @@
+Global frequency set at 1000000000000 ticks per second
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/sim/kernel_workload.cc:46: info: kernel located at: parsec_disk_image/x86-linux-kernel-4.19.83
+build/X86/mem/physical.cc:94: warn: Not reserving swap space. May cause SIGSEGV on actual usage
+build/X86/dev/serial/terminal.cc:170: warn: Sockets disabled, not accepting terminal connections
+build/X86/base/statistics.hh:280: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/X86/base/statistics.hh:280: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/X86/base/statistics.hh:280: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/X86/base/statistics.hh:280: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/X86/mem/ruby/network/garnet/GarnetNetwork.cc:124: info: Garnet version 3.0
+build/X86/base/remote_gdb.cc:381: warn: Sockets disabled, not accepting gdb connections
+build/X86/dev/intel_8254_timer.cc:128: warn: Reading current count from inactive timer.
+build/X86/sim/simulate.cc:194: info: Entering event queue @ 0.  Starting simulation...
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 22.0.0.2
+gem5 compiled Mar 20 2023 15:13:00
+gem5 started Mar 20 2023 15:53:43
+gem5 executing on mnemosyne03.ecn.purdue.edu, pid 6270
+command line: ./build/X86/gem5.fast -d ./parsec_results/parsec_noci_largemem_18GHz_500kB/100m/x264/kite_large_noci/ configs/auto_top/auto_top_fs.py -I 100000000 --benchmark_parsec x264 -r 1 --checkpoint-dir ./parsec_checkpoints/largemem/x264 --router_map_file configs/topologies/paper_solutions/kite_large_noci.map --flat_vn_map_file configs/topologies/vn_maps/kite_large_noci_naive_hops.vn --flat_nr_map_file configs/topologies/nr_list/kite_large_noci_naive.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 16 --num-l2caches 64 --l2_size 500kB --num_chiplets 4 --mem-size 32GB --caches --ruby --network garnet --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --restore-with-cpu X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 10 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 9
+
+info: Standard input is not a terminal, disabling listeners.
+l1_caches(64)=[<m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b96b6a0>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b974710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b97c710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b986710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b98e710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b919710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b921710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b92a710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b933710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b93c710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b946710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b94e710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b8d8710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b8e0710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b8ea710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b8f2710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b8fc710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b905710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b90e710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b897710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b89f710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b8a9710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b8b1710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b8bc710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b8c4710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b8ce710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b857710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b860710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b869710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b873710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b87c710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b884710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b88e710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b816710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b81f710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b828710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b831710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b83b710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b844710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b84d710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b7d6710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b7e0710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b7e8710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b7f1710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b7fa710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b803710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b80c710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b796710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b79f710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b7a8710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b7b0710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b7bb710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b7c3710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b7cd710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b756710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b75f710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b768710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b771710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b77a710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b782710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b78c710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b794710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b71e710>, <m5.objects.L1Cache_Controller.L1Cache_Controller object at 0x7f3b3b726710>]
+l2_caches(64)=[<m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b72f400>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b72fe48>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b73a8d0>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b742358>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b742da0>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b74b828>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b7542b0>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b754cf8>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6dd780>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6e5208>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6e5c50>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6ee6d8>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6f7160>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6f7ba8>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b700630>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b70a0b8>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b70ab00>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b713588>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b713fd0>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b69ca58>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6a44e0>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6a4f28>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6ad9b0>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6b6438>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6b6e80>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6c0908>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6c8390>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6c8dd8>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6d2860>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b65b2e8>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b65bd30>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6647b8>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b66d240>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b66dc88>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b676710>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b67f198>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b67fbe0>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b687668>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6900f0>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b690b38>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b61a5c0>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b624048>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b624a90>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b62d518>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b62df60>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6359e8>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b63e470>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b63eeb8>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b647940>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b6503c8>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b650e10>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b5d9898>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b5e1320>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b5e1d68>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b5eb7f0>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b5f4278>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b5f4cc0>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b5fd748>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3c6b20f0>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3c6b2ba8>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b60c630>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b5960b8>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b596b00>, <m5.objects.L2Cache_Controller.L2Cache_Controller object at 0x7f3b3b59e588>]
+dirs(16)=[<m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b59eeb8>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5a6128>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5a6358>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5a6588>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5a67b8>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5a69e8>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5a6c18>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5a6e48>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5b30b8>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5b32e8>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5b3518>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5b3748>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5b3978>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5b3ba8>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5b3dd8>, <m5.objects.Directory_Controller.Directory_Controller object at 0x7f3b3b5be048>]
+dmas(2)=[<m5.objects.DMA_Controller.DMA_Controller object at 0x7f3b3b565f28>, <m5.objects.DMA_Controller.DMA_Controller object at 0x7f3b3b56e588>]
+others(0)=[]
+ingesting configs/topologies/nr_list/kite_large_noci_naive.nrl
+ingesting configs/topologies/vn_maps/kite_large_noci_naive_hops.vn
+ingesting configs/topologies/paper_solutions/kite_large_noci.map
+Running the simulation
+Beginning X86O3CPU simulation
+Later, None simulation
+**** REAL SIMULATION ****
+warn: Physical memory size specified is 32GB which is greater than 3GB.  Twice the number of memory controllers would be created.
+warn: system.workload.acpi_description_table_pointer.rsdt adopting orphan SimObject param 'entries'
+warn: rounding error > tolerance
+    370.370370 rounded to 370
+warn: rounding error > tolerance
+    370.370370 rounded to 370
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+warn: rounding error > tolerance
+    370.370370 rounded to 370
+build/X86/sim/simulate.cc:194: info: Entering event queue @ 35324920897000.  Starting simulation...
+build/X86/mem/ruby/system/Sequencer.cc:613: warn: Replacement policy updates recently became the responsibility of SLICC state machines. Make sure to setMRU() near callbacks in .sm files!
+build/X86/dev/x86/pc.cc:117: warn: Don't know what interrupt to clear for console.
+build/X86/sim/power_state.cc:106: warn: PowerState: Already in the requested power state, request ignored
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'verw_Mw_or_Rv' unimplemented
+build/X86/arch/generic/debugfaults.hh:145: warn: MOVNTDQ: Ignoring non-temporal hint, modeling as cacheable!
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'verw_Mw_or_Rv' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'verw_Mw_or_Rv' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'prefetch_nta' unimplemented
+build/X86/arch/generic/debugfaults.hh:145: warn: MOVNTQ: Ignoring non-temporal hint, modeling as cacheable!
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'fwait' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Pq_Qq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Pq_Qq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Pq_Qq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Pq_Qq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'psignw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Pq_Qq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Pq_Qq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Pq_Qq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Pq_Qq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Pq_Qq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Pq_Qq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'psignw_Pq_Qq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pshufb_Pq_Qq' unimplemented
+build/X86/arch/generic/debugfaults.hh:145: warn: MOVNTPS: Ignoring non-temporal hint, modeling as cacheable!
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'palignr_Vdq_Wdq_Ib' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pmaddubsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pmaddubsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pmaddubsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pmaddubsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'pabsw_Vdq_Wdq' unimplemented
+Exiting @ tick 41397083857000 because m5_exit instruction encountered

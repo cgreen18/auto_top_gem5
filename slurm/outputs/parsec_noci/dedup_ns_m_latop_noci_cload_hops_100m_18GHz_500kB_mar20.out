@@ -1,0 +1,216 @@
+Global frequency set at 1000000000000 ticks per second
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/sim/kernel_workload.cc:46: info: kernel located at: parsec_disk_image/x86-linux-kernel-4.19.83
+build/X86/mem/physical.cc:94: warn: Not reserving swap space. May cause SIGSEGV on actual usage
+build/X86/dev/serial/terminal.cc:170: warn: Sockets disabled, not accepting terminal connections
+build/X86/base/statistics.hh:280: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/X86/base/statistics.hh:280: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/X86/base/statistics.hh:280: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/X86/base/statistics.hh:280: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/X86/mem/ruby/network/garnet/GarnetNetwork.cc:124: info: Garnet version 3.0
+build/X86/base/remote_gdb.cc:381: warn: Sockets disabled, not accepting gdb connections
+build/X86/dev/intel_8254_timer.cc:128: warn: Reading current count from inactive timer.
+build/X86/sim/simulate.cc:194: info: Entering event queue @ 0.  Starting simulation...
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 22.0.0.2
+gem5 compiled Mar 20 2023 15:13:00
+gem5 started Mar 24 2023 17:46:07
+gem5 executing on mnemosyne13.ecn.purdue.edu, pid 30575
+command line: ./build/X86/gem5.fast -d ./parsec_results/parsec_noci_largemem_18GHz_500kB/100m/dedup/ns_m_latop_noci_cload_hops/ configs/auto_top/auto_top_fs.py -I 100000000 --benchmark_parsec dedup -r 1 --checkpoint-dir ./parsec_checkpoints/largemem/dedup --router_map_file configs/topologies/paper_solutions/ns_m_latop_noci.map --flat_vn_map_file configs/topologies/vn_maps/ns_m_latop_noci_cload_hops.vn --flat_nr_map_file configs/topologies/nr_list/ns_m_latop_noci_cload.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 1.8GHz --num-cpus 64 --mem_or_coh mem --num-dirs 16 --num-l2caches 64 --l2_size 500kB --num_chiplets 4 --mem-size 32GB --caches --ruby --network garnet --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --restore-with-cpu X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 10 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 9
+
+info: Standard input is not a terminal, disabling listeners.
+ingesting configs/topologies/nr_list/ns_m_latop_noci_cload.nrl
+ingesting configs/topologies/vn_maps/ns_m_latop_noci_cload_hops.vn
+ingesting configs/topologies/paper_solutions/ns_m_latop_noci.map
+Running the simulation
+Beginning X86O3CPU simulation
+Later, None simulation
+**** REAL SIMULATION ****
+warn: Physical memory size specified is 32GB which is greater than 3GB.  Twice the number of memory controllers would be created.
+warn: system.workload.acpi_description_table_pointer.rsdt adopting orphan SimObject param 'entries'
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+build/X86/sim/simulate.cc:194: info: Entering event queue @ 39594830050000.  Starting simulation...
+build/X86/mem/ruby/system/Sequencer.cc:613: warn: Replacement policy updates recently became the responsibility of SLICC state machines. Make sure to setMRU() near callbacks in .sm files!
+build/X86/dev/x86/pc.cc:117: warn: Don't know what interrupt to clear for console.
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594867093772 in NI 101 and router 57 
+post_dlock=1 and dlock thresh=100000 in NI 101
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594867098776 in NI 65 and router 21 
+post_dlock=1 and dlock thresh=100000 in NI 65
+Possible network deadlock in vnet: 1, evn_class 1, at time: 39594867121572 in NI 141 and router 14 
+post_dlock=1 and dlock thresh=100000 in NI 141
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594867148816 in NI 109 and router 65 
+post_dlock=1 and dlock thresh=100000 in NI 109
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39594867152708 in NI 118 and router 74 
+post_dlock=1 and dlock thresh=100000 in NI 118
+Possible network deadlock in vnet: 1, evn_class 1, at time: 39594867172168 in NI 126 and router 82 
+post_dlock=1 and dlock thresh=100000 in NI 126
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39594867230548 in NI 112 and router 68 
+post_dlock=1 and dlock thresh=100000 in NI 112
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594867260016 in NI 129 and router 4 
+post_dlock=1 and dlock thresh=100000 in NI 129
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594867262796 in NI 142 and router 15 
+post_dlock=1 and dlock thresh=100000 in NI 142
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39594867282256 in NI 140 and router 10 
+post_dlock=1 and dlock thresh=100000 in NI 140
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594867342304 in NI 64 and router 20 
+post_dlock=1 and dlock thresh=100000 in NI 64
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594894893772 in NI 101 and router 57 
+post_dlock=1 and dlock thresh=200000 in NI 101
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594894898776 in NI 65 and router 21 
+post_dlock=1 and dlock thresh=200000 in NI 65
+Possible network deadlock in vnet: 1, evn_class 1, at time: 39594894921572 in NI 141 and router 14 
+post_dlock=1 and dlock thresh=200000 in NI 141
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594894948816 in NI 109 and router 65 
+post_dlock=1 and dlock thresh=200000 in NI 109
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39594894952708 in NI 118 and router 74 
+post_dlock=1 and dlock thresh=200000 in NI 118
+Possible network deadlock in vnet: 1, evn_class 1, at time: 39594894972168 in NI 126 and router 82 
+post_dlock=1 and dlock thresh=200000 in NI 126
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39594895030548 in NI 112 and router 68 
+post_dlock=1 and dlock thresh=200000 in NI 112
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594895060016 in NI 129 and router 4 
+post_dlock=1 and dlock thresh=200000 in NI 129
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594895062796 in NI 142 and router 15 
+post_dlock=1 and dlock thresh=200000 in NI 142
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39594895082256 in NI 140 and router 10 
+post_dlock=1 and dlock thresh=200000 in NI 140
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594895142304 in NI 64 and router 20 
+post_dlock=1 and dlock thresh=200000 in NI 64
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594950493772 in NI 101 and router 57 
+post_dlock=1 and dlock thresh=400000 in NI 101
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594950498776 in NI 65 and router 21 
+post_dlock=1 and dlock thresh=400000 in NI 65
+Possible network deadlock in vnet: 1, evn_class 1, at time: 39594950521572 in NI 141 and router 14 
+post_dlock=1 and dlock thresh=400000 in NI 141
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594950548816 in NI 109 and router 65 
+post_dlock=1 and dlock thresh=400000 in NI 109
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39594950552708 in NI 118 and router 74 
+post_dlock=1 and dlock thresh=400000 in NI 118
+Possible network deadlock in vnet: 1, evn_class 1, at time: 39594950572168 in NI 126 and router 82 
+post_dlock=1 and dlock thresh=400000 in NI 126
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39594950630548 in NI 112 and router 68 
+post_dlock=1 and dlock thresh=400000 in NI 112
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594950660016 in NI 129 and router 4 
+post_dlock=1 and dlock thresh=400000 in NI 129
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594950662796 in NI 142 and router 15 
+post_dlock=1 and dlock thresh=400000 in NI 142
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39594950682256 in NI 140 and router 10 
+post_dlock=1 and dlock thresh=400000 in NI 140
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39594950742304 in NI 64 and router 20 
+post_dlock=1 and dlock thresh=400000 in NI 64
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39595061693772 in NI 101 and router 57 
+post_dlock=1 and dlock thresh=800000 in NI 101
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39595061698776 in NI 65 and router 21 
+post_dlock=1 and dlock thresh=800000 in NI 65
+Possible network deadlock in vnet: 1, evn_class 1, at time: 39595061721572 in NI 141 and router 14 
+post_dlock=1 and dlock thresh=800000 in NI 141
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39595061748816 in NI 109 and router 65 
+post_dlock=1 and dlock thresh=800000 in NI 109
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39595061752708 in NI 118 and router 74 
+post_dlock=1 and dlock thresh=800000 in NI 118
+Possible network deadlock in vnet: 1, evn_class 1, at time: 39595061772168 in NI 126 and router 82 
+post_dlock=1 and dlock thresh=800000 in NI 126
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39595061830548 in NI 112 and router 68 
+post_dlock=1 and dlock thresh=800000 in NI 112
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39595061860016 in NI 129 and router 4 
+post_dlock=1 and dlock thresh=800000 in NI 129
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39595061862796 in NI 142 and router 15 
+post_dlock=1 and dlock thresh=800000 in NI 142
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39595061882256 in NI 140 and router 10 
+post_dlock=1 and dlock thresh=800000 in NI 140
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39595061942304 in NI 64 and router 20 
+post_dlock=1 and dlock thresh=800000 in NI 64
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39595284093772 in NI 101 and router 57 
+post_dlock=1 and dlock thresh=1600000 in NI 101
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39595284098776 in NI 65 and router 21 
+post_dlock=1 and dlock thresh=1600000 in NI 65
+Possible network deadlock in vnet: 1, evn_class 1, at time: 39595284121572 in NI 141 and router 14 
+post_dlock=1 and dlock thresh=1600000 in NI 141
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39595284148816 in NI 109 and router 65 
+post_dlock=1 and dlock thresh=1600000 in NI 109
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39595284152708 in NI 118 and router 74 
+post_dlock=1 and dlock thresh=1600000 in NI 118
+Possible network deadlock in vnet: 1, evn_class 1, at time: 39595284172168 in NI 126 and router 82 
+post_dlock=1 and dlock thresh=1600000 in NI 126
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39595284230548 in NI 112 and router 68 
+post_dlock=1 and dlock thresh=1600000 in NI 112
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39595284260016 in NI 129 and router 4 
+post_dlock=1 and dlock thresh=1600000 in NI 129
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39595284262796 in NI 142 and router 15 
+post_dlock=1 and dlock thresh=1600000 in NI 142
+Possible network deadlock in vnet: 1, evn_class 2, at time: 39595284282256 in NI 140 and router 10 
+post_dlock=1 and dlock thresh=1600000 in NI 140
+Possible network deadlock in vnet: 1, evn_class 0, at time: 39595284342304 in NI 64 and router 20 
+post_dlock=1 and dlock thresh=1600000 in NI 64
+build/X86/mem/ruby/system/Sequencer.cc:244: panic: Possible Deadlock detected. Aborting!
+ version: 63 request.paddr: 0x81b88d4f8 m_readRequestTable: 1 current time: 39595330050500 issue_time: 39594839384000 difference: 490666500
+Memory Usage: 39456664 KBytes
+Program aborted at tick 39595330050500
+--- BEGIN LIBC BACKTRACE ---
+./build/X86/gem5.fast[0x11d3255]
+./build/X86/gem5.fast[0x11ea349]
+/lib64/libpthread.so.0(+0xf630)[0x7f8ba8c06630]
+/lib64/libc.so.6(gsignal+0x37)[0x7f8ba755d387]
+/lib64/libc.so.6(abort+0x148)[0x7f8ba755ea78]
+./build/X86/gem5.fast[0x55a6df]
+./build/X86/gem5.fast[0x1163aa3]
+./build/X86/gem5.fast[0x11df202]
+./build/X86/gem5.fast[0x11fce47]
+./build/X86/gem5.fast[0x11fda0d]
+./build/X86/gem5.fast[0x118af0e]
+./build/X86/gem5.fast[0x53eb3e]
+/lib64/libpython3.6m.so.1.0(PyCFunction_Call+0xa6)[0x7f8ba8efda96]
+/lib64/libpython3.6m.so.1.0(_PyEval_EvalFrameDefault+0x68f4)[0x7f8ba8f63f64]
+/lib64/libpython3.6m.so.1.0(+0x151317)[0x7f8ba8f68317]
+/lib64/libpython3.6m.so.1.0(+0x151fea)[0x7f8ba8f68fea]
+/lib64/libpython3.6m.so.1.0(+0x152273)[0x7f8ba8f69273]
+/lib64/libpython3.6m.so.1.0(_PyEval_EvalFrameDefault+0x3a7)[0x7f8ba8f5da17]
+/lib64/libpython3.6m.so.1.0(+0x151f3a)[0x7f8ba8f68f3a]
+/lib64/libpython3.6m.so.1.0(+0x152273)[0x7f8ba8f69273]
+/lib64/libpython3.6m.so.1.0(_PyEval_EvalFrameDefault+0x3a7)[0x7f8ba8f5da17]
+/lib64/libpython3.6m.so.1.0(+0x1516d2)[0x7f8ba8f686d2]
+/lib64/libpython3.6m.so.1.0(+0x151fea)[0x7f8ba8f68fea]
+/lib64/libpython3.6m.so.1.0(+0x152273)[0x7f8ba8f69273]
+/lib64/libpython3.6m.so.1.0(_PyEval_EvalFrameDefault+0x3a7)[0x7f8ba8f5da17]
+/lib64/libpython3.6m.so.1.0(PyEval_EvalCodeEx+0x22d)[0x7f8ba8f695ed]
+/lib64/libpython3.6m.so.1.0(PyEval_EvalCode+0x3b)[0x7f8ba8f6a10b]
+/lib64/libpython3.6m.so.1.0(+0x145a5b)[0x7f8ba8f5ca5b]
+/lib64/libpython3.6m.so.1.0(_PyCFunction_FastCallDict+0x9a)[0x7f8ba8efd73a]
+/lib64/libpython3.6m.so.1.0(+0x15214f)[0x7f8ba8f6914f]
+/lib64/libpython3.6m.so.1.0(_PyEval_EvalFrameDefault+0x3a7)[0x7f8ba8f5da17]
+/lib64/libpython3.6m.so.1.0(PyEval_EvalCodeEx+0x22d)[0x7f8ba8f695ed]
+--- END LIBC BACKTRACE ---
+/var/spool/slurmd/job07145/slurm_script: line 8: 30575 Aborted                 (core dumped) ./build/X86/gem5.fast -d ./parsec_results/parsec_noci_largemem_18GHz_500kB/100m/dedup/ns_m_latop_noci_cload_hops/ configs/auto_top/auto_top_fs.py -I 100000000 --benchmark_parsec dedup -r 1 --checkpoint-dir ./parsec_checkpoints/largemem/dedup --router_map_file configs/topologies/paper_solutions/ns_m_latop_noci.map --flat_vn_map_file configs/topologies/vn_maps/ns_m_latop_noci_cload_hops.vn --flat_nr_map_file configs/topologies/nr_list/ns_m_latop_noci_cload.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 1.8GHz --num-cpus 64 --mem_or_coh mem --num-dirs 16 --num-l2caches 64 --l2_size 500kB --num_chiplets 4 --mem-size 32GB --caches --ruby --network garnet --kernel parsec_disk_image/x86-linux-kernel-4.19.83 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --restore-with-cpu X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 10 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 9

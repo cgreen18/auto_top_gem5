@@ -1,0 +1,113 @@
+Global frequency set at 1000000000000 ticks per second
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (256 Mbytes)
+build/X86/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
+build/X86/sim/kernel_workload.cc:46: info: kernel located at: parsec_disk_image/vmlinux-4.4.186
+build/X86/mem/physical.cc:94: warn: Not reserving swap space. May cause SIGSEGV on actual usage
+build/X86/dev/serial/terminal.cc:170: warn: Sockets disabled, not accepting terminal connections
+build/X86/base/statistics.hh:280: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/X86/base/statistics.hh:280: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/X86/base/statistics.hh:280: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/X86/base/statistics.hh:280: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/X86/mem/ruby/network/garnet/GarnetNetwork.cc:124: info: Garnet version 3.0
+build/X86/base/remote_gdb.cc:381: warn: Sockets disabled, not accepting gdb connections
+build/X86/dev/intel_8254_timer.cc:128: warn: Reading current count from inactive timer.
+build/X86/sim/simulate.cc:194: info: Entering event queue @ 0.  Starting simulation...
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 22.0.0.2
+gem5 compiled Mar 20 2023 15:13:00
+gem5 started Mar 21 2023 07:19:25
+gem5 executing on mnemosyne27.ecn.purdue.edu, pid 12353
+command line: ./build/X86/gem5.fast -d ./parsec_results/parsec_noci_largemem_18GHz_500kB/500m/ferret/butter_donut_x_noci/ configs/auto_top/auto_top_fs.py -I 500000000 --benchmark_parsec ferret -r 1 --checkpoint-dir ./parsec_checkpoints/largemem/ferret --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps/butter_donut_x_noci_naive_hops.vn --flat_nr_map_file configs/topologies/nr_list/butter_donut_x_noci_naive.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 16 --num-l2caches 64 --l2_size 500kB --num_chiplets 4 --mem-size 32GB --caches --ruby --network garnet --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --restore-with-cpu X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 10 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 9
+
+info: Standard input is not a terminal, disabling listeners.
+ingesting configs/topologies/nr_list/butter_donut_x_noci_naive.nrl
+ingesting configs/topologies/vn_maps/butter_donut_x_noci_naive_hops.vn
+ingesting configs/topologies/paper_solutions/butter_donut_x_noci.map
+Running the simulation
+Beginning X86O3CPU simulation
+Later, None simulation
+**** REAL SIMULATION ****
+warn: Physical memory size specified is 32GB which is greater than 3GB.  Twice the number of memory controllers would be created.
+warn: system.workload.acpi_description_table_pointer.rsdt adopting orphan SimObject param 'entries'
+warn: rounding error > tolerance
+    370.370370 rounded to 370
+warn: rounding error > tolerance
+    370.370370 rounded to 370
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+warn: rounding error > tolerance
+    370.370370 rounded to 370
+build/X86/sim/simulate.cc:194: info: Entering event queue @ 51928923307500.  Starting simulation...
+build/X86/mem/ruby/system/Sequencer.cc:613: warn: Replacement policy updates recently became the responsibility of SLICC state machines. Make sure to setMRU() near callbacks in .sm files!
+build/X86/sim/power_state.cc:106: warn: PowerState: Already in the requested power state, request ignored
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'verw_Mw_or_Rv' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'verw_Mw_or_Rv' unimplemented
+build/X86/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'verw_Mw_or_Rv' unimplemented
+src/tcmalloc.cc:284] Attempt to free invalid pointer 0xe9b340 
+Program aborted at tick 51985919091500
+--- BEGIN LIBC BACKTRACE ---
+./build/X86/gem5.fast[0x11d3255]
+./build/X86/gem5.fast[0x11ea349]
+/lib64/libpthread.so.0(+0xf630)[0x7fec1ef80630]
+/lib64/libc.so.6(gsignal+0x37)[0x7fec1d8d7387]
+/lib64/libc.so.6(abort+0x148)[0x7fec1d8d8a78]
+/lib64/libtcmalloc.so.4(_ZN8tcmalloc3LogENS_7LogModeEPKciNS_7LogItemES3_S3_S3_+0x1e6)[0x7fec1e983a66]
+/lib64/libtcmalloc.so.4(+0x17644)[0x7fec1e978644]
+./build/X86/gem5.fast[0x414cb9]
+./build/X86/gem5.fast[0x558ecd]
+./build/X86/gem5.fast[0xb06ecb]
+./build/X86/gem5.fast[0xb0751d]
+./build/X86/gem5.fast[0xaf1d77]
+./build/X86/gem5.fast[0x11df202]
+./build/X86/gem5.fast[0x11fce47]
+./build/X86/gem5.fast[0x11fda0d]
+./build/X86/gem5.fast[0x118af0e]
+./build/X86/gem5.fast[0x53eb3e]
+/lib64/libpython3.6m.so.1.0(PyCFunction_Call+0xa6)[0x7fec1f277a96]
+/lib64/libpython3.6m.so.1.0(_PyEval_EvalFrameDefault+0x68f4)[0x7fec1f2ddf64]
+/lib64/libpython3.6m.so.1.0(+0x151317)[0x7fec1f2e2317]
+/lib64/libpython3.6m.so.1.0(+0x151fea)[0x7fec1f2e2fea]
+/lib64/libpython3.6m.so.1.0(+0x152273)[0x7fec1f2e3273]
+/lib64/libpython3.6m.so.1.0(_PyEval_EvalFrameDefault+0x3a7)[0x7fec1f2d7a17]
+/lib64/libpython3.6m.so.1.0(+0x151f3a)[0x7fec1f2e2f3a]
+/lib64/libpython3.6m.so.1.0(+0x152273)[0x7fec1f2e3273]
+/lib64/libpython3.6m.so.1.0(_PyEval_EvalFrameDefault+0x3a7)[0x7fec1f2d7a17]
+/lib64/libpython3.6m.so.1.0(+0x1516d2)[0x7fec1f2e26d2]
+/lib64/libpython3.6m.so.1.0(+0x151fea)[0x7fec1f2e2fea]
+/lib64/libpython3.6m.so.1.0(+0x152273)[0x7fec1f2e3273]
+/lib64/libpython3.6m.so.1.0(_PyEval_EvalFrameDefault+0x3a7)[0x7fec1f2d7a17]
+/lib64/libpython3.6m.so.1.0(PyEval_EvalCodeEx+0x22d)[0x7fec1f2e35ed]
+/lib64/libpython3.6m.so.1.0(PyEval_EvalCode+0x3b)[0x7fec1f2e410b]
+--- END LIBC BACKTRACE ---
+/var/spool/slurmd/job06846/slurm_script: line 8: 12353 Aborted                 (core dumped) ./build/X86/gem5.fast -d ./parsec_results/parsec_noci_largemem_18GHz_500kB/500m/ferret/butter_donut_x_noci/ configs/auto_top/auto_top_fs.py -I 500000000 --benchmark_parsec ferret -r 1 --checkpoint-dir ./parsec_checkpoints/largemem/ferret --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps/butter_donut_x_noci_naive_hops.vn --flat_nr_map_file configs/topologies/nr_list/butter_donut_x_noci_naive.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 16 --num-l2caches 64 --l2_size 500kB --num_chiplets 4 --mem-size 32GB --caches --ruby --network garnet --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --restore-with-cpu X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 10 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 9

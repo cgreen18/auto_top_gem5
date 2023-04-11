@@ -1,0 +1,8 @@
+#!/bin/bash
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=45GB
+#SBATCH --output=slurm/outputs/parsec_noci/streamcluster_ns_s_bwop_noci_naive_hops_100m_18GHz_32GB_nocaches_4reps_apr9.out
+cd $SLURM_SUBMIT_DIR
+source setup.sh
+./build/X86/gem5.fast -d ./parsec_results/parsec_noci_32GB_nocaches_4reps_18GHz/100m/streamcluster/ns_s_bwop_noci_naive_hops/ configs/auto_top/auto_top_fs.py -I 100000000 --benchmark_parsec streamcluster -r 1 --checkpoint-dir ./parsec_noci_checkpoints/streamcluster/no_ruby/4reps_nocaches --router_map_file configs/topologies/paper_solutions/ns_s_bwop_noci.map --flat_vn_map_file configs/topologies/vn_maps/ns_s_bwop_noci_naive_hops.vn --flat_nr_map_file configs/topologies/nr_list/ns_s_bwop_noci_naive.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 1.8GHz --num-cpus 64 --mem_or_coh mem --num-dirs 16 --num_chiplets 4 --mem-size 32GB --ruby --network garnet --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --restore-with-cpu X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 8 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 6

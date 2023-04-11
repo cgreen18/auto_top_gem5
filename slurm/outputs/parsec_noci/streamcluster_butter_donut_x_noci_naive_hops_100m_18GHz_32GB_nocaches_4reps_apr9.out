@@ -1,0 +1,21 @@
+AssertionError: 
+
+At:
+  /home/yara/mithuna2/green456/netsmith_autotop/auto_top_gem5/configs/topologies/FS_NoCI_EscapeVirtualNetworks.py(192): makeTopology
+  /home/yara/mithuna2/green456/netsmith_autotop/auto_top_gem5/configs/ruby/Ruby.py(220): create_system
+  configs/auto_top/auto_top_fs.py(173): build_test_system
+  configs/auto_top/auto_top_fs.py(443): <module>
+  build/X86/python/m5/main.py(434): main
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 22.0.0.2
+gem5 compiled Mar 20 2023 15:13:00
+gem5 started Apr  9 2023 19:10:56
+gem5 executing on mnemosyne15.ecn.purdue.edu, pid 16981
+command line: ./build/X86/gem5.fast -d ./parsec_results/parsec_noci_32GB_nocaches_4reps_18GHz/100m/streamcluster/butter_donut_x_noci_naive_hops/ configs/auto_top/auto_top_fs.py -I 100000000 --benchmark_parsec streamcluster -r 1 --checkpoint-dir ./parsec_noci_checkpoints/streamcluster/no_ruby/4reps_nocaches --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps/butter_donut_x_noci_naive_hops.vn --flat_nr_map_file configs/topologies/nr_list/butter_donut_x_noci_naive.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 16 --num_chiplets 4 --mem-size 32GB --ruby --network garnet --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --restore-with-cpu X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 8 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 6
+
+info: Standard input is not a terminal, disabling listeners.
+ingesting configs/topologies/nr_list/butter_donut_x_noci_naive.nrl
+ingesting configs/topologies/vn_maps/butter_donut_x_noci_naive_hops.vn
+warn: Physical memory size specified is 32GB which is greater than 3GB.  Twice the number of memory controllers would be created.
