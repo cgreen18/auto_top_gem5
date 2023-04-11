@@ -35,3 +35,5 @@ configs/dram/lowp_sweep.cfg
 configs/topologies/vn_maps/*
 configs/topologies/nr_list/*
 configs/topologies/paper_solutions/*
+test_*
+parsec_noci_checkpoints
