@@ -63,6 +63,9 @@ from common import ObjectList
 from common.Caches import *
 from common import Options
 
+from os.path import join as joinpath
+
+
 def cmd_line_template():
     if args.command_line and args.command_line_file:
         print("Error: --command-line and --command-line-file are "
@@ -95,48 +98,32 @@ def writeBenchScript(dir, bench, size, ncpus):
     passed to the simulated system (to run a specific benchmark
     at bootup).
     """
-    file_name = '{}/run_{}'.format(dir, bench)
-    bench_file = open(file_name,"w+")
 
     # m5 checkpoint; 
-    cmd = f'cd /home/gem5/parsec-benchmark; source env.sh; m5 exit; parsecmgmt -a run -p {bench} -c gcc-hooks -i {size} -n {ncpus}; sleep 5; m5 exit;'
-    # cmd = f'cd /home/gem5/parsec-benchmark; source env.sh; sleep 5; m5 exit;'
+    cmd = f'cd /home/gem5/parsec-benchmark; source env.sh; m5 exit; parsecmgmt -a run -p {bench} -c gcc-hooks -i simlarge -n {ncpus}'
 
-    # benchmark_choices = ["blackscholes", "bodytrack", "canneal", "dedup",
-    #                  "facesim", "ferret", "fluidanimate", "freqmine",
-    #                  "raytrace", "streamcluster", "swaptions", "vips", "x264"]\
+    file_name = f'{dir}/run_{bench}'
+    with open(file_name,"w+") as bench_file:
 
+        bench_file.write(cmd)
 
-    # x264 : errors with benchmark
-    # 
+    return file_name
 
+def writeBootScript(dir, bench, size, ncpus):
+    """
+    This method creates a script in dir which will be eventually
+    passed to the simulated system (to run a specific benchmark
+    at bootup).
+    """
 
-    # for multiprog... (if schedtool installed)(its not by default...)
-    #   schedtool -a 0x0 -e parsecmgmt -a run -p swaptions -c gcc-hooks -i simlarge -n 4
-    #   schedtool -a 0x1 -e parsecmgmt -a run -p blackscholes -c gcc-hooks -i simlarge -n 4
-    # else,
-    #   parsecmgmt -a run -p swaptions -c gcc-hooks -i simlarge -n 4 &
-    #   parsecmgmt -a run -p raytrace -c gcc-hooks -i simlarge -n 4 &
+    # m5 checkpoint; 
+    cmd = f'm5 exit'
 
-    # parsecmgmt -a run -p swaptions -c gcc-hooks -i simlarge -n 4 & parsecmgmt -a run -p facesim -c gcc-hooks -i simlarge -n 4 &
+    file_name = f'{dir}/run_boot'
+    with open(file_name,"w+") as bench_file:
 
-    # cmd = f'cd /home/gem5/parsec-benchmark; source env.sh; parsecmgmt -a run -p swaptions -c gcc-hooks -i simlarge -n 4 & parsecmgmt -a run -p facesim -c gcc-hooks -i simlarge -n 4 && sleep 5; m5 exit;'
+        bench_file.write(cmd)
 
-    # cd /home/gem5/parsec-benchmark; source env.sh; parsecmgmt -a run -p swaptions -c gcc-hooks -i simlarge -n 4; sleep 5; m5 exit;
-
-    bench_file.write(cmd)
-    # bench_file.write('m5 checkpoint;m5 readfile > /tmp/gem5.sh && sh /tmp/gem5.sh')
-    # bench_file.write('m5 checkpoint\n')
-    # bench_file.write('cd /home/gem5/parsec-benchmark\n')
-    # bench_file.write('source env.sh\n')
-    # bench_file.write('parsecmgmt -a run -p {} -c gcc-hooks -i {} -n {}\n'.format(bench, size,ncpus))
-
-    # # sleeping for sometime makes sure
-    # # that the benchmark's output has been
-    # # printed to the console
-    # bench_file.write('sleep 5 \n')
-    # bench_file.write('m5 exit \n')
-    # bench_file.close()
     return file_name
 
 def build_test_system(np, readfile_name, bm):
@@ -376,13 +363,12 @@ def my_run(options, root, testsys, cpu_class):
     checkpoint_dir = None
     if options.checkpoint_restore:
         cpt_starttick, checkpoint_dir = findCptDir(options, cptdir, testsys)
-    root.apply_config(options.param)
 
+    root.apply_config(options.param)
 
     ###################################################################
 
     m5.instantiate(checkpoint_dir)
-
 
     ###################################################################
 
@@ -463,9 +449,10 @@ def my_run(options, root, testsys, cpu_class):
         exit_event = repeatSwitch(testsys, repeat_switch_cpu_list,
                                     maxtick, options.repeat_switch)
     else:
-        exit_event = benchCheckpoints(options, maxtick, cptdir)
 
-    print('Exiting @ tick %i because %s' %
+        exit_event = m5.simulate(maxtick - m5.curTick())
+
+    print('Normal. Exiting @ tick %i because %s' %
           (m5.curTick(), exit_event.getCause()))
     if options.checkpoint_at_end:
         m5.checkpoint(joinpath(cptdir, "cpt.%d"))
@@ -583,11 +570,9 @@ size = 'simlarge'
 bench_a = args.first_parsec
 bench_b = args.second_parsec
 
-if args.multi_prog:
-    command_file_name = writeMultiProgBenchScript('configs/auto_top/runscripts',bench_a,bench_b,size,np)
-else:
-    command_file_name = writeBenchScript('configs/auto_top/runscripts',bench,size,np)
+command_file_name = writeBootScript('configs/auto_top/runscripts',bench,size,np)
 
+    
 test_sys = build_test_system(np, command_file_name , bm)
 
 
@@ -656,47 +641,10 @@ print(f'Later, {FutureClass} simulation')
 
 print(f'Running: {args.benchmark_parsec}')
 
-#######################################################################
-# Edit this manually
-#######################################################################
-
+# re-written Simulation.run() for simplicity
 my_run(args, root, test_sys, FutureClass)
-quit(-1)
 
-
-# inp = 'yes'
-
-# while inp != 'no':
-#     exit_event = m5.simulate()
-
-#     print('Exiting @ tick %i because %s' %
-#           (m5.curTick(), exit_event.getCause()))
-        
-#     inp = input('continue?')
-
-# quit(-1)
-# equivalently,
-
-m5.instantiate()
-
-if m5.options.outdir:
-    cptdir = m5.options.outdir
-
-print("Running the simulation")
-
-print(f'Beginning {TestCPUClass} simulation')
-print(f'Later, {FutureClass} simulation')
-start_tick = m5.curTick()
-end_tick = m5.curTick()
-m5.stats.reset()
-
-
-keep_going = True
-
-
-
-while keep_going:
-
+while True:
     cont = input('continue?')
     if 'n' in cont:
         quit(-1)
@@ -711,18 +659,5 @@ while keep_going:
     print("Exiting @ tick {} because {}.".format(
             m5.curTick(),
             exit_event.getCause() ))
-
-    # Simulation is over at this point. We acknowledge that all the simulation
-    # events were successful.
-    print("All simulation events were successful.")
-
-    # We print the final simulation statistics.
-
-    print("Done with the simulation")
-    print()
-    print("Performance statistics:")
-
-    print("Simulated time: %.2fs" % ((end_tick-start_tick)/1e12))
-    print("Ran a total of", m5.curTick()/1e12, "simulated seconds")
 
 
