@@ -75,6 +75,43 @@ def cmd_line_template():
     return None
 
 
+def writeReadfileBenchScript(dir, guest_num):
+
+    runscript_file_name = f'{dir}/guest_{guest_num}_runscript'
+
+
+    # lets call runscript that which runs after boot
+    #   and readfile the one that is read and contains directions for parsec
+
+    # runscript cmd
+    # cmd = 'm5 exit; m5 readfile;'
+    # cmd = 'touch /tmp/execfile; chmod +x /tmp/execfile; m5 exit; m5 readfile | bash'
+    cmd = 'm5 exit; m5 readfile | bash'
+
+    with open(runscript_file_name, "w+") as f:
+        f.write(cmd)
+
+
+    
+    return runscript_file_name
+
+def writeBootScript(dir):
+    """
+    This method creates a script in dir which will be eventually
+    passed to the simulated system (to run a specific benchmark
+    at bootup).
+    """
+
+    # m5 checkpoint; 
+    cmd = f'm5 exit'
+
+    file_name = f'{dir}/run_boot'
+    with open(file_name,"w+") as bench_file:
+
+        bench_file.write(cmd)
+
+    return file_name
+
 def writeMultiProgBenchScript(dir, bench_a, bench_b, size, ncpus):
 
     file_name = f'{dir}/run_{bench_a}_{bench_b}'
@@ -100,43 +137,9 @@ def writeBenchScript(dir, bench, size, ncpus):
 
     # m5 checkpoint; 
     cmd = f'cd /home/gem5/parsec-benchmark; source env.sh; m5 exit; parsecmgmt -a run -p {bench} -c gcc-hooks -i {size} -n {ncpus}; sleep 5; m5 exit;'
-    # cmd = f'cd /home/gem5/parsec-benchmark; source env.sh; sleep 5; m5 exit;'
-
-    # benchmark_choices = ["blackscholes", "bodytrack", "canneal", "dedup",
-    #                  "facesim", "ferret", "fluidanimate", "freqmine",
-    #                  "raytrace", "streamcluster", "swaptions", "vips", "x264"]\
-
-
-    # x264 : errors with benchmark
-    # 
-
-
-    # for multiprog... (if schedtool installed)(its not by default...)
-    #   schedtool -a 0x0 -e parsecmgmt -a run -p swaptions -c gcc-hooks -i simlarge -n 4
-    #   schedtool -a 0x1 -e parsecmgmt -a run -p blackscholes -c gcc-hooks -i simlarge -n 4
-    # else,
-    #   parsecmgmt -a run -p swaptions -c gcc-hooks -i simlarge -n 4 &
-    #   parsecmgmt -a run -p raytrace -c gcc-hooks -i simlarge -n 4 &
-
-    # parsecmgmt -a run -p swaptions -c gcc-hooks -i simlarge -n 4 & parsecmgmt -a run -p facesim -c gcc-hooks -i simlarge -n 4 &
-
-    # cmd = f'cd /home/gem5/parsec-benchmark; source env.sh; parsecmgmt -a run -p swaptions -c gcc-hooks -i simlarge -n 4 & parsecmgmt -a run -p facesim -c gcc-hooks -i simlarge -n 4 && sleep 5; m5 exit;'
-
-    # cd /home/gem5/parsec-benchmark; source env.sh; parsecmgmt -a run -p swaptions -c gcc-hooks -i simlarge -n 4; sleep 5; m5 exit;
-
+ 
     bench_file.write(cmd)
-    # bench_file.write('m5 checkpoint;m5 readfile > /tmp/gem5.sh && sh /tmp/gem5.sh')
-    # bench_file.write('m5 checkpoint\n')
-    # bench_file.write('cd /home/gem5/parsec-benchmark\n')
-    # bench_file.write('source env.sh\n')
-    # bench_file.write('parsecmgmt -a run -p {} -c gcc-hooks -i {} -n {}\n'.format(bench, size,ncpus))
 
-    # # sleeping for sometime makes sure
-    # # that the benchmark's output has been
-    # # printed to the console
-    # bench_file.write('sleep 5 \n')
-    # bench_file.write('m5 exit \n')
-    # bench_file.close()
     return file_name
 
 def build_test_system(np, readfile_name, bm):
@@ -351,6 +354,10 @@ parser.add_argument('--multi_prog',action='store_true')
 
 parser.add_argument('--max_insts_after_boot',type=int,default=1000000000)
 
+# {AtomicSimpleCPU,BaseAtomicSimpleCPU,BaseMinorCPU,BaseNonCachingSimpleCPU,BaseO3CPU,BaseTimingSimpleCPU,DerivO3CPU,NonCachingSimpleCPU,O3CPU,TimingSimpleCPU,X86AtomicSimpleCPU,X86KvmCPU,X86NonCachingSimpleCPU,X86O3CPU,X86TimingSimpleCPU}
+parser.add_argument('--switch_cpu',type=str)
+
+parser.add_argument('--timing_insts',type=int,default=100000)
 
 
 # Add the ruby specific and protocol specific args
@@ -366,6 +373,8 @@ args.use_escape_vns = True
 # system under test can be any CPU
 (TestCPUClass, test_mem_mode, FutureClass) = Simulation.setCPUClass(args)
 
+if args.switch_cpu is not None:
+    FutureClass, _future_mem_type = Simulation.getCPUClass(args.switch_cpu)
 
 # Match the memories with the CPUs, based on the options for the test system
 TestMemClass = Simulation.setMemClass(args)
@@ -376,14 +385,9 @@ bm = [SysConfig(disks=args.disk_image, rootdev=args.root_device,
 
 np = args.num_cpus
 bench = args.benchmark_parsec
-size = 'simlarge'
-bench_a = args.first_parsec
-bench_b = args.second_parsec
 
-if args.multi_prog:
-    command_file_name = writeMultiProgBenchScript('configs/auto_top/runscripts',bench_a,bench_b,size,np)
-else:
-    command_file_name = writeBenchScript('configs/auto_top/runscripts',bench,size,np)
+guest_num = 2
+command_file_name = writeBootScript('configs/auto_top/runscripts', guest_num)
 
 test_sys = build_test_system(np, command_file_name , bm)
 
@@ -407,7 +411,7 @@ if ObjectList.is_kvm_cpu(TestCPUClass) or \
 
 if FutureClass:
     print(f'there is FutureClass={FutureClass}')
-    quit(-1)
+    # quit(-1)
     switch_cpus = [FutureClass(switched_out=True, cpu_id=(i))
                     for i in range(np)]
 
@@ -424,8 +428,8 @@ if FutureClass:
 
         # not for now
         # simulation period
-        if args.maxinsts:
-            switch_cpus[i].max_insts_any_thread = args.maxinsts
+        if args.timing_insts:
+            switch_cpus[i].max_insts_any_thread = args.timing_insts
 
         switch_cpus[i].createThreads()
 
@@ -453,11 +457,13 @@ print(f'Later, {FutureClass} simulation')
 
 print(f'Running: {args.benchmark_parsec}')
 
+# quit(-1)
+
+
 #######################################################################
 # Edit this manually
 #######################################################################
 
-# quit(-1)
 # Simulation.run(args, root, test_sys, FutureClass)
 
 # inp = 'yes'
@@ -520,6 +526,21 @@ while keep_going:
 
     print("Simulated time: %.2fs" % ((end_tick-start_tick)/1e12))
     print("Ran a total of", m5.curTick()/1e12, "simulated seconds")
+
+
+    do_chkpt = input('USER INPUT: checkpoint?')
+
+    if 'y' in do_chkpt:
+        m5.checkpoint(joinpath(cptdir, f"cpt.{m5.curTick()}"))
+
+        print(f'Wrote checkpoint to : {joinpath(cptdir, f"cpt.{m5.curTick()}")}')
+
+    do_chkpt = input('USER INPUT: switch cpus?')
+
+    if 'y' in do_chkpt:
+        print("Switched CPUS @ tick %s" % (m5.curTick()))
+
+        m5.switchCpus(test_sys, switch_cpu_list)
 
 
 def my_run(options, root, testsys, cpu_class):
