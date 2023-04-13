@@ -1,0 +1,33 @@
+#######################################################################
+# System 1: Simplest
+#######################################################################
+
+# the system(s) I want
+
+# "system_1" : 1 cpu, no ruby, basic caches
+# 1 cpu
+# 32GB mem minimum (more is better)
+# linux kernel 5.4.49
+
+runscript = m5 checkpoint; m5 readfile | bash
+called "configs/auto_top/runscripts/boot_chkpt_readfile"
+
+
+./build/X86/gem5.fast
+-d ./after_boot/guest_2/
+configs/example/fs.py
+
+--num-cpus 64 --num-dirs 16
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--caches
+--l2_size 2MB --num-l2caches 4
+--sys-clock 1.8GHz
+--cpu-type X86KvmCPU
+--guest_num 2
+
+# boot checkpoint
+#################
+
+runscript = m5 checkpoint; m5 readfile | bash
+
