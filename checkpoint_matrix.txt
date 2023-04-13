@@ -1,3 +1,10 @@
+
+Current status:
+    Checkpoints made and restored with ruby will hang @ entering event queue @ tick 0
+    Modified snoop filter size to allow large non-ruby system (previously classic had limitation on # $s)
+
+
+
 #######################################################################
 # System 1: Simplest
 #######################################################################
@@ -9,25 +16,234 @@
 # 32GB mem minimum (more is better)
 # linux kernel 5.4.49
 
-runscript = m5 checkpoint; m5 readfile | bash
-called "configs/auto_top/runscripts/boot_chkpt_readfile"
-
-
-./build/X86/gem5.fast
--d ./after_boot/guest_2/
-configs/example/fs.py
-
---num-cpus 64 --num-dirs 16
---mem-size 32GB
---kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
---caches
---l2_size 2MB --num-l2caches 4
---sys-clock 1.8GHz
---cpu-type X86KvmCPU
---guest_num 2
 
 # boot checkpoint
 #################
 
 runscript = m5 checkpoint; m5 readfile | bash
+called "configs/auto_top/runscripts/boot_chkpt_readfile"
+
+
+./build/X86/gem5.fast
+-d ./after_boot/system_1/
+configs/auto_top/auto_top_fs_kvm_loop.py
+
+--num-cpus 1
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--cpu-type X86KvmCPU
+--script configs/auto_top/runscripts/boot_chkpt_readfile
+
+# one line
+./build/X86/gem5.fast -d ./after_boot/system_1/ configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 1 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --script configs/auto_top/runscripts/boot_exit_readfile
+
+# status
+success : checkpoint on mnemosyne in ./after_boot/system_1
+
+# restore boot checkpoint
+#   and checkpoint at ROI
+#########################
+
+
+# test with bodytrack
+runscript "configs/auto_top/runscripts/run_bodytrack"
+
+
+./build/X86/gem5.fast
+-d ./after_boot_restore/system_1/
+configs/auto_top/auto_top_fs_kvm_loop.py
+
+--num-cpus 1
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--cpu-type X86KvmCPU
+--script configs/auto_top/runscripts/run_bodytrack
+--restore-with-cpu X86KvmCPU
+-r 1
+--checkpoint-dir ./after_boot/system_1/
+
+# one line
+./build/X86/gem5.fast -d ./after_boot_restore/system_1/ configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 1 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --script configs/auto_top/runscripts/run_bodytrack --restore-with-cpu X86KvmCPU -r 1 --checkpoint-dir ./after_boot/system_1/
+
+
+# status
+
+
+
+# restore at ROI with timing simple
+#   and checkpoint after some warmup
+####################################
+
+./build/X86/gem5.fast
+-d ./warmed_10k/system_1/bodytrack
+configs/auto_top/auto_top_fs_kvm_loop.py
+
+--num-cpus 1
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--cpu-type X86TimingSimpleCPU
+--script configs/auto_top/runscripts/run_bodytrack
+--restore-with-cpu X86TimingSimpleCPU
+-r 1
+--checkpoint-dir ./roi_checkpoint/system_1/bodytrack
+
+
+
+./build/X86/gem5.fast -d ./warmed_10k_timingonly/system_1/bodytrack configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 1 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86TimingSimpleCPU --script configs/auto_top/runscripts/run_bodytrack --restore-with-cpu X86TimingSimpleCPU -r 1 --checkpoint-dir ./roi_checkpoint/system_1/bodytrack -I 10000
+
+
+
+###############################################################################################################################################
+
+#######################################################################
+# System 2: Restoring w/ Ruby
+#######################################################################
+
+# the system(s) I want
+
+# "system_2" : 1 cpu, no ruby for checkpoints, ruby for restore, and basic caches
+# 1 cpu
+# 32GB mem minimum (more is better)
+# linux kernel 5.4.49
+
+
+# boot checkpoint
+#################
+
+# utilize system 1's boot checkpoint
+
+
+# restore boot checkpoint
+#   and checkpoint at ROI
+#########################
+
+
+# test with bodytrack
+runscript "configs/auto_top/runscripts/run_bodytrack"
+
+
+./build/X86/gem5.fast
+-d ./after_boot_restore/system_2/
+configs/auto_top/auto_top_fs_kvm_loop.py
+
+--num-cpus 1
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--cpu-type X86KvmCPU
+--script configs/auto_top/runscripts/run_bodytrack
+--restore-with-cpu X86KvmCPU
+-r 1
+--checkpoint-dir ./after_boot/system_1/
+--ruby
+
+# one line
+./build/X86/gem5.fast -d ./roi_checkpoint/system_2/bodytrack configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 1 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --script configs/auto_top/runscripts/run_bodytrack --restore-with-cpu X86KvmCPU -r 1 --checkpoint-dir ./after_boot/system_1/ --ruby
+
+
+# status
+restores correctly
+runs until ROI correctly
+as always, on checkpointing, must press Ctrl+C to being checkpointing (otherwise hangs at "Starting simulation...")
+success : Wrote checkpoint to : ./after_boot_restore/system_2/bodytrack/cpt.16386053970500
+
+
+
+# restore at ROI with timing simple
+#   and checkpoint after some warmup
+####################################
+
+./build/X86/gem5.fast
+-d ./warmed_10k/system_2/bodytrack
+configs/auto_top/auto_top_fs_kvm_loop.py
+
+
+--num-cpus 1
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--cpu-type X86TimingSimpleCPU
+--script configs/auto_top/runscripts/run_bodytrack
+--restore-with-cpu X86KvmCPU
+-r 1
+--checkpoint-dir ./roi_checkpoint/system_1/bodytrack
+-I 10000
+
+# or these?
+--switch_cpu X86TimingSimpleCPU
+--timing_insts 10000
+
+
+./build/X86/gem5.fast -d ./warmed_10k/system_2/bodytrack configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 1 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86TimingSimpleCPU --script configs/auto_top/runscripts/run_bodytrack -r 1 --checkpoint-dir ./roi_checkpoint/system_2/bodytrack -I 10000
+
+
+
+###############################################################################################################################################
+
+#######################################################################
+# System 3: MOESI_hammer and ruby
+#######################################################################
+
+# the system(s) I want
+
+# "system_3" : 1 cpu, ruby (requires MOESI_hammer), and basic caches
+# 1 cpu
+# 32GB mem minimum (more is better)
+# linux kernel 5.4.49
+
+
+# v2 system is a different try
+
+# boot checkpoint
+#################
+
+runscript = m5 checkpoint; m5 readfile | bash
+called "configs/auto_top/runscripts/boot_chkpt_readfile"
+
+
+./build/X86_MOESI_hammer/gem5.fast
+-d ./after_boot/system_3/
+configs/auto_top/auto_top_fs_kvm_loop.py
+
+--num-cpus 1
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--cpu-type X86KvmCPU
+--script configs/auto_top/runscripts/boot_chkpt_readfile
+--ruby
+
+# one line
+./build/X86_MOESI_hammer/gem5.fast -d ./after_boot/system_3_v2/ configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 1 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --script configs/auto_top/runscripts/boot_chkpt_readfile --ruby
+
+# status
+success : Wrote checkpoint to : ./after_boot/system_3/cpt.16456940764000
+and : Wrote checkpoint to : ./after_boot/system_3_v2/cpt.16317405216500
+
+
+
+# restore boot checkpoint
+#########################
+
+
+# test with bodytrack
+runscript "configs/auto_top/runscripts/run_bodytrack"
+
+
+./build/X86_MOESI_hammer/gem5.fast
+-d ./after_boot_restore/system_3_v2/
+configs/auto_top/auto_top_fs_kvm_loop.py
+
+--num-cpus 1
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--cpu-type X86KvmCPU
+--script configs/auto_top/runscripts/run_bodytrack
+--restore-with-cpu X86KvmCPU
+-r 1
+--checkpoint-dir ./after_boot/system_3_v2/
+--ruby
+
+# one line
+./build/X86_MOESI_hammer/gem5.fast -d ./after_boot_restore/system_3_v2/bodytrack configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 1 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --script configs/auto_top/runscripts/run_bodytrack --restore-with-cpu X86KvmCPU -r 1 --checkpoint-dir ./after_boot/system_3_v2/ --ruby
+
+# status
+soft errors : hangs @ build/X86_MOESI_hammer/sim/simulate.cc:194: info: Entering event queue @ 0.  Starting simulation...
 
