@@ -91,7 +91,7 @@ class SnoopFilter : public SimObject
   public:
 
     // Change for systems with more than 256 ports tracked by this object
-    static const int SNOOP_MASK_SIZE = 256;
+    static const int SNOOP_MASK_SIZE = 512; //256;
 
     typedef std::vector<QueuedResponsePort*> SnoopList;
 
