@@ -62,7 +62,7 @@ class GarnetNetwork(RubyNetwork):
     # same across all routers
     # hardcoded
     # flat_src_dest_to_evn = VectorParam.Int32([0]*400, "2D src, dest indexed => flattened 400 20*src+dest indexed")
-    flat_src_dest_to_evn = VectorParam.Int32( "2D src, dest indexed => flattened 400 20*src+dest indexed")
+    flat_src_dest_to_evn = VectorParam.Int32( [],"2D src, dest indexed => flattened 400 20*src+dest indexed")
 
 
 class GarnetNetworkInterface(ClockedObject):
@@ -104,5 +104,5 @@ class GarnetRouter(BasicRouter):
     synth_traffic = Param.Bool(Parent.synth_traffic,"Whether this netowrk is serving synthetic traffic. Changes address translation")
 
     # no default size/values
-    flat_next_router_map = VectorParam.Int32("2D src, dest indexed => flattened 400 20*src+dest indexed")
+    flat_next_router_map = VectorParam.Int32([],"2D src, dest indexed => flattened 400 20*src+dest indexed")
     flat_src_dest_to_evn = VectorParam.Int32(Parent.flat_src_dest_to_evn, "2D src, dest indexed => flattened 400 20*src+dest indexed")
