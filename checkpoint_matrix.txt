@@ -316,7 +316,8 @@ configs/auto_top/auto_top_fs_kvm_loop.py
 ./build/X86/gem5.fast -d ./after_boot/system_4/ configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 1 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49  --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --script configs/auto_top/runscripts/boot_chkpt_readfile --sys-clock 1.8GHz --caches --l2cache
 
 # status
-success : Wrote checkpoint to : ./after_boot/system_4/cpt.14640493221000
+# success
+Wrote checkpoint to : ./after_boot/system_4/cpt.14640493221000
 
 
 # restore boot checkpoint
@@ -328,7 +329,7 @@ runscript "configs/auto_top/runscripts/run_bodytrack"
 
 
 ./build/X86/gem5.fast
--d ./after_boot_restore/system_4/
+-d ./roi_checkpoint/system_4/bodytrack
 configs/auto_top/auto_top_fs_kvm_loop.py
 
 --num-cpus 1
@@ -349,11 +350,12 @@ configs/auto_top/auto_top_fs_kvm_loop.py
 
 
 # status
-successfully instantiated :
+# successfully instantiated
 Instantiatied
 If applicable, restored from ./after_boot/system_4/cpt.14640493221000
 Will output checkpoints to ./roi_checkpoint/system_4/bodytrack
-successfully run :
+
+# successfully run
 Exiting @ tick 16085551762500 because workbegin.
 All simulation events were successful.
 Done with the simulation
@@ -365,13 +367,127 @@ Real time: 1.69s
 Total real time: 1.69s
 Dumping and resetting stats...
 
+# successfully checkpointed
+Exiting @ tick 16085551762500 because workbegin.
+All simulation events were successful.
+Done with the simulation
+
+Performance statistics:
+Simulated time: 1.45s
+Ran a total of  16.0855517625  simulated seconds
+Real time: 1.69s
+Total real time: 1.69s
+Dumping and resetting stats...
+build/X86/cpu/kvm/base.cc:572: hack: Pretending totalOps is equivalent to totalInsts()
+USER INPUT: checkpoint?y
+build/X86/sim/simulate.cc:194: info: Entering event queue @ 16085551762500.  Starting simulation...
+Writing checkpoint
+Wrote checkpoint to : ./roi_checkpoint/system_4/bodytrack/cpt.16086552593000
+
+
+# restore at ROI with atomic simple
+#   and switch to timing/o3 after some warmup
+#############################################
+
+# test with bodytrack
+runscript "configs/auto_top/runscripts/run_bodytrack"
+
+
+./build/X86/gem5.fast
+-d ./warm_and_run/system_4/bodytrack
+configs/auto_top/auto_top_fs_kvm_loop.py
+
+--num-cpus 1
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--caches --l2cache
+--sys-clock 1.8GHz
+--cpu-type X86TimingSimpleCPU
+--script configs/auto_top/runscripts/run_bodytrack
+-r 1
+--checkpoint-dir ./roi_checkpoint/system_4/bodytrack
+-I 10000
+
+# one line
+./build/X86/gem5.fast -d ./warm_and_run/system_4/ configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 1 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --caches --l2cache --sys-clock 1.8GHz --cpu-type X86TimingSimpleCPU --script configs/auto_top/runscripts/run_bodytrack -r 1 --checkpoint-dir ./roi_checkpoint/system_4/bodytrack -I 10000
+
+# status
+
+# instantiated
+Instantiatied
+If applicable, restored from ./roi_checkpoint/system_4/bodytrack/cpt.16085551762500
+Will output checkpoints to ./warm_and_run/system_4/
+
+# ran max insts
+Exiting @ tick 16086565995500 because a thread reached the max instruction count.
+All simulation events were successful.
+Done with the simulation
+
+Performance statistics:
+Simulated time: 0.00s
+Ran a total of  16.0865659955  simulated seconds
+Real time: 0.05s
+Total real time: 0.05s
+Dumping and resetting stats...
+
+# ran max insts
+Exiting @ tick 16086683689000 because a thread reached the max instruction count.
+All simulation events were successful.
+Done with the simulation
+
+Performance statistics:
+Simulated time: 0.00s
+Ran a total of  16.086683689  simulated seconds
+Real time: 0.07s
+Total real time: 20.24s
+Dumping and resetting stats...
+
+# works perfectly well
+
+
+# now, can it do restore with ruby???
+
+
+./build/X86/gem5.fast -d ./warm_and_run/system_4/bodytrack configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 1 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --caches --l2cache --sys-clock 1.8GHz --cpu-type X86TimingSimpleCPU --script configs/auto_top/runscripts/run_bodytrack -r 1 --checkpoint-dir ./roi_checkpoint/system_4/bodytrack -I 10000 --ruby
+
+# status
+
+# instantiated
+Instantiatied
+If applicable, restored from ./roi_checkpoint/system_4/bodytrack/cpt.16085551762500
+Will output checkpoints to ./warm_and_run/system_4/
+
+# ran for max insts (atomic)
+Exiting @ tick 16086565995500 because a thread reached the max instruction count.
+All simulation events were successful.
+Done with the simulation
+
+Performance statistics:
+Simulated time: 0.00s
+Ran a total of  16.0865659955  simulated seconds
+Real time: 0.05s
+Total real time: 0.05s
+Dumping and resetting stats...
+
+# ran for max ticks (timing)
+Exiting @ tick 16086612866000 because a thread reached the max instruction count.
+All simulation events were successful.
+Done with the simulation
+
+Performance statistics:
+Simulated time: 0.00s
+Ran a total of  16.086612866  simulated seconds
+Real time: 0.08s
+Total real time: 35.38s
+Dumping and resetting stats...
+
 #######################################################################
 # System 5: 64 cores w/ L2s
 #######################################################################
 
 # the system(s) I want
 
-# "system_1" : 64 cpus, 16 dirs, checkpoint w/o ruby, restore w/ ruby, 64 l2caches of 500kB, 1.8GHz clock
+# "system_5" : 64 cpus, 16 dirs, checkpoint w/o ruby, restore w/ ruby, 64 l2caches of 500kB, 1.8GHz clock
 # 32GB mem minimum (more is better)
 # linux kernel 5.4.49
 
@@ -384,7 +500,7 @@ called "configs/auto_top/runscripts/boot_chkpt_readfile"
 
 
 ./build/X86/gem5.fast
--d ./after_boot/system_1/
+-d ./after_boot/system_5/
 configs/auto_top/auto_top_fs_kvm_loop.py
 
 --num-cpus 64 --num-dirs 16
@@ -392,40 +508,15 @@ configs/auto_top/auto_top_fs_kvm_loop.py
 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
 --cpu-type X86KvmCPU
 --script configs/auto_top/runscripts/boot_chkpt_readfile
---caches --l2cache --l2_size 500kB --num-l2caches 64
+--caches
+--l2_size 500kB --num-l2caches 64
 --sys-clock 1.8GHz
 
 # one line
 ./build/X86/gem5.fast -d ./after_boot/system_5/ configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 64 --num-dirs 16 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --script configs/auto_top/runscripts/boot_chkpt_readfile --caches --l2_size 500kB --num-l2caches 64 --sys-clock 1.8GHz
 
 # status
-running : deepspeed3
-
-# restore boot checkpoint
-#   and checkpoint at ROI
-#########################
-
-
-./build/X86/gem5.fast
--d ../roi_checkpoint/system_5/bodytrack
-configs/auto_top/auto_top_fs_kvm_loop.py
-
---num-cpus 64 --num-dirs 16
---mem-size 32GB
---kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
---cpu-type X86KvmCPU
---caches --l2cache
---l2_size 500kB --num-l2caches 64
---sys-clock 1.8GHz
---script configs/auto_top/runscripts/run_bodytrack
---restore-with-cpu X86KvmCPU
--r 1
---checkpoint-dir ./after_boot/system_5/
-
-./build/X86/gem5.fast -d ./roi_checkpoint/system_5/bodytrack configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 64 --num-dirs 16 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --caches --l2cache --l2_size 500kB --num-l2caches 64 --sys-clock 1.8GHz --script configs/auto_top/runscripts/run_bodytrack --restore-with-cpu X86KvmCPU -r 1 --checkpoint-dir ./after_boot/system_5/
-
-# status
-booting success! :
+# booting success!
 
 Exiting @ tick 639023822035500 because checkpoint.
 All simulation events were successful.
@@ -437,4 +528,184 @@ Ran a total of  639.0238220355  simulated seconds
 Real time: 1160.94s
 Total real time: 1160.94s
 Dumping and resetting stats...
+
+# checkpoint success
+Exiting @ tick 639023822035500 because checkpoint.
+All simulation events were successful.
+Done with the simulation
+
+Performance statistics:
+Simulated time: 639.02s
+Ran a total of  639.0238220355  simulated seconds
+Real time: 1160.94s
+Total real time: 1160.94s
+Dumping and resetting stats...
+build/X86/cpu/kvm/base.cc:572: hack: Pretending totalOps is equivalent to totalInsts()
+USER INPUT: checkpoint?y
+Writing checkpoint
+Wrote checkpoint to : ./after_boot/system_5/cpt.639023822035500
+
+
+# restore boot checkpoint
+#   and checkpoint at ROI
+#########################
+
+
+./build/X86/gem5.fast
+-d ./roi_checkpoint/system_5/bodytrack
+configs/auto_top/auto_top_fs_kvm_loop.py
+
+--num-cpus 64 --num-dirs 16
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--cpu-type X86KvmCPU
+--caches
+--l2_size 500kB --num-l2caches 64
+--sys-clock 1.8GHz
+--script configs/auto_top/runscripts/run_bodytrack
+--restore-with-cpu X86KvmCPU
+-r 1
+--checkpoint-dir ./after_boot/system_5/
+
+./build/X86/gem5.fast -d ./roi_checkpoint/system_5/bodytrack configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 64 --num-dirs 16 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --caches --l2_size 500kB --num-l2caches 64 --sys-clock 1.8GHz --script configs/auto_top/runscripts/run_bodytrack --restore-with-cpu X86KvmCPU -r 1 --checkpoint-dir ./after_boot/system_5/
+
+
+# status
+
+# successfully instantiated
+
+# successfully ran until workbegin
+Exiting @ tick 641461350987000 because workbegin.
+All simulation events were successful.
+Done with the simulation
+
+Performance statistics:
+Simulated time: 2.44s
+Ran a total of  641.461350987  simulated seconds
+Real time: 7.63s
+Total real time: 7.63s
+Dumping and resetting stats...
+
+# successfully checkpointed
+Writing checkpoint
+Wrote checkpoint to : ./roi_checkpoint/system_5/bodytrack/cpt.641461350987000
+
+
+
+
+# restore at ROI with atomic simple
+#   and switch to timing/o3 after some warmup
+#############################################
+
+# test with bodytrack
+runscript "configs/auto_top/runscripts/run_bodytrack"
+
+./build/X86/gem5.fast
+-d ./warm_and_run/system_5/bodytrack
+configs/auto_top/auto_top_fs_kvm_loop.py
+
+--num-cpus 64 --num-dirs 16
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--caches
+--l2_size 500kB --num-l2caches 64
+--sys-clock 1.8GHz
+--script configs/auto_top/runscripts/run_bodytrack
+-r 1
+
+--cpu-type X86TimingSimpleCPU
+--checkpoint-dir ./roi_checkpoint/system_5/bodytrack
+--I 10000
+
+# one line
+./build/X86/gem5.fast -d ./warm_and_run/system_5/bodytrack configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 64 --num-dirs 16 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --caches --l2_size 500kB --num-l2caches 64 --sys-clock 1.8GHz --script configs/auto_top/runscripts/run_bodytrack -r 1 --cpu-type X86TimingSimpleCPU --checkpoint-dir ./roi_checkpoint/system_5/bodytrack -I 10000
+
+
+# status
+
+# instantiates
+Instantiatied
+If applicable, restored from ./roi_checkpoint/system_5/bodytrack/cpt.641461350987000
+Will output checkpoints to ./warm_and_run/system_5/bodytrack
+
+# max insts (atomic)
+Exiting @ tick 641461363015500 because a thread reached the max instruction count.
+All simulation events were successful.
+Done with the simulation
+
+Performance statistics:
+Simulated time: 0.00s
+Ran a total of  641.4613630155  simulated seconds
+Real time: 1.32s
+Total real time: 1.32s
+Dumping and resetting stats...
+
+# max insts (timing)
+Exiting @ tick 641461441390500 because a thread reached the max instruction count.
+All simulation events were successful.
+Done with the simulation
+
+Performance statistics:
+Simulated time: 0.00s
+Ran a total of  641.4614413905  simulated seconds
+Real time: 0.91s
+Total real time: 33.19s
+Dumping and resetting stats... 
+
+
+# now what about o3?
+./build/X86/gem5.fast -d ./warm_and_runo3/system_5/bodytrack configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 64 --num-dirs 16 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --caches --l2_size 500kB --num-l2caches 64 --sys-clock 1.8GHz --script configs/auto_top/runscripts/run_bodytrack -r 1 --cpu-type X86O3CPU --checkpoint-dir ./roi_checkpoint/system_5/bodytrack -I 10000
+
+# status
+
+# instantiates
+
+Instantiatied
+If applicable, restored from ./roi_checkpoint/system_5/bodytrack/cpt.641461350987000
+Will output checkpoints to ./warm_and_runo3/system_5/bodytrack
+
+# max insts (atomic)
+Exiting @ tick 641461363015500 because a thread reached the max instruction count.
+All simulation events were successful.
+Done with the simulation
+
+Performance statistics:
+Simulated time: 0.00s
+Ran a total of  641.4613630155  simulated seconds
+Real time: 1.34s
+Total real time: 1.34s
+Dumping and resetting stats...
+
+# max insts (o3)
+Exiting @ tick 641461399821000 because a thread reached the max instruction count.
+All simulation events were successful.
+Done with the simulation
+
+Performance statistics:
+Simulated time: 0.00s
+Ran a total of  641.461399821  simulated seconds
+Real time: 4.19s
+Total real time: 60.95s
+Dumping and resetting stats...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# LEARNED
+# passing --restore-with-cpu X86KvmCPU will cause seg fault
 
