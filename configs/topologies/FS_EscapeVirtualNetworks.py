@@ -21,7 +21,7 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
         # cpu/mem organization
         n_cpus = options.num_cpus
         n_dirs = options.num_dirs
-        n_noi_routers = n_cpus
+        n_noi_routers = options.noi_routers
 
         # traffic type
         is_mem_or_coh = options.mem_or_coh
@@ -35,8 +35,8 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
 
         per_row = n_noi_routers // n_noi_rows
 
-        N_CPUS = 20
-        assert(n_cpus == N_CPUS)
+        # N_CPUS = 20
+        # assert(n_cpus == N_CPUS)
 
 
 
@@ -131,8 +131,9 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
                                     int_node= routers[idx],
                                     latency=link_latency,
 
-                                    # NoC on same freq as cores
-                                    # int_cdc=False
+                                    # NoI on diff freq than cores
+                                    # CDC on slower => ext side
+                                        ext_cdc=True
                                     ))
             link_count += 1
 
@@ -150,8 +151,9 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
                                         int_node= routers[idx],
                                         latency=link_latency,
 
-                                        # NoC on same freq as cores
-                                        # int_cdc=False
+                                        # NoI on diff freq than cores
+                                    # CDC on slower => ext side
+                                        ext_cdc=True
                                         ))
                 link_count += 1
         # 64 l2 caches
@@ -165,8 +167,9 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
                                         int_node= routers[idx],
                                         latency=link_latency,
 
-                                        # NoC on same freq as cores
-                                        # int_cdc=False
+                                        # NoI on diff freq than cores
+                                    # CDC on slower => ext side
+                                        ext_cdc=True
                                         ))
                 link_count += 1 
         elif len(l2_caches) == 20:
@@ -179,8 +182,9 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
                                         int_node= routers[idx],
                                         latency=link_latency,
 
-                                        # NoC on same freq as cores
-                                        # int_cdc=False
+                                        # NoI on diff freq than cores
+                                    # CDC on slower => ext side
+                                        ext_cdc=True
                                         ))
                 link_count += 1 
 
@@ -199,7 +203,9 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
                                     ext_node= dmas[i],
                                     int_node= routers[idx],
                                     latency=link_latency,
-                                    int_cdc=True
+                                    # NoI on diff freq than cores
+                                    # CDC on slower => ext side
+                                        ext_cdc=True
                                     ))
             link_count += 1
 
@@ -213,8 +219,9 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
                                         ext_node= dirs[i],
                                         int_node= routers[idx],
                                         latency=link_latency,
-                                        # NoC on same freq as cores
-                                        # int_cdc=False
+                                        # NoI on diff freq than cores
+                                    # CDC on slower => ext side
+                                        ext_cdc=True
                                         ))
                 link_count += 1
 
@@ -254,7 +261,9 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
                                         ext_node= dirs[i],
                                         int_node= routers[targ],
                                         latency=link_latency,
-                                        int_cdc=True))
+                                        # NoI on diff freq than cores
+                                        # CDC on slower => ext side
+                                        ext_cdc=True))
                 link_count += 1
 
 
@@ -280,7 +289,7 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
                 if(src_r == dest_r):
                         continue
 
-                if(is_connected == 1):
+                if(is_connected >= 1):
 
 
                     this_link_latency = link_latency
@@ -341,7 +350,7 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
     def ingest_map(self, path_name, n_routers):
 
 
-        print(f'ingesting {path_name}')
+        print(f'ingesting {path_name}. n_routers={n_routers}')
 
         r_map = []
 
@@ -366,7 +375,7 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
                 r_map.append(r_conns)
 
         # print(f'r_map({len(r_map)})={r_map}')
-        #input('cont?')
+        # input('cont?')
 
         assert(len(r_map) == n_routers)
 

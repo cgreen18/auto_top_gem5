@@ -77,6 +77,31 @@ def cmd_line_template():
         return open(args.command_line_file).read().strip()
     return None
 
+def writeRepeatedHomogenousMultiProgBenchScript(dir, bench, repetitions, size, ncpus):
+
+    cpus_per_prog = ncpus // repetitions
+
+    assert(ncpus % repetitions == 0)
+
+    file_name = f'{dir}/run_{bench}_repeated{repetitions}'
+
+    cmd = f'cd /home/gem5/parsec-benchmark; source env.sh;'
+    
+    for rep in range(repetitions):
+        cmd += f' parsecmgmt -a run -p {bench} -c gcc-hooks -i {size} -n {cpus_per_prog}'
+
+        # not last rep
+        if rep + 1 < repetitions:
+            cmd += ' &'
+
+    cmd += '; sleep 5; m5 exit;'
+
+    print(f'writeRepeatedHomogenousMultiProgBenchScript():: cmd = {cmd}')
+
+    with open(file_name, "w+") as bench_file:
+        bench_file.write(cmd)
+    
+    return file_name
 
 def writeReadfileBenchScript(dir, guest_num):
 
@@ -95,7 +120,7 @@ def writeReadfileBenchScript(dir, guest_num):
         f.write(cmd)
 
 
-    
+
     return runscript_file_name
 
 def writeBootScript(dir):
@@ -105,7 +130,7 @@ def writeBootScript(dir):
     at bootup).
     """
 
-    # m5 checkpoint; 
+    # m5 checkpoint;
     cmd = f'm5 exit'
 
     file_name = f'{dir}/run_boot'
@@ -126,7 +151,7 @@ def writeMultiProgBenchScript(dir, bench_a, bench_b, size, ncpus):
 
     with open(file_name, "w+") as bench_file:
         bench_file.write(cmd)
-    
+
     return file_name
 
 def writeBenchScript(dir, bench, size, ncpus):
@@ -138,9 +163,9 @@ def writeBenchScript(dir, bench, size, ncpus):
     file_name = '{}/run_{}'.format(dir, bench)
     bench_file = open(file_name,"w+")
 
-    # m5 checkpoint; 
-    cmd = f'cd /home/gem5/parsec-benchmark; source env.sh; m5 exit; parsecmgmt -a run -p {bench} -c gcc-hooks -i {size} -n {ncpus}; sleep 5; m5 exit;'
- 
+    # m5 checkpoint;
+    cmd = f'cd /home/gem5/parsec-benchmark; source env.sh; parsecmgmt -a run -p {bench} -c gcc-hooks -i {size} -n {ncpus}; sleep 5; m5 exit;'
+
     bench_file.write(cmd)
 
     return file_name
@@ -184,7 +209,7 @@ def build_test_system(np, readfile_name, bm):
     test_sys.readfile = readfile_name
     if args.script is not None:
         test_sys.readfile = args.script
-        
+
 
     test_sys.init_param = args.init_param
 
@@ -292,7 +317,7 @@ Options.addFSOptions(parser)
 parser.add_argument("--router_map_file", type=str, default="configs/topologies/sol_files/kite_small.sol",
                     help=".sol file with router map.")
 
-parser.add_argument("--flat_nr_map_file", type=str, 
+parser.add_argument("--flat_nr_map_file", type=str,
                     default="configs/topologies/nr_list/kite_large_naive.nrl",
                     help=".")
 
@@ -347,7 +372,7 @@ parser.add_argument('--synth_traffic',action='store_true')
 # ##
 parser.add_argument('--boot_w_kvm',action='store_true')
 
-parser.add_argument('--benchmark_parsec',type=str,default='blackscholes')
+parser.add_argument('--benchmark_parsec',type=str)
 
 parser.add_argument('--first_parsec',type=str,default='bodytrack')
 
@@ -361,6 +386,8 @@ parser.add_argument('--max_insts_after_boot',type=int,default=1000000000)
 parser.add_argument('--switch_cpu',type=str)
 
 parser.add_argument('--timing_insts',type=int,default=100000)
+
+parser.add_argument('--repeated_multi_prog',type=int)
 
 
 # Add the ruby specific and protocol specific args
@@ -387,17 +414,30 @@ bm = [SysConfig(disks=args.disk_image, rootdev=args.root_device,
 
 
 np = args.num_cpus
-bench = args.benchmark_parsec
 
-guest_num = 2
 command_file_name = writeBootScript('configs/auto_top/runscripts')
 
+# def writeBenchScript(dir, bench, size, ncpus):
+if args.benchmark_parsec is not None:
+    bench = args.benchmark_parsec
+    size = 'simlarge'
+    # size = 'native'
+    command_file_name = writeBenchScript('configs/auto_top/runscripts',bench, size, np )
 
-script_name = command_file_name
+if args.repeated_multi_prog is not None:
+    bench = args.benchmark_parsec
+    size = 'simlarge'
+    # size = 'native'
+    nreps = args.repeated_multi_prog
+    # def writeRepeatedHomogenousMultiProgBenchScript(dir, bench, repetitions, size, ncpus):
+    command_file_name = writeRepeatedHomogenousMultiProgBenchScript('configs/auto_top/runscripts',bench,nreps ,size, np )
+
+
 if args.script:
-    script_name = args.script
+    command_file_name = args.script
 
 test_sys = build_test_system(np, command_file_name , bm)
+
 
 
 # avoid running out of host memory
@@ -467,7 +507,7 @@ print("Running the simulation")
 print(f'Beginning {TestCPUClass} simulation')
 print(f'Later, {FutureClass} simulation')
 
-print(f'Running: {script_name}')
+print(f'Running: {command_file_name}')
 
 print(f'1st cpu will run for {test_sys.cpu[0].max_insts_any_thread} insts')
 if switch_cpus is not None:
@@ -487,9 +527,9 @@ root.apply_config(args.param)
 
 print(f'Will restore from {checkpoint_dir}')
 
-cont = input('continue?')
-if 'n' in cont:
-    quit(-1)
+# cont = input('continue?')
+# if 'n' in cont:
+#    quit(-1)
 
 
 m5.instantiate(checkpoint_dir)
@@ -505,15 +545,20 @@ print(f'Will output checkpoints to {cptdir}')
 
 keep_going = True
 
+n_to_skip = 0
+# if args.repeated_multi_prog is not None:
+#     n_to_skip = args.repeated_multi_prog - 1
 
 abs_start = -1
 
+n_exits = 0
+
 while keep_going:
+
 
     cont = input('continue?')
     if 'n' in cont:
         quit(-1)
-
 
     start_time = time.time()
     start_tick = m5.curTick()
@@ -525,11 +570,14 @@ while keep_going:
 
     end_tick = m5.curTick()
     end_time = time.time()
+    n_exits += 1
 
-
-    print("Exiting @ tick {} because {}.".format(
+    print("Exiting @ tick {} because {} ({}).".format(
             m5.curTick(),
-            exit_event.getCause() ))
+            exit_event.getCause(),
+            n_exits ))
+
+
 
     # Simulation is over at this point. We acknowledge that all the simulation
     # events were successful.
@@ -537,7 +585,7 @@ while keep_going:
 
     # We print the final simulation statistics.
 
-    print("Done with the simulation")
+    print(f"Done with the simulation of {command_file_name}")
     print()
     print("Performance statistics:")
 
@@ -548,7 +596,7 @@ while keep_going:
 
     print(f'Dumping and resetting stats...')
 
-    m5.stats.dump()
+    # m5.stats.dump()
     m5.stats.reset()
 
 
@@ -558,6 +606,21 @@ while keep_going:
         m5.checkpoint(joinpath(cptdir, f"cpt.{m5.curTick()}"))
 
         print(f'Wrote checkpoint to : {joinpath(cptdir, f"cpt.{m5.curTick()}")}')
+
+    # if n_to_skip <= 0:
+        # m5.checkpoint(joinpath(cptdir, f"cpt.{m5.curTick()}"))
+
+
+        # print(f'Wrote checkpoint to : {joinpath(cptdir, f"cpt.{m5.curTick()}")}')
+
+
+        # cont = input('continue?')
+        # if 'n' in cont:
+        #     quit(-1)
+
+    # else:
+    #     n_to_skip -= 1
+
 
     if switch_cpus is not None:
         do_chkpt = input('USER INPUT: switch cpus?')

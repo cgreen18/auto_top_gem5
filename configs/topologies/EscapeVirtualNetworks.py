@@ -100,7 +100,7 @@ class EscapeVirtualNetworks(SimpleTopology):
 
         # this is for 2d
         # pass correct block of maps from flat_nr_maps
-        #   and copy of vn map 
+        #   and copy of vn map
         routers = [Router(router_id=i, latency = router_latency,\
                 # test_params=True,\
                 # dest_to_vc=vc_map[i], next_router_map=nr_map[i],\
@@ -140,7 +140,7 @@ class EscapeVirtualNetworks(SimpleTopology):
                                     ext_node= caches[i],
                                     int_node= routers[idx],
                                     latency=link_latency,
-                                    int_cdc=True))
+                                    ext_cdc=True))
             link_count += 1
 
 
@@ -153,7 +153,7 @@ class EscapeVirtualNetworks(SimpleTopology):
                                         ext_node= dirs[i],
                                         int_node= routers[idx],
                                         latency=link_latency,
-                                        int_cdc=True))
+                                        ext_cdc=True))
                 link_count += 1
 
         else:
@@ -177,7 +177,7 @@ class EscapeVirtualNetworks(SimpleTopology):
             assert(len(edges) == n_dirs)
 
             for i in range(n_dirs):
-                
+
                 # idx = i % n_routers
                 targ = edges[i]
                 # print(f'Adding external link (id {link_count}): dir node {i} <-> noi router {targ}')
@@ -185,7 +185,7 @@ class EscapeVirtualNetworks(SimpleTopology):
                                         ext_node= dirs[i],
                                         int_node= routers[targ],
                                         latency=link_latency,
-                                        int_cdc=True))
+                                        ext_cdc=True))
                 link_count += 1
 
 
@@ -208,7 +208,7 @@ class EscapeVirtualNetworks(SimpleTopology):
                 if(src_r == dest_r):
                         continue
 
-                if(is_connected == 1):
+                if(is_connected >= 1):
 
 
                     this_link_latency = link_latency
@@ -373,7 +373,7 @@ class EscapeVirtualNetworks(SimpleTopology):
 
         #input('cont?')
 
-        # assert(len(r_map) == n_routers)b 
+        # assert(len(r_map) == n_routers)b
 
         return r_map
 

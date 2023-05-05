@@ -228,9 +228,9 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
 
         # dmas -> noc routers
         assert(len(dmas) == 2)
-        dma_noi_routers = [0,19]
+        dma_noi_routers = [5,14]
         if n_noi_routers == 64:
-            dma_noi_routers = [0,63]
+            dma_noi_routers = [24,39]
 
         for i in range(len(dmas)):
             idx = dma_noi_routers[i]
@@ -295,7 +295,9 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
                                         ext_node= dirs[i],
                                         int_node= routers[targ],
                                         latency=link_latency,
-                                        int_cdc=True))
+                                        # NoI on diff freq than cores
+                                        # CDC on slower => ext side
+                                        ext_cdc=True))
                 link_count += 1
 
 
@@ -321,7 +323,7 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
                 if(src_r == dest_r):
                         continue
 
-                if(is_connected == 1):
+                if(is_connected >= 1):
 
 
                     this_link_latency = link_latency
@@ -371,7 +373,7 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
                                         # clk_domain = noc_clk_domain,
                                         # dst_cdc = False,
                                         # # cdc on noi (src)
-                                        src_cdc = True
+                                        dst_cdc = True
                                         ))
                     # src noc
                     else:
@@ -389,7 +391,7 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
                                         # TODO UNCOMMENT
                                         # clk_domain = noc_clk_domain,
                                         # cdc on noi (dest)
-                                        dst_cdc = True,
+                                        src_cdc = True,
                                         # src_cdc = False
                                         ))
                         # noc -> noc

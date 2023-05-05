@@ -377,7 +377,7 @@ parser.add_argument('--second_parsec',type=str,default='dedup')
 
 parser.add_argument('--multi_prog',action='store_true')
 
-parser.add_argument('--repeated_multi_prog',type=int,default=None)
+parser.add_argument('--repeated_multi_prog',type=int)
 
 
 parser.add_argument('--max_insts_after_boot',type=int,default=1000000000)
