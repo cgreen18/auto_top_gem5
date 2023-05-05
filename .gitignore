@@ -39,3 +39,5 @@ test_*
 parsec_noci_checkpoints
 parsec_checkpoints
 parsec_disk_image
+after_boot
+.vscode
