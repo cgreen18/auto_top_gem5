@@ -1,0 +1,14 @@
+bench,config,description,simTicks,numCycles,average_packet_latency,cumulativeCycles,maxCycles
+canneal,cmesh_x_cload_hops,,4424016500.0,7467323.0,9084.747968,161754416.0,8848030.0
+canneal,butter_donut_x_cload_hops,,4425987000.0,7467380.0,8964.638509,161760501.0,8851971.0
+canneal,kite_large_cload_hops,,4384611000.0,7467226.0,8822.094686,161188929.0,8769219.0
+canneal,dbl_bfly_x_cload_hops,,4522792500.0,7467417.0,9471.846398,168649397.0,9045582.0
+canneal,kite_small_cload_hops,,4312361500.0,7467227.0,8193.421499,156121032.0,8624720.0
+canneal,kite_medium_cload_hops,,4427333500.0,7467403.0,9344.618446,161794864.0,8854664.0
+canneal,ns_l_bwop_cload_hops,,4387577000.0,7467255.0,8588.307818,161237184.0,8775151.0
+canneal,mesh_cload_hops,
+canneal,ns_l_latop_cload_hops,,4373928000.0,7467213.0,8547.746949,161041784.0,8747853.0
+canneal,ns_m_bwop_cload_hops,,4429882000.0,7467335.0,9223.892042,161827747.0,8859761.0
+canneal,ns_m_latop_cload_hops,,4424860000.0,7467367.0,9197.160485,161764081.0,8849717.0
+canneal,ns_s_bwop_cload_hops,
+canneal,ns_s_latop_cload_hops,
