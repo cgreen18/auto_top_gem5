@@ -27,10 +27,7 @@ noi_clks_dict = {'mesh':'4GHz',
             # these will match part of name of our files
             '15ll':'3.6GHz',
             '2ll':'3.0GHz',
-            '25ll':'2.7GHz',
-            's':'3.6GHz',
-            'm':'3.0GHz',
-            'l':'2.7GHz'}
+            '25ll':'2.7GHz'}
 
 
 def name_num_insts(sc):
@@ -112,7 +109,7 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
         noi_clk = noi_clks_dict[top_type]
     except:
         print(f'Key error on topology {topology} w/ key={top_type} for noi freq.')
-        quit(-1)
+        # quit(-1)
 
     # noci restore
 

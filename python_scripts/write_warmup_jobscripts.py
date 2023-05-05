@@ -3,7 +3,7 @@ import os
 
 import sys
 
-DATE = 'apr9'
+DATE = 'apr28'
 
 
 # topologies
@@ -50,27 +50,81 @@ def name_num_insts(sc):
 
 
 
-def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_size, nreps):
+def write_jobscript(n_inst, n_warmup_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_size, nreps=None, n_evns=None, is_picky=False, use_simple=False, n_l2s=64, all_threads=True,n_vcs=10,link_width=128,rlat=1):
 
 
     outfile_name = f'{benchmark}_{topology}_{alg_type}_{lb_type}'
 
     inst_str = name_num_insts(n_inst)
+    warmup_inst_str = name_num_insts(n_warmup_inst)
 
 
     clk_str = f'{cpu_clk}GHz'.replace('.','')
 
-    # outdir_name = f'slurm/job_scripts/parsec_noci_largemem_4GHzcpu_500MBL2/{inst_str}/'
-    # outdir_name = f'slurm/job_scripts/parsec_noci_largemem/{inst_str}/'
-    # outdir_name = f'slurm/job_scripts/parsec_noci_32GB_l2caches_{clk_str}_{l2_size}/{inst_str}/'
-    outdir_name = f'slurm/job_scripts/parsec_noci_32GB_l2caches_{nreps}reps_{clk_str}_{l2_size}/{inst_str}/'
+    # construct outdir_name
+    # outdir_name = f'slurm/job_scripts/parsec_noci_32GB_l2caches'
+    outdir_name = f'slurm/job_scripts/parsec_noci_32GBxDDR4_l2caches'
+
+    if nreps is not None:
+        outdir_name += f'_{nreps}reps'
+    if n_evns is not None:
+        outdir_name += f'_{n_evns}evns'
+    if n_vcs != 10:
+        outdir_name += f'_{n_vcs}vcs'
+
+    outdir_name += f'_{clk_str}_{l2_size}'
+    if n_l2s == 4:
+        outdir_name += f'x{n_l2s}'
+
+    if use_simple:
+        outdir_name += f'_timingsimple'
+
+    if all_threads:
+        outdir_name += f'_allthreads'
+
+    if link_width != 128:
+        outdir_name += f'_{link_width}lwidth'
+
+    if rlat != 1:
+        outdir_name += f'_{rlat}rlat'
+
+    outdir_name += f'/{warmup_inst_str}warmup_{inst_str}simul/'
 
 
     outpath = outdir_name + outfile_name
 
     # slurm_out = f'parsec_noci/{benchmark}_{topology}_{inst_str}_4GHzcpu_500MBL2{DATE}.out'
     # slurm_out = f'parsec_noci/{benchmark}_{topology}_{alg_type}_{lb_type}_{inst_str}_{clk_str}_{l2_size}_32GB_l2l2caches_{DATE}.out'
-    slurm_out = f'parsec_noci/{benchmark}_{topology}_{alg_type}_{lb_type}_{inst_str}_{clk_str}_{l2_size}_32GB_l2caches_{nreps}reps_{DATE}.out'
+
+    slurm_out = f'parsec_noci/{benchmark}_{topology}_{alg_type}_{lb_type}_{warmup_inst_str}_{inst_str}_{clk_str}_{l2_size}'
+
+    if n_l2s == 4:
+        slurm_out += f'x{n_l2s}'
+
+    if use_simple:
+        slurm_out +=f'_timingsimple'
+
+    if all_threads:
+        slurm_out +=f'_allthreads'
+
+    slurm_out += f'_32GBxDDR4_l2caches'
+
+    if nreps is not None:
+        slurm_out += f'_{nreps}reps'
+
+    if n_evns is not None:
+        slurm_out += f'_{n_evns}evns'
+
+    if n_vcs != 10:
+        slurm_out += f'_{n_vcs}vcs'
+
+    if link_width != 128:
+        slurm_out += f'_{link_width}lwidth'
+
+    if rlat != 1:
+        slurm_out += f'_{rlat}rlat'
+
+    slurm_out += f'_{DATE}.out'
 
     # defining what to write
     lines = []
@@ -81,12 +135,12 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
     s = '#SBATCH --nodes 1\n'
     lines.append(s)
 
-    s = '#SBATCH --cpus-per-task=1\n'
+    s = '#SBATCH --cpus-per-task=2\n'
     lines.append(s)
 
     # upping minimum required mem to avoid memory issues
     # gem5 using 32GB so ~45 to be safe
-    s = '#SBATCH --mem-per-cpu=45GB\n'
+    s = '#SBATCH --mem-per-cpu=36GB\n'
     lines.append(s)
 
     s = f'#SBATCH --output=slurm/outputs/{slurm_out}\n'
@@ -107,6 +161,12 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
         if top_type == '4p':
             top_type =  topology.split('_')[2]
 
+    if 'ns_' in topology:
+        top_type = topology.split('_')[1]
+
+    if 'lpbt' in topology:
+        top_type = topology.split('_')[3]
+
     noi_clk = '1.8GHz'
     try:
         noi_clk = noi_clks_dict[top_type]
@@ -121,18 +181,43 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
 
 
     # output dir
-    # cmd += f' -d ./paper_outputs/parsec_noci_largemem_4GHzCPU_500MBL2/{inst_str}/{benchmark}/{topology}/'
-    # cmd += f' -d ./parsec_results/parsec_noci_32GB_nocaches_{clk_str}_{l2_size}/{inst_str}/{benchmark}/{topology}_{alg_type}_{lb_type}/'
-    cmd += f' -d ./parsec_results/parsec_noci_32GB_l2caches_{nreps}reps_{clk_str}_{l2_size}/{inst_str}/{benchmark}/{topology}_{alg_type}_{lb_type}/'
+    cmd += f' -d ./parsec_results/noci_32GBxDDR4_'
+    if nreps is not None:
+        cmd += f'_{nreps}reps'
+    if n_evns is not None:
+        cmd += f'_{n_evns}envs'
+    if n_vcs != 10:
+        cmd == f'_{n_vcs}vcs'
+
+    cmd += f'_{clk_str}_{l2_size}l2'
+    if n_l2s == 4:
+        cmd += f'x{n_l2s}'
+    if use_simple:
+        cmd += f'_timingsimple'
+    if all_threads:
+        cmd += f'_allthreads'
+
+    if link_width != 128:
+        cmd += f'_{link_width}lwidth'
+
+    if rlat != 1:
+        cmd += f'_{rlat}rlat'
+
+    cmd += f'/{warmup_inst_str}warmup_{inst_str}simul/{benchmark}/{topology}_{alg_type}_{lb_type}/'
 
     # cmd += f' -d ./paper_outputs/parsec_noci_largemem/{inst_str}/{benchmark}/{topology}/'
 
-    cmd += f' configs/auto_top/auto_top_fs.py'
+    if not all_threads:
+        cmd += f' configs/auto_top/auto_top_fs_v2.py'
+    else:
+        cmd += f' configs/auto_top/auto_top_fs_v3.py'
 
     # after this, order doesnt matter
 
     # instructions to simulate
-    cmd += f' -I {n_inst}'
+    cmd += f' -I {n_warmup_inst}'
+
+    cmd += f' --insts_after_warmup {n_inst}'
 
     # benchmark
     cmd += f' --benchmark_parsec {benchmark}'
@@ -141,7 +226,17 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
     # cmd += f' --checkpoint-dir ./parsec_checkpoints/parsec_checkpoints_noci/{benchmark}'
 
     # cmd += f' --checkpoint-dir ./parsec_checkpoints/largemem/{benchmark}'
-    cmd += f' --checkpoint-dir ./parsec_noci_checkpoints/{benchmark}/no_ruby/4reps_nocaches'
+
+    # different checkpoint
+    if n_l2s == 4:
+        cmd += f' --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_7/{benchmark}'
+    else:
+        cmd += f' --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_5/{benchmark}'
+
+    if nreps is not None:
+        cmd += f'_{nreps}reps'
+
+    # cmd += f' --checkpoint-dir ./parsec_noci_checkpoints/{benchmark}/no_ruby/4reps_nocaches'
 
 
     cmd += f' --router_map_file configs/topologies/paper_solutions/{topology}.map'
@@ -152,7 +247,13 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
     # cmd += f' --vc_map_file configs/topologies/paper_vcs_noci/{simple_name}.vc'
     # cmd += f' --nr_map_file configs/topologies/paper_nrs_noci/{simple_name}.nr'
 
-    cmd += f' --flat_vn_map_file configs/topologies/vn_maps/{topology}_{alg_type}_{lb_type}.vn'
+    # construct vn file name
+    cmd += f' --flat_vn_map_file configs/topologies/vn_maps/{topology}_{alg_type}_{lb_type}'
+    if n_evns is not None:
+        cmd += f'_{n_evns}vns'
+    cmd += '.vn'
+
+
     cmd += f' --flat_nr_map_file configs/topologies/nr_list/{topology}_{alg_type}.nrl'
 
     # cmd += f' --vc_map_file configs/topologies/test_dl/{topology}.vc'
@@ -182,9 +283,10 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
     # cmd += ' --num-cpus 64 --mem_or_coh mem --num-dirs 16 --num-l2caches 4 --num_chiplets 4'
     cmd += ' --num-cpus 64 --mem_or_coh mem --num-dirs 16'
 
-    # TODO uncomment for other benchmark types
     cmd += f' --caches'
-    cmd += f' --num-l2caches 64 --l2_size {l2_size}'
+
+    cmd += f' --num-l2caches {n_l2s}'
+    cmd += f' --l2_size {l2_size}'
 
     cmd += f' --num_chiplets 4'
     # cmd += ' --num-l2caches 64 --num_chiplets 4'
@@ -194,6 +296,12 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
 
     # ruby stuff
     cmd += ' --ruby --network garnet'
+
+    if link_width != 128:
+        cmd += f' --link-width-bits {link_width}'
+
+    if rlat != 1:
+        cmd += f' --router-latency {rlat}'
 
     # FS linux stuff
     # x264 bodytrack facesim
@@ -212,10 +320,17 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
 
     # simulation (restore)
     # cmd += f' --cpu-type X86TimingSimpleCPU --restore-with-cpu X86TimingSimpleCPU'
-    cmd += f' --cpu-type X86O3CPU'
-    # cmd += f' --restore-with-cpu X86KvmCPU'
-    cmd += f' --restore-with-cpu X86O3CPU'
 
+
+
+
+    if not use_simple:
+        cmd += f' --cpu-type X86O3CPU'
+    else:
+        cmd += f' --cpu-type X86TimingSimpleCPU'
+
+    # cmd += f' --restore-with-cpu X86KvmCPU'
+    # cmd += f' --restore-with-cpu X86O3CPU'
 
     # cmd += f' --garnet-deadlock-threshold 5000000'
 
@@ -223,14 +338,30 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
 
     cmd += ' --use_escape_vns'
 
-    cmd += ' --vcs-per-vnet 8'
+    # TODO parameterize?
+    tot_evns = n_vcs
+    if n_evns is not None:
+        # always allow at least 1 general traffic for any number of escape vns
+        tot_evns = max(tot_evns, n_evns + 1)
+    cmd += f' --vcs-per-vnet {tot_evns}'
 
-    cmd += ' --evn_deadlock_partition 2'
+    # 1 of each DL free vn
+    cmd += f' --evn_n_deadlock_free 1'
 
-    cmd += ' --evn_n_deadlock_free 1'
+    # default
+    min_dl_free = 6
+    if n_evns is not None:
+        min_dl_free = n_evns
 
-    cmd += ' --evn_min_n_deadlock_free 6'
+    cmd += f' --evn_min_n_deadlock_free {min_dl_free}'
 
+    dl_part = tot_evns - min_dl_free
+    cmd += f' --evn_deadlock_partition {dl_part}'
+
+
+
+    # better memory?
+    cmd += ' --mem-type DDR4_2400_16x4'
 
     cmd += '\n'
 
@@ -249,28 +380,23 @@ def write_jobscript(n_inst, topology, alg_type, lb_type, benchmark, cpu_clk, l2_
 
 def main():
 
-    # all
+    # all!!!!
     benchmarks = ["blackscholes", "bodytrack", "canneal", "dedup",
                          "facesim", "ferret", "fluidanimate", "freqmine",
                          "raytrace", "streamcluster", "swaptions", "vips", "x264"]
 
 
-    benchmarks = ["blackscholes", "bodytrack",
-                         "facesim", "ferret", "freqmine",
-                         "raytrace", "streamcluster",
-                         "dedup",  "x264"]
-
-    benchmarks = ['bodytrack', 'dedup','freqmine','streamcluster',
-                    'fluidanimate','ferret']
-
-    # benchmarks = ["facesim",
-    #                      "raytrace", ]
-
     # benchmarks = [ "blackscholes"]
 
-    n_inst = 100000
+    n_inst = 100000000
     try:
         n_inst = int(sys.argv[1])
+    except:
+        pass
+
+    n_warmup = 100000000
+    try:
+        n_warmup = int(sys.argv[2])
     except:
         pass
 
@@ -295,6 +421,11 @@ def main():
 
 
 
+    # topologies = [a for a in topologies if 'small' in a or '_l_' in a or 'mesh' in a or '_m_' in a]
+    #topologies = [a for a in topologies if 'mesh' in a]
+    #topologies = [a for a in topologies if 'cmesh' not in a]
+
+
     print(f'topologies ({len(topologies)})={topologies}')
     # quit()
 
@@ -305,23 +436,42 @@ def main():
 
     cpu_freqs = [1.8]
 
-    # l2_sizes = ['250kB','500kB','2MB']
+    # l2_sizes = ['250kB','500 kB','2MB']
     l2_sizes = ['500kB']
+    l2_sizes = ['128kB']
+    n_l2s = 64
+    l2_sizes = ['2MB']
 
-    alg_types = ['naive']
+
+    # alg_types = ['naive','cload','bsorm']
+
+    alg_types = ['cload_picky']#,'bsorm_picky']
     lb_types = ['hops']
 
-    reps = [4]
+    cpu_types = [False]#,True]
 
+    evns = 8
+    reps = 8
+    is_picky = True
+    n_vcs = 10
+    # link widht
+    link_widths = [128]#[32,64]
+    rlat=1
+
+    i=0
     for bench in benchmarks:
         for topo in topologies:
             for alg in alg_types:
                 for lb in lb_types:
                     for cf in cpu_freqs:
                         for l2s in l2_sizes:
-                            for rs in reps:
-                                print(f'{bench:20} : {topo:20} : {alg:20} : {lb:20} : {str(cf):20} : {l2s:20} : {n_inst}')
-                                write_jobscript(n_inst, topo, alg, lb, bench, cf, l2s, rs)
+                            for if_simple in cpu_types:
+                                for lw in link_widths:
+                                    print(f'{bench:20} : {topo:20} : {alg:20} : {lb:20} : {str(cf):20} : {l2s:20} : {n_inst}')
+                                    write_jobscript(n_inst, n_warmup, topo, alg, lb, bench, cf, l2s, n_evns=evns, nreps=reps, is_picky=is_picky, use_simple=if_simple, n_l2s=n_l2s,n_vcs=n_vcs,link_width=lw,rlat=rlat)
+                                    i+=1
+
+    print(f'\nWrote {i}')
 
 if __name__ == '__main__':
     main()

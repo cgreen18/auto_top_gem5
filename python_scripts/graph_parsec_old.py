@@ -2,9 +2,6 @@ import matplotlib.pyplot as plt
 import csv
 import numpy as np
 
-from matplotlib import rc
-
-
 # infile_name = 'paper_outputs/parsec_noci_250kBL2_10m.csv'
 infile_name = 'paper_outputs/parsec_noci_500kBL2_10m.csv'
 # infile_name = 'paper_outputs/parsec_noci_largemem_3GHzCPU.csv'
@@ -12,57 +9,68 @@ infile_name = 'paper_outputs/parsec_noci_500kBL2_10m.csv'
 infile_name = 'parsec_results/parsec_noci_largemem_18GHz_500kB_100m.csv'
 
 infile_name = 'parsec_results/w_warmup_100m_100m.csv'
-infile_name = 'parsec_results/128kb_18ghz_1m.csv'
-infile_name = 'parsec_results/3rlat.csv'
-infile_name = 'parsec_results/best_100m.csv'
-infile_name = 'parsec_results/8reps_10m.csv'
+infile_name = 'parsec_results/fast_clk_4reps_8evn_100k.csv'
 
 
-# True
-# False
-
-use_totcycles = True
+use_totcycles = False
 use_numcycles = False
+
+
+# outfile_suffix = '250kB_10m_maxCycles'
+outfile_suffix = '500kB_10m_maxCycles_both'
+# outfile_suffix = '_500kB_10m'
+# outfile_suffix = '_2MB_3GHz_10m_maxCycles'
+# outfile_suffix = '2MB_18GHz_20m_maxCycles_3'
+
+use_numcycles = True
+# outfile_suffix = '250kB_10m_numCycles'
+# outfile_suffix = '500kB_10m_numCycles'
+# outfile_suffix = '_500kB_10m'
+# outfile_suffix = '_2MB_3GHz_10m_numCycles'
+# outfile_suffix = '2MB_18GHz_20m_numCycles'
+
+# use_totcycles = True
+# outfile_suffix = '250kB_10m_totCycles'
+# outfile_suffix = '500kB_10m_totCycles'
+# outfile_suffix = '_500kB_10m'
+# outfile_suffix = '_2MB_3GHz_10m_totCycles'
+# outfile_suffix = '2MB_18GHz_20m_totCycles'
+
 use_simticks = False
 
 use_pkt_lat = True
 # outfile_suffix = '2MB_18GHz_20m_pktLat'
 
 use_both = True
-
+# outfile_suffix = '2MB_18GHz_20m_both_numcycles_lim'
+outfile_suffix = '500kB_10m_both_totcycles_lim_v3'
 outfile_suffix = '500kB_10m_both_simticks_lim_v3'
 
-outfile_suffix = '128kb_18ghz_1m_both'
-outfile_suffix = '3rlat_both'
-outfile_suffix = 'best_100m_both'
-outfile_suffix = '8reps_10m_focues_both'
+outfile_suffix = 'fast_clk_4reps_8evn_100k_both'
+
+bad_benches = []
+# bad_benches = ['blackscholes','bodytrack','raytrace','x264']
+
+# bad_benches = ['x264','raytrace','bodytrack','blackscholes']
+# bad_benches = ['blackscholes','raytrace','x264']
+
+# 3GHz
+# bad_benches = ['raytrace','bodytrack','blackscholes']
+
+# 20m
+# bad_benches = ['blackscholes','raytrace','freqmine']
+# bad_benches = ['raytrace']
+# bad_benches = ['dedup']
+# bad_benches = ['dedup','bodytrack','ferret','blackscholes']
 
 
-if use_numcycles:
-    outfile_suffix += '_ncycles'
-if use_totcycles:
-    outfile_suffix += '_totcycles'
-if use_simticks:
-    outfile_suffix += '_simticks'
 
 # 500kB
-
-# incomple
 bad_benches = []
 
-# bad_benches += ['vips']
-
-# bad_benches += ['x264']
-
-# bad_benches += ['swaptions','fluidanimate','raytrace']
-bad_benches += ['vips','dedup','ferret']
 
 # 250kB
 # bad_benches = ['blackscholes','raytrace','x264']
-
-# bad_benches = ['raytrace','vips','streamcluster']
-
-#bad_benches = ['bodytrack','fluidanimate']
 
 topos = []
 
@@ -272,7 +280,7 @@ for bench, topo_data in data.items():
         mesh_base_cycles = topo_data['Mesh']['maxCycles']
     except:
         mesh_base_cycles = 0
-
+    
     if mesh_base_cycles == 0:
         continue
     mesh_rel_cycles = 1
@@ -445,8 +453,6 @@ plt.rc('xtick', labelsize=14) #fontsize of the x tick labels
 plt.rc('ytick', labelsize=10) #fontsize of the y tick labels
 plt.rc('legend', fontsize=12)
 
-plt.rc('text', usetex=True)
-
 fig = plt.figure(figsize=(14,2))
 ax = fig.add_subplot()
 
@@ -470,7 +476,7 @@ last_of_size = [4,9]
 
 
 n_benches = len(x_val_list)
-mult = 8.5
+mult = 8
 x = np.arange(0,mult*n_benches,mult)
 
 offset = -7*(width+gap)
@@ -505,22 +511,19 @@ for i in range(len(y_vals_list)):
 
 
 ax.set_xticks(x)
-# ax.set_xticklabels(x_val_list)#,horizontalalignment='left', rotation=-20, rotation_mode="anchor")
-ax.set_xticklabels(x_val_list,horizontalalignment='left', rotation=-20, rotation_mode="anchor")
+ax.set_xticklabels(x_val_list)#,horizontalalignment='left', rotation=-20, rotation_mode="anchor")
 
 
-ax.set_xlim([-3.5,81.25])
+ax.set_xlim([-3.5,100])
 
 
-y = np.arange(0.5,4.0,0.05)
-y_minor = np.arange(0.8,4.0,0.01)
+y = np.arange(0.5,4.0,0.25)
+y_minor = np.arange(0.8,4.0,0.05)
 ax.set_yticks(y)
 ax.set_yticks(y_minor,minor=True)
 
-# FLAG
-
-ax.set_ylim([1.0,1.20])
-ax2.set_ylim([1.0,1.5])
+ax.set_ylim([1.0,1.3])
+ax2.set_ylim([0.9,2.0])
 
 ax.grid(which='major',alpha=0.5)
 ax.grid(which='minor',alpha=0.2)
@@ -553,24 +556,21 @@ handles.insert(8,p8[0])
 
 handles.insert(12,p12[0])
 handles.insert(15,p15[0])
-handles.insert(16,p16[0])
 
-handles.insert(20,p20[0])
-handles.insert(23,p23[0])
+
+handles.insert(16,p16[0])
 
 # handles.insert(7,proxy7[0])
 
-labels.insert(0,r'\underline{Small}')
-labels.insert(4,' ')
+labels.insert(0,'Small')
+labels.insert(4,'Medium')
 labels.insert(7,' ')
 
-labels.insert(8,r'\underline{Medium}')
-labels.insert(12,' ')
-labels.insert(15,' ')
+labels.insert(8,' ')
+labels.insert(11,' ')
+labels.insert(12,'Large')
 
-labels.insert(16,r'\underline{Large}')
-labels.insert(20,' ')
-labels.insert(23,' ')
+labels.insert(16,' ')
 
 # labels.insert(7,' ')
 
@@ -578,7 +578,7 @@ labels.insert(23,' ')
 
 # ax.legend(handles, labels,ncol=5,bbox_to_anchor=(0.225, 1.02, 1., .102))
 
-ax.legend(handles, labels,ncol=6,bbox_to_anchor=(0.075, 1.0, 0.1, .1),loc='lower left')
+ax.legend(handles, labels,ncol=5,bbox_to_anchor=(0.225, 2.02, 1., .102))
 
 # ax.legend(handles, labels,ncol=5)
 
@@ -589,7 +589,7 @@ ax.legend(handles, labels,ncol=6,bbox_to_anchor=(0.075, 1.0, 0.1, .1),loc='lower
 
 outname=f'./parsec_results/graphs/parsec_bar_{outfile_suffix}.png'
 print(f'writing out to : {outname}')
-plt.savefig(outname,bbox_inches='tight',dpi=900)
+plt.savefig(outname,bbox_inches='tight')#,dpi=800)
 print(f'wrote out to : {outname}')
 
 plt.show()

@@ -41,20 +41,37 @@ def name_num_insts(sc):
 
 def main():
 
-    benchmarks = ["blackscholes", "bodytrack", "canneal", "dedup",
-                         "facesim", "ferret", "fluidanimate", "freqmine",
-                         "raytrace", "streamcluster", "swaptions", "vips", "x264"]
+    # benchmarks = ["blackscholes", "bodytrack", "canneal", "dedup",
+    #                      "facesim", "ferret", "fluidanimate", "freqmine",
+    #                      "raytrace", "streamcluster", "swaptions", "vips", "x264"]
+
+    # important ones, in order
+    benchmarks = [ "canneal", "bodytrack",
+                        "swaptions", "fluidanimate",
+                        "facesim", "raytrace"]
+
+    # all, important in order, others not
+    benchmarks = [ "canneal", "bodytrack",
+                        "swaptions", "fluidanimate",
+                        "facesim", "raytrace",
+                        "blackscholes", "dedup",
+                        "ferret",  "freqmine",
+                        "streamcluster", "vips", "x264"]
 
 
 
-    benchmarks = ["blackscholes", "bodytrack",
-                         "facesim", "ferret", "freqmine",
-                         "raytrace", "streamcluster",
-                         "dedup",  "x264"]
+    benchmarks = [ "canneal", "bodytrack",
+                        "streamcluster", "vips", 
+                        "swaptions", "fluidanimate",
+                        "facesim", "raytrace",
+                        
+                        "ferret",  "freqmine",
+                        "blackscholes", 
+                        "dedup","x264"
+                        ]
 
-    benchmarks = ['bodytrack', 'dedup','freqmine','streamcluster',
-                    'fluidanimate','ferret']
-
+    # benchmarks = [ "dedup",
+    #                      "swaptions", "vips", "x264"]
 
     # benchmarks = ["facesim",
     #                      "raytrace", ]
@@ -71,12 +88,36 @@ def main():
 
     description = 'repeated_benchmarks'
 
-    n_inst = 100000
+    description = 'bsorm_w_warmup'
+
+    description = '4reps_8evns_cload'
+
+    description = '9evns_bsorm_cload'
+
+    # description = 'timing_simple_picky_small_cload_4reps'
+    description = 'mesh_all_clk_o3_simple_cload_4reps'
+
+    description = 'cload_picky_4reps_8evns_fast_smallL2'
+
+    description = 'small_bits_and_cache'
+
+    description = 'last_second_10m_8reps'
+
+    niceness = 5
+
+    n_inst = 100000000
     try:
         n_inst = int(sys.argv[1])
     except:
         pass
     inst_str = name_num_insts(n_inst)
+
+    n_warmup = 100000000
+    try:
+        n_warmup = int(sys.argv[2])
+    except:
+        pass
+    warm_str = name_num_insts(n_warmup)
 
     map_files = []
     # map_files_dir = './configs/topologies/map_files/'
@@ -95,12 +136,22 @@ def main():
         topologies.append(topo)
 
     # topologies = [a for a in topologies if a in desired_topologies]
-    # topologies = [a for a in topologies if '20r' in a]
+    # topologies = [a for a in topologies if 'small' in a or '_s_' in a or 'mesh' in a]
+    # topologies = [a for a in topologies if 'med' in a or '_m_' in a ]
+
+    #topologies = [a for a in topologies if 'cmesh' not in a]
+
+    # topologies = [a for a in topologies if 'cmesh' not in a]
+
+    # topologies = [a for a in topologies if 'small' in a or '_l_' in a or 'mesh' in a or '_m_' in a]
 
     print(f'topologies={topologies}')
     # quit()
 
-    alg_types = ['naive']
+    # alg_types = ['naive','cload','bsorm']
+
+    alg_types = ['cload_picky']#,'bsorm_picky']
+
     lb_types = ['hops']
 
 
@@ -119,7 +170,10 @@ def main():
     s = '#!/bin/bash\n'
     lines.append(s)
 
-    s = 'TLIM="20-00:00:00"\n'
+    s = 'TLIM="16-00:00:00"\n'
+    lines.append(s)
+
+    s = f'NICE={niceness}\n'
     lines.append(s)
 
     cpu_freqs= [i/10 for i in range(18,30,3)]
@@ -128,20 +182,65 @@ def main():
 
     l2_sizes = ['250kB','500kB','2MB']
     l2_sizes = ['500kB']
+    l2_sizes = ['2MB']
+    n_l2s = 64
 
-    reps = [4]
+    reps = 8
+    n_evns = 8
+    tot_vcs = 10
+    # is_picky = True
+
+    use_simple = [False]
+    all_threads = True
+    link_widths = [None]#[32,64]
+    router_lat = None
 
     for js in jobscripts:
         for cf in cpu_freqs:
             for l2s in l2_sizes:
-                for rs in reps:
-                    clk_str = f'{cf}GHz'.replace('.','')
-                    # s = f'sbatch --exclude=mnemosyne -t $TLIM slurm/job_scripts/parsec_noci_largemem_{clk_str}/{inst_str}/{js}\n'
-                    s = f'sbatch --exclude=mnemosyne -t $TLIM slurm/job_scripts/parsec_noci_32GB_l2caches_{rs}reps_{clk_str}_{l2s}/{inst_str}/{js}\n'
+                for us in use_simple:
+                    for lw in link_widths:
+                        clk_str = f'{cf}GHz'.replace('.','')
+                        # s = f'sbatch --exclude=mnemosyne -t $TLIM slurm/job_scripts/parsec_noci_largemem_{clk_str}/{inst_str}/{js}\n'
 
-                    # s = f'sbatch --exclude=mnemosyne -t $TLIM slurm/job_scripts/parsec_noci_largemem/{inst_str}/{js}\n'
+                        js_path = f'slurm/job_scripts/parsec_noci_32GBxDDR4_l2caches'
 
-                    lines.append(s)
+                        if reps is not None:
+                            js_path += f'_{reps}reps'
+                        if n_evns is not None:
+                            js_path += f'_{n_evns}evns'
+                        if tot_vcs != 10:
+                            js_path += f'_{tot_vcs}vcs'
+                        # if is_picky:
+                        #     js_path += '_picky'
+
+                        js_path += f'_{clk_str}_{l2s}'
+
+                        if n_l2s == 4:
+                            js_path += f'x{n_l2s}'
+
+                        if us:
+                            js_path += f'_timingsimple'
+
+                        if all_threads:
+                            js_path += f'_allthreads'
+
+                        if lw is not None:
+                            js_path += f'_{lw}lwidth'
+
+                        if router_lat is not None:
+                            js_path += f'_{router_lat}rlat'
+
+                        js_path += f'/{warm_str}warmup_{inst_str}simul/{js}'
+
+                        s = f'sbatch --exclude=mnemosyne --nice=$NICE -t $TLIM {js_path}\n'
+
+
+
+
+                        # s = f'sbatch --exclude=mnemosyne -t $TLIM slurm/job_scripts/parsec_noci_largemem/{inst_str}/{js}\n'
+
+                        lines.append(s)
 
     print(lines)
 

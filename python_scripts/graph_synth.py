@@ -11,13 +11,13 @@ global out_fig_name
 out_fig_name = 'outputs/graphs/synth_2b.png'
 
 metrics = ['average_flit_latency']
+metrics = ['average_packet_latency']
+
 
 kite_paper_topologies = ['kite_small', 'butter_donut_x', 'cmesh',
 'cmesh_x', 'dbl_bfly', 'kite_large', 'kite_medium', 'mesh']
 
 ours_simple = ['20r_15ll_opt','20r_2ll_opt','20r_25ll_timed3days',]
-
-ours_simple = ['ns_s_latop']
 
 ours_constrained = [
 
@@ -34,7 +34,20 @@ ours_constrained = [
 
 desired_topologies = kite_paper_topologies + ours_simple
 
+desired_topologies=[\
+#     '20r_15ll_opt', '20r_15ll_opt_ulinks',
+# '20r_25ll_timed7days', '20r_25ll_timed7days_ulinks',
+# '20r_2ll_opt', '20r_2ll_runsol_ulinks',
 
+'butter_donut_x', 'dbl_bfly_x',
+'kite_large', 'kite_medium', 'kite_small',
+# 'cmesh_x', 'mesh',
+'ft_x',
+'ns_s_latop','ns_s_bwop',
+'ns_m_latop','ns_m_bwop',
+'ns_l_latop','ns_l_bwop',
+'lpbt_s_latop','lpbt_s_power',
+'lpbt_m_latop']
 
 global leg_labels
 leg_labels = []
@@ -90,6 +103,8 @@ def parse_row(row):
             val = None
 
         data[if_same_mixed][if_mem_coh][config][inj_rate].append(val)
+
+    # print(f'row={row} : {val}')
     
 
 def parse_synth_data_():
@@ -102,7 +117,7 @@ def parse_synth_data_():
     with open(file_name, 'r') as file:
         csv_file = csv.DictReader(file)
 
-        # print('opened')
+        print('opened')
 
         for row in csv_file:
             # print(row)
@@ -260,6 +275,7 @@ def plot_all_synth_traffic():
     # plt.legend()#loc = 'upper left')
     plt.legend(leg_labels[0],leg_labels[1])
     plt.savefig(out_fig_name,dpi=1000,bbox_inches='tight')
+    print(f'wrote to {out_fig_name}')
     plt.show()
     
 
@@ -280,6 +296,8 @@ def main():
 
 
     parse_synth_data_()
+
+    print(f'data({len(data)})={data}')
 
     plot_all_synth_traffic()
 

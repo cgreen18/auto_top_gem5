@@ -8,7 +8,7 @@ import argparse
 import numpy as np
 
 
-MAX_PROCS = 16
+MAX_PROCS = 8
 
 global num_threads
 num_threads = 0
@@ -24,7 +24,7 @@ home = '/home/yara/mithuna2/green456/netsmith_autotop/auto_top_gem5'
 setup = ['cd', home, ';', 'module','load','gcc',';']
 gem5_build = './build/Garnet_standalone/gem5.fast'
 conf_script = 'configs/auto_top/auto_top_synth.py'
-topo_conf_script = 'NoCI_EscapeVirtualNetworks'
+topo_conf_script = 'EscapeVirtualNetworks'
 topology_to_n_routers_dict = {
     'cmesh_x':'20',
     'butter_donut_x':'20',
@@ -110,7 +110,7 @@ base_flags = ['--network','garnet',
 
 
 global outdir
-outdir = './synth_outputs/noci'
+outdir = './synth_outputs/simple'
 
 class BenchmarkRun:
 
@@ -237,7 +237,7 @@ class BenchmarkRun:
         # coh
         else:
 
-            cmd += ['--num-dirs', '64']
+            cmd += ['--num-dirs', '20']
             # cmd += ['--num-dirs', '40']
 
             cmd += ['--mem_or_coh','coh']
@@ -246,7 +246,7 @@ class BenchmarkRun:
             if self.n_routers == '20':
                 cmd += ['--mem-size','536870900']
 
-        cmd += ['--num-cpus','64']
+        cmd += ['--num-cpus','20']
 
         cmd += base_flags
 
@@ -257,7 +257,7 @@ class BenchmarkRun:
 
         # comment in/out to test script
         ###############################################################
-        return
+        # return
 
         # res = None
 
@@ -333,6 +333,8 @@ def main():
     parser.add_argument('--inj_end',type=float,default=0.1)
     parser.add_argument('--inj_step',type=float,default=0.01)
 
+    parser.add_argument('--one_topo',type=str)
+
 
     parser.add_argument('--map_file_dir',type=str,default='./configs/topologies/paper_solutions/')
 
@@ -400,12 +402,21 @@ def main():
 
     map_files = [m for m in map_files if 'noci' not in m]
     map_files = [m for m in map_files if '20' not in m]
+    map_files = [m for m in map_files if 'cmesh' not in m]
+    map_files = [m for m in map_files if 'mesh' not in m]
+    map_files = [m for m in map_files if 'memopt' not in m and 'cohopt' not in m]
+
+    if args.one_topo:
+        map_files = [m for m in map_files if args.one_topo in m]
 
     ###################################################################
 
 
     # map_files = [s for s in map_files if 'butter' in s]
     map_files = [s for s in map_files if 'noci' not in s]
+
+    print(f'{map_files}')
+    # quit()
 
     alg_types = ['naive','bsorm','bsorm_zindexed','cload','cload_zindexed']
 
@@ -414,7 +425,7 @@ def main():
     elif args.bsorm_only:
         alg_types = ['bsorm','bsorm_zindexed']
     elif args.cload_only:
-        alg_types = ['cload','cload_zindexed']
+        alg_types = ['cload']#,'cload_zindexed']
 
 
     lb_types = ['none','hops','paths']
@@ -444,7 +455,6 @@ def main():
     #quit()
 
     threads = [threading.Thread(target=run_benchmark, args=(x,)) for x in runs]
-
 
     # threads = [threads[0]]
 
