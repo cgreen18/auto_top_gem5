@@ -709,3 +709,73 @@ Dumping and resetting stats...
 # LEARNED
 # passing --restore-with-cpu X86KvmCPU will cause seg fault
 
+
+#######################################################################
+# System 6: 64 cores w/ 64x 2MB L2s
+#######################################################################
+
+# the system(s) I want
+
+# "system_5" : 64 cpus, 16 dirs, checkpoint w/o ruby, restore w/ ruby, 64 l2caches of 2MB, 1.8GHz clock
+# 32GB mem minimum (more is better)
+# linux kernel 5.4.49
+
+
+# boot checkpoint
+#################
+
+runscript = m5 checkpoint; m5 readfile | bash
+called "configs/auto_top/runscripts/boot_chkpt_readfile"
+
+
+./build/X86/gem5.fast
+-d ./after_boot/system_6/
+configs/auto_top/auto_top_fs_kvm_loop.py
+
+--num-cpus 64 --num-dirs 16
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--cpu-type X86KvmCPU
+--script configs/auto_top/runscripts/boot_chkpt_readfile
+--caches
+--l2_size 2MB --num-l2caches 64
+--sys-clock 1.8GHz
+
+# one line
+./build/X86/gem5.fast -d ./after_boot/system_6/ configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 64 --num-dirs 16 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --script configs/auto_top/runscripts/boot_chkpt_readfile --caches --l2_size 2MB --num-l2caches 64 --sys-clock 1.8GHz
+
+
+#######################################################################
+# System 7: 64 cores w/ 4x 2MB L2s
+#######################################################################
+
+# the system(s) I want
+
+# "system_5" : 64 cpus, 16 dirs, checkpoint w/o ruby, restore w/ ruby, 4 l2caches of 2MB, 1.8GHz clock
+# 32GB mem minimum (more is better)
+# linux kernel 5.4.49
+
+
+# boot checkpoint
+#################
+
+runscript = m5 checkpoint; m5 readfile | bash
+called "configs/auto_top/runscripts/boot_chkpt_readfile"
+
+
+./build/X86/gem5.fast
+-d ./after_boot/system_7/
+configs/auto_top/auto_top_fs_kvm_loop.py
+
+--num-cpus 64 --num-dirs 16
+--mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--cpu-type X86KvmCPU
+--script configs/auto_top/runscripts/boot_chkpt_readfile
+--caches
+--l2_size 2MB --num-l2caches 4
+--sys-clock 1.8GHz
+
+# one line
+./build/X86/gem5.fast -d ./after_boot/system_7/ configs/auto_top/auto_top_fs_kvm_loop.py --num-cpus 64 --num-dirs 16 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --script configs/auto_top/runscripts/boot_chkpt_readfile --caches --l2_size 2MB --num-l2caches 4 --sys-clock 1.8GHz
+

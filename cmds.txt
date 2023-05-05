@@ -198,3 +198,6 @@ run --debug-break=3892 configs/auto_top/auto_top_synth.py --topology NoCI_Escape
 
 
 ./build/X86/gem5.fast -d ./test_readfile_restore configs/auto_top/auto_top_fs.py --num-cpus 64 --num-dirs 16 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --mem-size 32GB  --work-begin-checkpoint-count 1 -r 1 --checkpoint-dir ./test_readfile/ --script configs/auto_top/runscripts/guest_1_runscript
+
+
+./build/X86/gem5.fast -d ./parsec_noci_checkpoints/roi_checkpoint/system_5/bodytrack_4reps configs/auto_top/auto_top_fs_readfile_loop.py --num-cpus 64 --num-dirs 16 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --caches --l2_size 500kB --num-l2caches 64 --sys-clock 1.8GHz --benchmark_parsec bodytrack --restore-with-cpu X86KvmCPU -r 1 --checkpoint-dir ./after_boot/system_5/
