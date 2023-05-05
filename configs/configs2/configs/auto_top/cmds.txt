@@ -1,0 +1,23 @@
+
+#32r
+./build/Garnet_standalone/gem5.opt configs/auto_top/synth_fromfile_normal.py --num-cpus=32 --num-dirs=32 --network=garnet --topology=Simplest --sim-cycles=10000 --synthetic=uniform_random --injectionrate=0.01 --router_map_file=configs/topologies/sol_files/autotop_r32_p4_ll10.sol
+
+
+
+./build/Garnet_standalone/gem5.opt configs/example/garnet_synth_traffic.py  --num-cpus=40 --num-dirs=1 --network=garnet --topology=CrossbarGarnet --sim-cycles=1000 --synthetic=uniform_random --injectionrate=0.01
+
+
+# simplest. 1:1 ratio of routers to cpus/dirs. equal num cpus and dirs
+./build/Garnet_standalone/gem5.opt configs/auto_top/synth_fromfile_normal.py --num-cpus=20 --num-dirs=20 --network=garnet --topology=Simplest --sim-cycles=10000 --synthetic=uniform_random --injectionrate=0.01 --interleaving-bits 5
+
+# simple (no mems that only write) misaligned: 20r, 64 cpu, 64 dir. Read topo from file
+./build/Garnet_standalone/gem5.opt configs/auto_top/synth_fromfile_normal.py --num-cpus=64 --num-dirs=64 --network=garnet --topology=Simple_Misaligned --sim-cycles=10000 --synthetic=uniform_random --injectionrate=0.01
+
+
+# simple (no mems that only write) misaligned noc and noi: 20 noi routers. 64 noc routers. 64 cpu and dir. read interposer topo from file
+./build/Garnet_standalone/gem5.opt configs/auto_top/synth_fromfile_normal.py --num-cpus=64 --num-dirs=64 --network=garnet --topology=Simple_Misaligned_NoC_NoI --sim-cycles=10000 --synthetic=uniform_random --injectionrate=0.01
+
+
+# superimposed (not simple)
+# simplest. 1:1 ratio of routers to cpus/dirs. equal num cpus and dirs
+./build/Garnet_standalone/gem5.opt --debug-flags=GarnetSyntheticTraffic configs/auto_top/synth_fromfile_superimposednetworks.py --num-cpus=64 --num-dirs=80 --num_mems=16 --network=garnet --topology=Superimposed_Misaligned --sim-cycles=100000 --synthetic=uniform_random --injectionrate=0.05
