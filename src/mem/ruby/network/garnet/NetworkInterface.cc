@@ -261,18 +261,10 @@ NetworkInterface::wakeup()
             int vnet = t_flit->get_vnet();
             t_flit->set_dequeue_time(curTick());
 
-            DPRINTF(RubyNetwork,"FLAG vnet=%d   p\n",
-                vnet);
-
-            DPRINTF(RubyNetwork, "size of outNode_ptr = %d\n",outNode_ptr.size());
-
             MessageBuffer * temp = outNode_ptr[vnet];
-
-            DPRINTF(RubyNetwork, "Error was not accessing butter ptr\n");
 
             bool slots_avail = temp->areNSlotsAvailable(1, curTime);
 
-            DPRINTF(RubyNetwork, "Error was not accessing N slots avail\n");
 
 
             // If a tail flit is received, enqueue into the protocol buffers
