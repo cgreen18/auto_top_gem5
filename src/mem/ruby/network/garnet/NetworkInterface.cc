@@ -137,9 +137,6 @@ NetworkInterface::addNode(std::vector<MessageBuffer *>& in,
     inNode_ptr = in;
     outNode_ptr = out;
 
-    DPRINTF(RubyNetwork,"FLAGFLAG setting outNode_ptr (size %d) for NI %d\n",
-        outNode_ptr.size(),m_id);
-
     for (auto& it : in) {
         if (it != nullptr) {
             it->setConsumer(this);
@@ -561,6 +558,8 @@ NetworkInterface::calculate_valid_evn(int vnet, int evn_class)
     int class_rel_vc_base = m_evn_deadlock_partition + evn_class*m_n_deadlock_free;
 
     for(int i = 0; i < m_n_deadlock_free; i++){
+
+        // continue;
 
         // dont do round-robin. it gets weird with the different eVNs
         // just check through this class' options
