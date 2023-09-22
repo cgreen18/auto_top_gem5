@@ -1,0 +1,11 @@
+sim_cycles,mixed_or_same,mem_or_coh,config,alg,inj_rate,average_packet_latency,packets_received::total,packets_injected::total
+2b,same,coh,butter_donut_x,naive,0_2,14188.453838,15432431.0,15432545.0
+2b,same,coh,butter_donut_x,naive,0_23,10495.631971,12907924.0,12908051.0
+2b,same,coh,butter_donut_x,naive,0_22,9746.672666,12336724.0,12336860.0
+2b,same,coh,butter_donut_x,naive,0_26,15577.709054,14567360.0,14567483.0
+2b,same,coh,butter_donut_x,naive,0_27,69892.619689,14649136.0,14649268.0
+2b,same,coh,butter_donut_x,naive,0_21,11553.247116,12930535.0,12930649.0
+2b,same,coh,butter_donut_x,naive,0_24,16727.572754,13518725.0,13518857.0
+2b,same,coh,butter_donut_x,naive,0_25,11743.805405,13990190.0,13990314.0
+2b,same,coh,butter_donut_x,naive,0_28
+2b,same,coh,butter_donut_x,naive,0_29
