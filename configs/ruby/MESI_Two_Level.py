@@ -73,6 +73,7 @@ def create_system(options, full_system, system, dma_ports, bootmem,
                             assoc = options.l1i_assoc,
                             start_index_bit = block_size_bits,
                             is_icache = True)
+
         l1d_cache = L1Cache(size = options.l1d_size,
                             assoc = options.l1d_assoc,
                             start_index_bit = block_size_bits,

@@ -74,6 +74,8 @@ def config_cache(options, system):
         print("External caches and internal caches are exclusive options.\n")
         sys.exit(1)
 
+    print(f'in cache config')
+
     if options.external_memory_system:
         ExternalCache = ExternalCacheFactory(options.external_memory_system)
 
@@ -114,6 +116,8 @@ def config_cache(options, system):
     if options.l2cache and options.elastic_trace_en:
         fatal("When elastic trace is enabled, do not configure L2 caches.")
 
+    # print(f'l2_cache_class={l2_cache_class} w/ attrs {l2_cache_class.__dict__}')
+    # quit(-1)
     if options.l2cache:
         # Provide a clock for the L2 and the L1-to-L2 bus here as they
         # are not connected using addTwoLevelCacheHierarchy. Use the

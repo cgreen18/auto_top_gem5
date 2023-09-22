@@ -22,7 +22,7 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
         n_cpus = options.num_cpus
         n_dirs = options.num_dirs
         n_noi_routers = options.noi_routers
-        n_noc_routers = n_cpus
+        n_noc_routers = 64
         n_chiplets = options.num_chiplets
 
         # traffic type
@@ -64,11 +64,12 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
         dmas = [n for n in nodes if n.type == 'DMA_Controller']
         others = [n for n in nodes if n not in l1_caches and n not in l2_caches and n not in dirs and n not in dmas]
 
-        # print(f'l1_caches({len(l1_caches)})={l1_caches}')
-        # print(f'l2_caches({len(l2_caches)})={l2_caches}')
-        # print(f'dirs({len(dirs)})={dirs}')
-        # print(f'dmas({len(dmas)})={dmas}')
-        # print(f'others({len(others)})={others}')
+
+        print(f'l1_caches({len(l1_caches)})={l1_caches}')
+        print(f'l2_caches({len(l2_caches)})={l2_caches}')
+        print(f'dirs({len(dirs)})={dirs}')
+        print(f'dmas({len(dmas)})={dmas}')
+        print(f'others({len(others)})={others}')
 
         # assert(n_cpus == len(caches))
         # assert(n_noi_routers == n_cpus)
@@ -108,6 +109,8 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
         flat_vn_map = self.ingest_flat_map(flat_vn_map_path, n_routers)
 
         # print(f'Ingested flat nr_maps({len(flat_nr_maps)})=\n\t{flat_nr_maps}')
+
+        # print(f'flat_nr_maps[46] (len {len(flat_nr_maps[46])})={flat_nr_maps[46]}')
 
         # print(f'Ingested flat vc map({len(flat_vn_map)})=\n\t{flat_vn_map}')
         # quit(-1)
@@ -173,7 +176,7 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
         ###############################################################
 
         # l1s -> noc routers
-        assert(len(l1_caches) == n_cpus)
+        # assert(len(l1_caches) == n_cpus)
         for i in range(len(l1_caches)):
             idx = n_noi_routers + i
             # print(f'Adding external link: l1 cache node {i} <-> router {idx} ')
@@ -227,10 +230,12 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
                 link_count += 1
 
         # dmas -> noc routers
-        assert(len(dmas) == 2)
+        # assert(len(dmas) == 2)
         dma_noi_routers = [5,14]
         if n_noi_routers == 64:
             dma_noi_routers = [24,39]
+
+        dma_noi_routers = [0,4,5,9,10,14,15,19,0,4,5,9,10,14,15,19,0,4,5,9,10,14,15,19,0,4,5,9,10,14,15,19]
 
         for i in range(len(dmas)):
             idx = dma_noi_routers[i]
@@ -247,7 +252,7 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
         # if coh
         if is_mem_or_coh == 'coh':
             for i in range(n_dirs):
-                idx = n_noi_routers + i
+                idx = (n_noi_routers + i) % n_cpus
                 # print(f'Adding external link (id {link_count}): (coherence) dir node {i} <-> router {idx}')
 
                 ext_links.append(ExtLink(link_id=link_count,
@@ -424,6 +429,8 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
         network.ext_links = ext_links
         network.routers = routers
 
+        # quit(-1)
+
     # Register nodes with filesystem
     def registerTopology(self, options):
 
@@ -506,10 +513,14 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
 
     def ingest_flat_map_list(self, path_name, n_routers):
 
-        print(f'ingesting {path_name}')
+        print(f'ingesting {path_name} w/ # rotuers = {n_routers}')
+        # quit()
 
         routing_alg = None
         flat_nr_map = []
+        nr_map_dict = {}
+
+        iter = 0
 
         with open(path_name, 'r') as inf:
             routing_alg = inf.readline()
@@ -524,18 +535,40 @@ class FS_NoCI_EscapeVirtualNetworks(SimpleTopology):
                     as_list = ast.literal_eval(thisline)
                     clean_as_list = [e for e in as_list]
 
-                    # print(f'\trouting table for router {i} '+
-                    #     f' row (src) {j} : {clean_as_list}')
-                    # flat_nr_map.append(clean_as_list)
+                    # print(f'\titer {iter}. routing table for router {i} '+
+                    #     f' row (src) {j} : (len {len(clean_as_list)})\n\t{clean_as_list}')
+                    flat_nr_map.append(clean_as_list)
                     a_routers_map += clean_as_list
 
-                flat_nr_map.append(a_routers_map)
+                    iter += 1
+                
+                # print(f'\titer {iter}. routing table for router {i} '+
+                #     f' : (len {len(a_routers_map)})') #\n\t{a_routers_map}')
+
+                # if i >= 0:
+                #     inp = input('cont?')
+                #     if 'n' in inp:
+                #         quit(-1)
+
+                flat_nr_map.append(a_routers_map.copy())
+                nr_map_dict.update({i : a_routers_map.copy()})
+        #         print(f'\tflat_nr_map({len(flat_nr_map)}x{len(flat_nr_map[0])})')
 
 
-        # print(f'flat_nr_map({len(flat_nr_map)}) = {flat_nr_map}')
+        # print(f'flat_nr_map({len(flat_nr_map)})')
         # for alist in flat_nr_map:
         #     for row in alist:
         #         print(f'{row}')
+
+        new_flat = []
+        for i, r_nrl in nr_map_dict.items():
+            new_flat.append(r_nrl)
+        #     print(f'\tnew_flat_nr_map({len(new_flat)}x{len(new_flat[0])})')
+
+
+        # print(f'new_flat({len(new_flat)})')
+
+
         # quit(-1)
 
-        return (flat_nr_map, routing_alg)
+        return (new_flat, routing_alg)

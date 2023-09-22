@@ -24,6 +24,7 @@ class EscapeVirtualNetworks(SimpleTopology):
 
         is_mem_or_coh = options.mem_or_coh
 
+        cpu_clk = options.ruby_clock
         noi_clk = options.noi_clk
 
 
@@ -123,45 +124,53 @@ class EscapeVirtualNetworks(SimpleTopology):
 
         ############################################################################################################################3
 
+        ext_cdc_required = True
+        if noi_clk == cpu_clk:
+            ext_cdc_required = False
 
-        for r in range(n_noi_routers):
-            routers[r].clk_domain = noi_clk_domain
+        if ext_cdc_required:
+            for r in range(n_noi_routers):
+                routers[r].clk_domain = noi_clk_domain
 
         int_links = []
         ext_links = []
+
 
         # ext links
         # l1s/dirs -> routers
         link_count = 0
         for i in range(n_cpus):
-            print(f'Adding external link: l1 cache node {i} <-> router {i} ')
             idx = i % n_routers
+            print(f'Adding external link: l1 cache node {i} <-> noi router {idx} ')
+            
             ext_links.append(ExtLink(link_id=link_count,
                                     ext_node= caches[i],
                                     int_node= routers[idx],
                                     latency=link_latency,
-                                    ext_cdc=True))
+                                    ext_cdc=ext_cdc_required))
             link_count += 1
+
 
 
         # if coh
         if is_mem_or_coh == 'coh':
             for i in range(n_dirs):
-                print(f'Adding external link (id {link_count}): dir node {i} <-> noc router {i}')
                 idx = i % n_routers
+                print(f'Adding external link (id {link_count}): dir node {i} <-> noi router {idx}')
+
                 ext_links.append(ExtLink(link_id=link_count,
                                         ext_node= dirs[i],
                                         int_node= routers[idx],
                                         latency=link_latency,
-                                        ext_cdc=True))
+                                        ext_cdc=ext_cdc_required))
                 link_count += 1
 
         else:
             edges = []
             if n_noi_routers == 20:
                 edges = [0,4,5,9,10,14,15,19]
-                dirs_per_router = n_dirs // len(edges)
-                edges = edges*dirs_per_router
+                
+
             elif n_noi_routers == 24:
                 edges = [0,5,6,11,12,17,18,23]
             elif n_noi_routers == 64:
@@ -170,6 +179,9 @@ class EscapeVirtualNetworks(SimpleTopology):
             else:
                 print('error on n_noi_routers')
                 quit(-1)
+
+            dirs_per_router = n_dirs // len(edges)
+            edges = edges*dirs_per_router
 
             # print(f'edges({len(edges)})={edges}')
             # print(f'n_dirs={n_dirs}')
@@ -180,12 +192,12 @@ class EscapeVirtualNetworks(SimpleTopology):
 
                 # idx = i % n_routers
                 targ = edges[i]
-                # print(f'Adding external link (id {link_count}): dir node {i} <-> noi router {targ}')
+                print(f'Adding external link (id {link_count}): dir node {i} <-> noi router {targ}')
                 ext_links.append(ExtLink(link_id=link_count,
                                         ext_node= dirs[i],
                                         int_node= routers[targ],
                                         latency=link_latency,
-                                        ext_cdc=True))
+                                        ext_cdc=ext_cdc_required))
                 link_count += 1
 
 
@@ -277,6 +289,16 @@ class EscapeVirtualNetworks(SimpleTopology):
     #     for i in range(n_cpus):
     #         FileSystemConfig.register_node([i],
     #                 per_cpu, i)
+
+    # Register nodes with filesystem
+    def registerTopology(self, options):
+
+        n_cpus = options.num_cpus
+        per_cpu = MemorySize(options.mem_size) // n_cpus
+        print(f'per_cpu={per_cpu}')
+        for i in range(n_cpus):
+            FileSystemConfig.register_node([i],
+                    per_cpu, i)
 
     def calc_vll_mat(self, n_routers):
 

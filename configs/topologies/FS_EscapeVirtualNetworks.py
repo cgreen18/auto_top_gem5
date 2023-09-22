@@ -38,6 +38,8 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
         # N_CPUS = 20
         # assert(n_cpus == N_CPUS)
 
+        # print(f'nodes={nodes}')
+
 
 
         l1_caches = [n for n in nodes if n.type == 'L1Cache_Controller']
@@ -138,7 +140,8 @@ class FS_EscapeVirtualNetworks(SimpleTopology):
             link_count += 1
 
         # l2s -> noc routers
-        assert(len(l2_caches) == 4 or len(l2_caches) == 64 or len(l2_caches) == 20)
+        print(f'{len(l2_caches)}')
+        assert(len(l2_caches) == 4 or len(l2_caches) == 64 or len(l2_caches) == 20 or len(l2_caches) == 0)
 
         if len(l2_caches) == 4:
             l2_noc_routers = [18, 21, 42, 45]

@@ -183,6 +183,10 @@ def create_topology(controllers, options):
         found in configs/topologies/BaseTopology.py
         This is a wrapper for the legacy topologies.
     """
+
+    # print(f'Creating topology for controllers {controllers}')
+    # quit()
+
     exec("import topologies.%s as Topo" % options.topology)
     topology = eval("Topo.%s(controllers)" % options.topology)
     return topology
@@ -218,6 +222,7 @@ def create_system(options, full_system, system, piobus = None, dma_ports = [],
     # Create the network topology
     topology.makeTopology(options, network, IntLinkClass, ExtLinkClass,
             RouterClass)
+
 
     # Register the topology elements with faux filesystem (SE mode only)
     if not full_system:

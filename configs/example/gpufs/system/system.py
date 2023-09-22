@@ -82,10 +82,25 @@ def makeGpuFSSystem(args):
     # Setup VGA ROM region
     system.shadow_rom_ranges = [AddrRange(0xc0000, size = Addr('128kB'))]
 
+    CPUClass = ObjectList.cpu_list.get(args.cpu_type)
+
     # Create specified number of CPUs. GPUFS really only needs one.
-    system.cpu = [X86KvmCPU(clk_domain=system.cpu_clk_domain, cpu_id=i)
+    # system.cpu = [X86KvmCPU(clk_domain=system.cpu_clk_domain, cpu_id=i)
+    #                 for i in range(args.num_cpus)]
+    # system.cpu = [X86O3CPU(clk_domain=system.cpu_clk_domain, cpu_id=i)
+    #                 for i in range(args.num_cpus)]
+
+    system.cpu = [CPUClass(clk_domain=system.cpu_clk_domain, cpu_id=i)
                     for i in range(args.num_cpus)]
+
+    print(f'cpu = {CPUClass}')
+    # quit()
+
+    # system.cpu[0].max_insts_all_threads = args.maxinsts
+    
     system.kvm_vm = KvmVM()
+
+    print(f'after creating KVM CPU')
 
     # Create AMDGPU and attach to southbridge
     shader = createGPU(system, args)
@@ -166,9 +181,29 @@ def makeGpuFSSystem(args):
     GPUTLBConfig.config_tlb_hierarchy(args, system, shader_idx,
                                       system.pc.south_bridge.gpu, True)
 
+
+    print(f'About to create the Disjoint_VIPER ruby system')
+    # quit(-1)
+
     # Create Ruby system using disjoint VIPER topology
     system.ruby = Disjoint_VIPER()
+
+    print(f' system._dma_ports ({len(system._dma_ports)}) = { system._dma_ports}')
+    # quit(-1)
+
+    # this eventually gets to topology
     system.ruby.create(args, system, system.iobus, system._dma_ports)
+
+    print(f'After Disjoint_VIPER ruby creation')
+    print(f' system.ruby = { system.ruby}')
+
+    # print(f'\tattrs...')
+    # for k,v in system.ruby.__dict__.items():
+    #     print(f'\t\t{k} : {v}')
+    # print('-'*72)
+    
+    # # print(f'\t{ system.ruby.__dict__}')
+    # quit(-1)
 
     # Create a seperate clock domain for Ruby
     system.ruby.clk_domain = SrcClockDomain(clock = args.ruby_clock,

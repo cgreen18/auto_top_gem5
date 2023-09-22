@@ -360,6 +360,11 @@ def build_drive_system(np):
 
     return drive_sys
 
+
+
+
+
+
 # Add args
 parser = argparse.ArgumentParser()
 Options.addCommonOptions(parser)
@@ -439,6 +444,20 @@ parser.add_argument('--max_insts_after_boot',type=int,default=1000000000)
 parser.add_argument('--insts_after_warmup',type=int,default=100000)
 
 
+
+
+
+
+
+
+    # use these configs
+    # https://github.com/darchr/gem5-skylake-config/blob/master/
+
+
+
+
+
+
 # Add the ruby specific and protocol specific args
 if '--ruby' in sys.argv:
     Ruby.define_options(parser)
@@ -490,6 +509,8 @@ if args.benchmark_parsec is not None:
 if args.script:
     command_file_name = args.script
 
+
+# replace skylake system here?
 test_sys = build_test_system(np, command_file_name)
 
 

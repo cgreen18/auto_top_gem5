@@ -387,7 +387,7 @@ np = args.num_cpus
 bench = args.benchmark_parsec
 
 guest_num = 2
-command_file_name = writeBootScript('configs/auto_top/runscripts', guest_num)
+command_file_name = writeBootScript('configs/auto_top/runscripts')
 
 test_sys = build_test_system(np, command_file_name , bm)
 

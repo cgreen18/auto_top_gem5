@@ -99,10 +99,22 @@ def runGpuFSSystem(args):
     args.num_scalar_cache = \
             int(math.ceil(float(n_cu) / args.cu_per_scalar_cache))
 
+    # error here?
     system = makeGpuFSSystem(args)
+    print(f'after making GPUFSSystem')
+    # quit(-1)
 
     root = Root(full_system = True, system = system,
                 time_sync_enable = True, time_sync_period = '1000us')
+
+    if args.cpu_type != 'X86KvmCPU':
+        root.system.mem_mode = 'timing'
+
+    # print(f'\tattrs...')
+    # for k,v in system.ruby.__dict__.items():
+    #     print(f'\t\t{k} : {v}')
+    # print('-'*72)
+    # quit(-1)
 
     if args.script is not None:
         system.readfile = args.script
@@ -113,16 +125,25 @@ def runGpuFSSystem(args):
         m5.instantiate(args.restore_dir)
 
 
-    print("Running the simulation")
+    # print("Running the simulation")
+    # quit(-1)
     sim_ticks = args.abs_max_tick
 
-    exit_event = m5.simulate(sim_ticks)
+    print(f"Running the simulation for sim_ticks={sim_ticks}")
+    # quit(-1)
+    exit_event = m5.simulate() # m5.simulate(sim_ticks)
+
 
     # Keep executing while there is something to do
     while True:
-        if exit_event.getCause() == "m5_exit instruction encountered" or \
-            exit_event.getCause() == "user interrupt received" or \
+        if exit_event.getCause() == "m5_exit instruction encountered":
+            print('m5_exit event: %s. Continuing...'
+                    % exit_event.getCause())
+            break
+        elif exit_event.getCause() == "user interrupt received" or \
             exit_event.getCause() == "simulate() limit reached":
+            break
+        elif exit_event.getCause() == "all threads reached the max instruction count":
             break
         elif "checkpoint" in exit_event.getCause():
             assert(args.checkpoint_dir is not None)

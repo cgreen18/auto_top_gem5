@@ -67,6 +67,9 @@ class DisjointSimple(SimpleNetwork):
 
         self.initSimple(opts, self.int_links, self.ext_links)
 
+        print(f'entered simple DisjointNetwork')
+        quit()
+
 
     def initSimple(self, opts, int_links, ext_links):
 
@@ -86,10 +89,15 @@ class DisjointGarnet(GarnetNetwork):
 
     def connectCPU(self, opts, controllers):
 
+        print(f'DisjointNetwork.py:: DisjointGarnet:: connectCPU():: opts={opts}')
+
         # Setup parameters for makeTopology call for CPU network
         topo_module = import_module("topologies.%s" % opts.cpu_topology)
         topo_class = getattr(topo_module, opts.cpu_topology)
         _topo = topo_class(controllers)
+
+        print(f'DisjointNetwork.py:: DisjointGarnet:: connectCPU():: topo_class={_topo}')
+
         _topo.makeTopology(opts, self, GarnetIntLink,
                            GarnetExtLink, GarnetRouter)
 
@@ -101,7 +109,14 @@ class DisjointGarnet(GarnetNetwork):
         topo_module = import_module("topologies.%s" % opts.gpu_topology)
         topo_class = getattr(topo_module, opts.gpu_topology)
         _topo = topo_class(controllers)
+
+        print(f'DisjointNetwork.py:: DisjointGarnet:: connectGPU():: topo_class={_topo}')
+        # quit(-1)
+
+
         _topo.makeTopology(opts, self, GarnetIntLink,
                            GarnetExtLink, GarnetRouter)
 
         Network.init_network(opts, self, GarnetNetworkInterface)
+
+        # quit(-1)

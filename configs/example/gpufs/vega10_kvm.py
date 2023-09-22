@@ -98,6 +98,7 @@ if __name__ == "__m5_main__":
         encodedBin = base64.b64encode(binfile.read()).decode()
 
     _, tempRunscript = tempfile.mkstemp()
+
     with open(tempRunscript, 'w') as b64file:
         runscriptStr = demo_runscript.format(args.app, args.opts, encodedBin,
                                              args.opts)

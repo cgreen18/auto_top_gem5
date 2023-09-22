@@ -237,6 +237,8 @@ Ruby.create_system(args, False, system)
 system.ruby.clk_domain = SrcClockDomain(clock = args.ruby_clock,
                                         voltage_domain = system.voltage_domain)
 
+
+
 i = 0
 for ruby_port in system.ruby._cpu_ports:
      #
@@ -244,6 +246,10 @@ for ruby_port in system.ruby._cpu_ports:
      #
      cpus[i].test = ruby_port.in_ports
      i += 1
+
+# print(f' system.ruby = { system.ruby}')
+
+
 
 # -----------------------
 # run simulation
@@ -253,6 +259,12 @@ print("autotop_synth:: About to run simulation")
 
 root = Root(full_system = False, system = system)
 root.system.mem_mode = 'timing'
+
+# print(f'\tattrs...')
+# for k,v in system.ruby.__dict__.items():
+#     print(f'\t\t{k} : {v}')
+# print('-'*72)
+# quit(-1)
 
 # Not much point in this being higher than the L1 latency
 m5.ticks.setGlobalFrequency('1ps')

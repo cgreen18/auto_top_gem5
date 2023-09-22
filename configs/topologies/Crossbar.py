@@ -29,6 +29,8 @@ from m5.objects import *
 
 from topologies.BaseTopology import SimpleTopology
 
+import traceback
+
 class Crossbar(SimpleTopology):
     description='Crossbar'
 
@@ -72,3 +74,43 @@ class Crossbar(SimpleTopology):
                                      latency = link_latency))
 
         network.int_links = int_links
+
+
+        print(f'nodes({len(self.nodes)})={self.nodes}')
+        for n in self.nodes:
+            print(f'n {n} : attrs {n.__dict__}')
+            print('-'*72)
+
+        nodes = self.nodes
+
+        l1_caches = [n for n in nodes if n.type == 'L1Cache_Controller']
+        l2_caches = [n for n in nodes if n.type == 'L2Cache_Controller']
+        dirs = [n for n in nodes if n.type == 'Directory_Controller']
+        dmas = [n for n in nodes if n.type == 'DMA_Controller']
+        others = [n for n in nodes if n not in l1_caches and n not in l2_caches and n not in dirs and n not in dmas]
+
+
+        print(f'l1_caches({len(l1_caches)})={l1_caches}')
+        print(f'l2_caches({len(l2_caches)})={l2_caches}')
+        print(f'dirs({len(dirs)})={[(d,d._name) for d in dirs]}')
+        print(f'dmas({len(dmas)})={[(d,d._name) for d in dmas]}')
+        print(f'others({len(others)})={[(d,d._name) for d in others]}')
+
+        # for line in traceback.format_stack():
+        #     print(line.strip())
+
+
+        # quit(-1)
+
+        # important, set network stuff
+        ############################################################################################################################3
+
+        # network.flat_src_dest_to_evn = flat_vn_map
+        network.use_escape_vns = options.use_escape_vns
+        network.n_deadlock_free = options.evn_n_deadlock_free
+        network.evn_deadlock_partition = options.evn_deadlock_partition
+        network.min_n_deadlock_free = options.evn_min_n_deadlock_free
+
+        # should be false
+        network.synth_traffic = options.synth_traffic
+

@@ -47,11 +47,84 @@ from common import GPUTLBOptions, GPUTLBConfig
 import hsaTopology
 from common import FileSystemConfig
 
+def addAutoTopOptions(parser):
+
+    # for auto top
+    parser.add_argument("--router_map_file", type=str, default="configs/topologies/sol_files/kite_small.sol",
+                        help=".sol file with router map.")
+
+    parser.add_argument("--vc_map_file", type=str, default="configs/topologies/vc_files/kite_small.vc",
+                        help=".vc file with vc map.")
+
+    parser.add_argument("--nr_map_file", type=str, default="configs/topologies/next_routers/kite_small.nr",
+                        help=".nr file with next rotuer map.")
+
+    parser.add_argument("--flat_nr_map_file", type=str, 
+                        default="configs/topologies/nr_list/kite_large_naive.nrl",
+                        help=".")
+
+    parser.add_argument("--flat_vn_map_file", type=str,
+                        default="configs/topologies/vn_maps/kite_large_naive_hops.vn",
+                        help=".")
+
+    parser.add_argument("--inj-vnet", type=int, default=-1,
+                        choices=[-2,-1,0,1,2],
+                        help="Only inject in this vnet (0, 1, or 2).\
+                            -1 => inject randomly in all vnets.\
+                            -2 => inject randomly vnet 0 or 2.")
+
+    parser.add_argument("--num_chiplets", type=int, default=4,
+                    help="number of chiplets on the system")
+
+    parser.add_argument("--cpus-per-router", type=int, default=4,
+                        help="TODO")
+
+    parser.add_argument("--noc_rows", type=int, default=4,
+                        help="TODO")
+
+    parser.add_argument("--noi_rows", type=int, default=4,
+                        help="TODO")
+
+    parser.add_argument("--noi_routers", type=int, default=20,
+                        help="TODO")
+
+    parser.add_argument("--noc_clk", type=str, default='1.8GHz',
+                        help="TODO")
+
+    parser.add_argument("--noi_clk", type=str, default='1.8GHz',
+                        help="TODO")
+
+    parser.add_argument("--mem_or_coh", type=str, default='mem',
+                        help="TODO")
+
+
+    parser.add_argument("--evn_deadlock_partition", type=int, default=0,
+                        help="TODO")
+
+    parser.add_argument("--evn_n_deadlock_free", type=int, default=2,
+                        help="TODO")
+
+    parser.add_argument("--evn_min_n_deadlock_free", type=int, default=2,
+                        help="TODO")
+
+    parser.add_argument("--use_escape_vns",action='store_true')
+
+    parser.add_argument('--synth_traffic',action='store_true')
+
+    # ##
+    parser.add_argument('--boot_w_kvm',action='store_true')
+
+    parser.add_argument('--benchmark_parsec',type=str,default='blackscholes')
+
+    parser.add_argument('--max_insts_after_boot',type=int,default=1000000000)
+
+    parser.add_argument('--insts_after_warmup',type=int,default=100000)
 
 # Adding script options
 parser = argparse.ArgumentParser()
 Options.addCommonOptions(parser)
 Options.addSEOptions(parser)
+addAutoTopOptions(parser)
 
 parser.add_argument("--cpu-only-mode", action="store_true", default=False,
                     help="APU mode. Used to take care of problems in "

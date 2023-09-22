@@ -37,6 +37,9 @@ class CrossbarGarnet(SimpleTopology):
         # the associated allocator.
         # For simple network, use Crossbar.py
 
+        print(f'CrossbarGarnet:: makeTopology():: self.nodes ({len(self.nodes)}) = {[(d,d._name) for d in self.nodes]}')
+        # quit(-1)
+
         xbar = Router(router_id=0)
         network.routers = xbar
 
@@ -46,3 +49,15 @@ class CrossbarGarnet(SimpleTopology):
 
         int_links = []
         network.int_links = int_links
+
+        # important, set network stuff
+        ############################################################################################################################3
+
+        network.flat_src_dest_to_evn = []
+        network.use_escape_vns = options.use_escape_vns
+        network.n_deadlock_free = options.evn_n_deadlock_free
+        network.evn_deadlock_partition = options.evn_deadlock_partition
+        network.min_n_deadlock_free = options.evn_min_n_deadlock_free
+
+        # should be false
+        network.synth_traffic = options.synth_traffic

@@ -22,7 +22,7 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
         n_cpus = options.num_cpus
         n_dirs = options.num_dirs
         n_noi_routers = options.noi_routers
-        n_noc_routers = n_cpus
+        n_noc_routers = 64
         n_chiplets = options.num_chiplets
 
         # traffic type
@@ -39,11 +39,6 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
             n_noi_rows = 8
 
         per_row = n_noi_routers // n_noi_rows
-
-        N_CPUS = 64
-        N_CHIPLETS = 4
-        assert(n_cpus == N_CPUS)
-        assert(n_chiplets == N_CHIPLETS)
 
 
         # layout
@@ -85,6 +80,7 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
         # Will be part of self later
         # 1:1 ratio
         n_routers = n_noi_routers + n_noc_routers
+
 
         ###############################################################
 
@@ -137,14 +133,26 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
                 )\
             for i in range(n_routers)]
 
-        # [0, n_noi_routers) = [0,20)
-        for r in range(n_noi_routers):
-            routers[r].clk_domain = noi_clk_domain
+        # # [0, n_noi_routers) = [0,20)
+        # for r in range(n_noi_routers):
+        #     routers[r].clk_domain = noi_clk_domain
 
-        # [n_noi_routers, n_routers) = [20,84)
-        for r in range(n_noi_routers, n_routers):
-            routers[r].clk_domain = noc_clk_domain
+        # # [n_noi_routers, n_routers) = [20,84)
+        # for r in range(n_noi_routers, n_routers):
+        #     routers[r].clk_domain = noc_clk_domain
 
+        ext_cdc_required = True
+        if noi_clk == noc_clk:
+            ext_cdc_required = False
+
+        if ext_cdc_required:
+            # [0, n_noi_routers) = [0,20)
+            for r in range(n_noi_routers):
+                routers[r].clk_domain = noi_clk_domain
+
+            # [n_noi_routers, n_routers) = [20,84)
+            for r in range(n_noi_routers, n_routers):
+                routers[r].clk_domain = noc_clk_domain
 
         # important, set network stuff
         ############################################################################################################################3
@@ -169,48 +177,43 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
         # ext links
         ###########
 
+        cdc_between_cpus_noc = False
+
         # l1s -> noc routers
         for i in range(n_cpus):
-            idx = n_noi_routers + i
-            # print(f'Adding external link: l1 cache node {i} <-> router {idx} ')
+            which_noc_r = i % n_noc_routers
+            idx = n_noi_routers + which_noc_r
+            print(f'Adding external link: l1 cache node {i} <-> noi router {idx} ')
             
             ext_links.append(ExtLink(link_id=link_count,
                                     ext_node= caches[i],
                                     int_node= routers[idx],
                                     latency=link_latency,
-
-                                    # NoC on same freq as cores
-                                    # int_cdc=False
-                                    ))
+                                    ext_cdc=cdc_between_cpus_noc))
             link_count += 1
 
 
         # if coh
         if is_mem_or_coh == 'coh':
             for i in range(n_dirs):
-                idx = n_noi_routers + i
-                # print(f'Adding external link (id {link_count}): (coherence) dir node {i} <-> router {idx}')
+                which_noc_r = i % n_noc_routers
+                idx = n_noi_routers + which_noc_r
+                print(f'Adding external link (id {link_count}): dir node {i} <-> noi router {idx}')
 
                 ext_links.append(ExtLink(link_id=link_count,
                                         ext_node= dirs[i],
                                         int_node= routers[idx],
                                         latency=link_latency,
-                                        # NoC on same freq as cores
-                                        # int_cdc=False
-                                        ))
+                                        ext_cdc=cdc_between_cpus_noc))
                 link_count += 1
 
         else:
+            # will be NoI routers
             edges = []
-
-            # most topologies
             if n_noi_routers == 20:
                 edges = [0,4,5,9,10,14,15,19]
-
-            # aligned topologies
             elif n_noi_routers == 24:
                 edges = [0,5,6,11,12,17,18,23]
-            # mesh
             elif n_noi_routers == 64:
                 edges = [x for x in range(0,64,8) ]
                 edges += [x for x in range(7,64,8) ]
@@ -218,7 +221,6 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
                 print('error on n_noi_routers')
                 quit(-1)
 
-            # n_dirs should be 16 so 2 per
             dirs_per_router = n_dirs // len(edges)
             edges = edges*dirs_per_router
 
@@ -228,17 +230,15 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
             assert(len(edges) == n_dirs)
 
             for i in range(n_dirs):
-                
                 # idx = i % n_routers
                 targ = edges[i]
-                # print(f'Adding external link (id {link_count}): (memory) dir node {i} <-> noi router {targ}')
+                print(f'Adding external link (id {link_count}): dir node {i} <-> noi router {targ}')
                 ext_links.append(ExtLink(link_id=link_count,
                                         ext_node= dirs[i],
                                         int_node= routers[targ],
                                         latency=link_latency,
-                                        int_cdc=True))
+                                        ext_cdc=ext_cdc_required))
                 link_count += 1
-
 
 
         # int links
@@ -262,8 +262,7 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
                 if(src_r == dest_r):
                         continue
 
-                if(is_connected == 1):
-
+                if(is_connected >= 1):
 
                     this_link_latency = link_latency
 
@@ -312,7 +311,7 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
                                         # clk_domain = noc_clk_domain,
                                         # dst_cdc = False,
                                         # # cdc on noi (src)
-                                        src_cdc = True
+                                        src_cdc = ext_cdc_required
                                         ))
                     # src noc
                     else:
@@ -330,7 +329,7 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
                                         # TODO UNCOMMENT
                                         # clk_domain = noc_clk_domain,
                                         # cdc on noi (dest)
-                                        dst_cdc = True,
+                                        dst_cdc = ext_cdc_required,
                                         # src_cdc = False
                                         ))
                         # noc -> noc
@@ -387,6 +386,17 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
     #     for i in range(n_cpus):
     #         FileSystemConfig.register_node([i],
     #                 per_cpu, i)
+
+    # necessary. otherwise theres list argument errors in some __init__ later on
+    # Register nodes with filesystem
+    def registerTopology(self, options):
+
+        n_cpus = options.num_cpus
+        per_cpu = MemorySize(options.mem_size) // n_cpus
+        print(f'per_cpu={per_cpu}')
+        for i in range(n_cpus):
+            FileSystemConfig.register_node([i],
+                    per_cpu, i)
 
     def calc_vll_mat(self, n_routers):
 
@@ -489,10 +499,14 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
 
     def ingest_flat_map_list(self, path_name, n_routers):
 
-        print(f'ingesting {path_name}')
+        print(f'ingesting {path_name} w/ # rotuers = {n_routers}')
+        # quit()
 
         routing_alg = None
         flat_nr_map = []
+        nr_map_dict = {}
+
+        iter = 0
 
         with open(path_name, 'r') as inf:
             routing_alg = inf.readline()
@@ -507,18 +521,40 @@ class NoCI_EscapeVirtualNetworks(SimpleTopology):
                     as_list = ast.literal_eval(thisline)
                     clean_as_list = [e for e in as_list]
 
-                    # print(f'\trouting table for router {i} '+
-                    #     f' row (src) {j} : {clean_as_list}')
-                    # flat_nr_map.append(clean_as_list)
+                    # print(f'\titer {iter}. routing table for router {i} '+
+                    #     f' row (src) {j} : (len {len(clean_as_list)})\n\t{clean_as_list}')
+                    flat_nr_map.append(clean_as_list)
                     a_routers_map += clean_as_list
 
-                flat_nr_map.append(a_routers_map)
+                    iter += 1
+                
+                # print(f'\titer {iter}. routing table for router {i} '+
+                #     f' : (len {len(a_routers_map)})') #\n\t{a_routers_map}')
+
+                # if i >= 0:
+                #     inp = input('cont?')
+                #     if 'n' in inp:
+                #         quit(-1)
+
+                flat_nr_map.append(a_routers_map.copy())
+                nr_map_dict.update({i : a_routers_map.copy()})
+        #         print(f'\tflat_nr_map({len(flat_nr_map)}x{len(flat_nr_map[0])})')
 
 
-        # print(f'flat_nr_map({len(flat_nr_map)}) = {flat_nr_map}')
+        # print(f'flat_nr_map({len(flat_nr_map)})')
         # for alist in flat_nr_map:
         #     for row in alist:
         #         print(f'{row}')
+
+        new_flat = []
+        for i, r_nrl in nr_map_dict.items():
+            new_flat.append(r_nrl)
+        #     print(f'\tnew_flat_nr_map({len(new_flat)}x{len(new_flat[0])})')
+
+
+        # print(f'new_flat({len(new_flat)})')
+
+
         # quit(-1)
 
-        return (flat_nr_map, routing_alg)
+        return (new_flat, routing_alg)

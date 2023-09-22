@@ -120,6 +120,7 @@ def create_network(options, ruby):
 def init_network(options, network, InterfaceClass):
 
     if options.network == "garnet":
+        print(f'initing a garnet network')
         network.num_rows = options.mesh_rows
         network.vcs_per_vnet = options.vcs_per_vnet
         network.ni_flit_size = options.link_width_bits / 8
@@ -149,6 +150,8 @@ def init_network(options, network, InterfaceClass):
                                     link = intLink.credit_link,
                                     vtype = 'OBJECT_LINK',
                                     width = intLink.dst_node.width)
+            
+            # print(f'creating int link {intLink.src_node}->{intLink.dst_node}')
 
         for extLink in network.ext_links:
             ext_net_bridges = []
@@ -195,16 +198,22 @@ def init_network(options, network, InterfaceClass):
                                   width = extLink.int_node.width))
             extLink.int_cred_bridge = int_cred_bridges
 
+            # print(f'creating ext link {extLink.int_node}->...')
+
     if options.network == "simple":
         if options.simple_physical_channels:
             network.physical_vnets_channels = \
                 [1] * int(network.number_of_virtual_networks)
         network.setup_buffers()
 
+        print(f'simple network')
+
     if InterfaceClass != None:
         netifs = [InterfaceClass(id=i) \
                   for (i,n) in enumerate(network.ext_links)]
         network.netifs = netifs
+
+        # print(f'setting netifs')
 
     if options.network_fault_model:
         assert(options.network == "garnet")

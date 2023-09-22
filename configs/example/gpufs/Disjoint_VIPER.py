@@ -60,6 +60,10 @@ class Disjoint_VIPER(RubySystem):
             self.network_cpu = DisjointSimple(self)
             self.network_gpu = DisjointSimple(self)
 
+        network_gpu = self.network_gpu
+        print(f'network_gpu = {network_gpu}.\n\tnetwork_gpu.in_port ({type(network_gpu.in_port)}) ={network_gpu.in_port} w/ attrs\n\t{network_gpu.in_port.__dict__}')
+        # quit(-1)
+
 
         # Construct CPU controllers
         cpu_dir_nodes = \
@@ -83,6 +87,11 @@ class Disjoint_VIPER(RubySystem):
         # Construct GPU memories
         (gpu_dir_nodes, gpu_mem_ctrls) = \
             construct_gpudirs(options, system, self, self.network_gpu)
+
+        network_gpu = self.network_gpu
+        print(f'network_gpu = {network_gpu}.\n\tnetwork_gpu.in_port ({type(network_gpu.in_port)}) ={network_gpu.in_port} w/ attrs\n\t{network_gpu.in_port.__dict__}')
+        # quit(-1)
+
 
         # Configure the directories based on which network they are in
         for cpu_dir_node in cpu_dir_nodes:
@@ -149,6 +158,9 @@ class Disjoint_VIPER(RubySystem):
 
         system.dma_cntrls = dma_cntrls
 
+        network_gpu = self.network_gpu
+        print(f'network_gpu = {network_gpu}.\n\tnetwork_gpu.in_port ({type(network_gpu.in_port)}) ={network_gpu.in_port} w/ attrs\n\t{network_gpu.in_port.__dict__}')
+        # quit(-1)
 
         # Collect CPU and GPU controllers into seperate lists
         cpu_cntrls = cpu_dir_nodes + cp_cntrl_nodes + cpu_dma_ctrls
@@ -194,3 +206,6 @@ class Disjoint_VIPER(RubySystem):
                          sqc_sequencers + scalar_sequencers
         self._cpu_ports = all_sequencers
         self.num_of_sequencers = len(all_sequencers)
+
+
+        # quit(-1)
