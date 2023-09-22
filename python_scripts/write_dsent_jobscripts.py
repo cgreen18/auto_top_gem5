@@ -3,7 +3,7 @@ import os
 
 import sys
 
-DATE = 'apr27'
+DATE = 'jul5'
 
 
 
@@ -16,11 +16,12 @@ desired_topologies=[\
 'kite_large', 'kite_medium', 'kite_small',
 'cmesh_x', 'mesh',
 'ft_x',
-'ns_s_latop','ns_s_bwop',
-'ns_m_latop','ns_m_bwop',
-'ns_l_latop','ns_l_bwop',
+'ns_s_latop','ns_s_bwop','ns_s_scop',
+'ns_m_latop','ns_m_bwop','ns_m_scop',
+'ns_l_latop','ns_l_bwop','ns_l_scop',
 'lpbt_s_latop','lpbt_s_power',
-'lpbt_m_latop']
+'lpbt_m_latop'
+]
 
 
 # topologies
@@ -67,7 +68,11 @@ def name_num_insts(sc):
 
 
 
-def write_jobscript(n_inst, warmup_inst_num,topology, benchmark,alg_type='cload',lb_type='hops',all_threads=True,n_evns=4, n_vcs=6):
+def write_jobscript(n_inst, warmup_inst_num,topology, benchmark,alg_type='mclb',lb_type='hops',all_threads=True,n_evns=4, n_vcs=6,moesi=False):
+
+    # hotfix
+    if 'mesh' in topology:
+        alg_type = 'naive'
 
 
     outfile_name = f'dsent_{benchmark}_{topology}'
@@ -98,12 +103,12 @@ def write_jobscript(n_inst, warmup_inst_num,topology, benchmark,alg_type='cload'
     s = '#SBATCH --nodes 1\n'
     lines.append(s)
 
-    s = '#SBATCH --cpus-per-task=2\n'
-    lines.append(s)
+    # s = '#SBATCH --cpus-per-task=2\n'
+    # lines.append(s)
 
     # upping minimum required mem to avoid memory issues
     # gem5 using 32GB so ~45 to be safe
-    s = '#SBATCH --mem-per-cpu=45GB\n'
+    s = '#SBATCH --mem-per-cpu=10GB\n'
     lines.append(s)
 
     s = f'#SBATCH --output=slurm/outputs/{slurm_out}\n'
@@ -144,6 +149,8 @@ def write_jobscript(n_inst, warmup_inst_num,topology, benchmark,alg_type='cload'
 
     # order of these following three matters
     cmd = f'./build/X86/gem5.fast'
+    if moesi:
+        cmd = f'./build/X86_MOESI_hammer/gem5.fast'
 
     cmd += f' -d ./parsec_results/dsent_32GB'
     if n_evns is not None:
@@ -184,18 +191,35 @@ def write_jobscript(n_inst, warmup_inst_num,topology, benchmark,alg_type='cload'
     simple_name = topology.replace('_noci','')
 
     # construct vn file name
-    cmd += f' --flat_vn_map_file configs/topologies/vn_maps/{topology}_{alg_type}_{lb_type}'
+    vn_dir = 'vn_maps3'
+    if 'mesh_noci' in topology:
+        vn_dir = 'vn_maps3'
+    elif alg_type == 'augmclb':
+        vn_dir = 'vn_maps_augmclb'
+    elif alg_type == 'mclb':
+        vn_dir = 'vn_maps_mclb'
+
+    cmd += f' --flat_vn_map_file configs/topologies/{vn_dir}/{topology}_{alg_type}_{lb_type}'
+
     if n_evns is not None:
         cmd += f'_{n_evns}vns'
     cmd += '.vn'
 
+    nrl_dir = 'nr_list3'
+    if 'mesh_noci' in topology:
+        nrl_dir = 'nr_list3'
+    elif alg_type == 'augmclb':
+        nrl_dir = 'nr_list_augmclb'
+    elif alg_type == 'mclb':
+        nrl_dir = 'nr_list_mclb'
 
-    cmd += f' --flat_nr_map_file configs/topologies/nr_list/{topology}_{alg_type}.nrl'
+    cmd += f' --flat_nr_map_file configs/topologies/{nrl_dir}/{topology}_{alg_type}.nrl'
 
     # cmd += f' --vc_map_file configs/topologies/test_dl/{topology}.vc'
     # cmd += f' --nr_map_file configs/topologies/test_dl/{topology}.nr'
 
     cmd += f' --topology FS_EscapeVirtualNetworks'
+    # cmd += f' --topology EscapeVirtualNetworks'
 
     # print(f'simple={simple_name}')
 
@@ -306,6 +330,9 @@ def main():
             continue
         topologies.append(topo)
 
+    # print(f'topologies={topologies}')
+
+
     topologies = [a for a in topologies if a in desired_topologies]
 
     print(f'topologies={topologies}')
@@ -313,7 +340,8 @@ def main():
 
     for bench in benchmarks:
         for topo in topologies:
-            write_jobscript(n_inst,n_warmup , topo, bench)
+
+            write_jobscript(n_inst,n_warmup , topo, bench, moesi=True)
 
 
 if __name__ == '__main__':

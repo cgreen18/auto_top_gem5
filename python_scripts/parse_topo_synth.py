@@ -78,19 +78,28 @@ for root, dirs, files, in os.walk(data_dir):
         # config = root_split[4]
         # inj_rate = root_split[5]
 
+        clk = '1.8GHz'
+        topo_and_config = root_split[2]
+        offset = 0
+        if 'GHz' not in topo_and_config:
 
-        sim_cycles = root_split[2]
-        mixed_domain_or_same = root_split[3]
+            continue
+        else:
+            offset = 1
+            clk = topo_and_config.split('_')[-1]
+        n_cpus = topo_and_config.split('_')[-2 - offset]
+        n_dirs = topo_and_config.split('_')[-1 - offset]
+        traf = root_split[3]
+        sim_cycles = root_split[4]
+        mixed_domain_or_same = root_split[5]
+        alg = root_split[6]
+        lb = root_split[6]
+        mem_or_coh = root_split[7]
+        topo = root_split[8]
+        inj_rate = root_split[9]
 
-        alg = root_split[4]
-        lb = root_split[4]
-
-        mem_or_coh = root_split[5]
-
-        topo = root_split[6]
-
-
-        inj_rate = root_split[7]
+        if sim_cycles == '10m':
+            continue
 
         # if alg == 'naive_hops_3_4':
         #     continue
@@ -103,7 +112,7 @@ for root, dirs, files, in os.walk(data_dir):
         #     inj_rate = root_split[11]
 
 
-        data = [ sim_cycles, mixed_domain_or_same, mem_or_coh, topo, alg, inj_rate]
+        data = [ sim_cycles, mixed_domain_or_same, mem_or_coh, alg, topo, traf, n_cpus ,n_dirs ,clk,inj_rate]
 
         # print(f'data={data}')
         # quit()

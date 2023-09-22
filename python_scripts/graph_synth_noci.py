@@ -10,8 +10,9 @@ import sys
 
 
 # shortcut
-MAX_VAL = 14#20#None
-MAX_Y = 35
+MAX_VAL = 11#7#20#None
+MAX_Y = 20
+STEP = 0.005
 
 desired_topologies_30r=[
         # '30r_4p_25ll_runsol',
@@ -266,6 +267,10 @@ def gen_synth_20r_3subplots(infile_name='./synth_outputs/simple_2b.csv', param_m
 
             # new order
             config = line[3]
+
+            # diff between original script
+            config = config.replace('_noci','')
+
             alg = line[4]
 
 
@@ -282,7 +287,7 @@ def gen_synth_20r_3subplots(infile_name='./synth_outputs/simple_2b.csv', param_m
                 # pkt_lat_str = line[5]
             except:
                 pkt_lat_str = '100000000.0'
-                pkt_lat_str = '0'
+                # pkt_lat_str = '0'
 
             configs.append(config)
 
@@ -316,6 +321,7 @@ def gen_synth_20r_3subplots(infile_name='./synth_outputs/simple_2b.csv', param_m
             data[mem_or_coh][config].update({inj_rate : pkt_lat})
 
 
+
     for memcoh, config_data_dict in data.items():
         # if memcoh == 'coh':
             # continue
@@ -324,6 +330,8 @@ def gen_synth_20r_3subplots(infile_name='./synth_outputs/simple_2b.csv', param_m
             print(f'\t{config}')
             for ir, pl in inj_data_dict.items():
                 print(f'\t\t{ir} : {pl}')
+
+    # quit()
 
     ######################################################################################
 
@@ -365,6 +373,8 @@ def gen_synth_20r_3subplots(infile_name='./synth_outputs/simple_2b.csv', param_m
     mylabels = []
 
 
+    max_x = .2
+
     for config in desired_topologies:
         try:
             inj_data_dict = config_data_dict[config]
@@ -386,22 +396,21 @@ def gen_synth_20r_3subplots(infile_name='./synth_outputs/simple_2b.csv', param_m
         # quit()
 
         # X = [i/100.0 for i in range(1,max_val+1)]
-        # X = [i/100.0 for i in range(1,max_val+1)]
 
-        step = 0.005
+        step = STEP
 
         X = [round(x,3) for x in np.arange(0.005,(max_val+1)/100.0,step)]
-
-        print(f'X={X}')
-        # quit()
 
         for x in X:
             injs.append(x)
 
             try:
                 lat = inj_data_dict[x]
+            
+            # no data point
             except:
-                lat = 0
+                lat = 100000
+                #lat = 0
 
             lats.append(lat)
 
@@ -594,305 +603,9 @@ def gen_synth_20r_3subplots(infile_name='./synth_outputs/simple_2b.csv', param_m
         axes[0].legend(handles, labels,ncol=3,bbox_to_anchor=(-0.07, 1.05, 0.2, 0.1), loc='lower left', )
 
 
-    name = f'./synth_outputs/graphs/simple_20r_{param_mem_or_coh}_{param_alg}.png'
+    name = f'./synth_outputs/graphs/noci_84r_{param_mem_or_coh}_{param_alg}.png'
     plt.savefig(name,bbox_inches='tight',dpi=900)
     print(f'wrote to {name}')
-
-
-def gen_synth_30r_3subplots(infile_name = './synth_30r_lb_mixed_max.csv' ,param_mem_or_coh='coh'):
-    # infile_name =
-
-    data = {}
-    configs = []
-
-    with open(infile_name, 'r') as inf:
-        csv_inf = csv.reader(inf)
-
-        headers = []
-
-        time_axis = []
-
-        for line in csv_inf:
-
-            if len(headers) == 0:
-                headers = line
-                continue
-
-            if '' in line:
-                line.remove('')
-
-            # print(f'line={line}')
-
-
-            mem_or_coh = line[2]
-            config = line[3]
-            inj_rate_str = line[4]
-
-            try:
-                pkt_lat_str = line[5]
-            except:
-                pkt_lat_str = '-1.0'
-
-
-            # pkt_lat_str = line[5]
-            configs.append(config)
-
-            # hotfix
-            if len(inj_rate_str) == 3:
-                inj_rate_str = inj_rate_str + '0'
-
-            inj_rate = float(inj_rate_str.split('_')[-1])
-            inj_rate = inj_rate / 100.0
-
-            # parse and convert to ns
-            pkt_lat = float(pkt_lat_str) / 1000.0
-
-            # init
-            try:
-                _ = data[mem_or_coh]
-            except:
-                data.update({mem_or_coh : {} })
-
-            try:
-                _ = data[mem_or_coh][config]
-            except:
-                data[mem_or_coh].update({config : {}})
-
-            data[mem_or_coh][config].update({inj_rate : pkt_lat})
-
-
-    for memcoh, config_data_dict in data.items():
-        # if memcoh != param_mem_or_coh:
-        #     continue
-        print(f'{memcoh}')
-        for config,inj_data_dict in config_data_dict.items():
-            print(f'\t{config}')
-            for ir, pl in inj_data_dict.items():
-                print(f'\t\t{ir} : {pl}')
-
-    ######################################################################################
-
-    plt.cla()
-    # plt.clear()
-    plt.rc('font', size=16) #controls default text size
-    plt.rc('axes', titlesize=14) #fontsize of the title
-    plt.rc('axes', labelsize=14) #fontsize of the x and y labels
-    plt.rc('xtick', labelsize=10) #fontsize of the x tick labels
-    plt.rc('ytick', labelsize=10) #fontsize of the y tick labels
-    plt.rc('legend', fontsize=12)
-
-    plt.rc('text', usetex=True)
-
-    fig = plt.figure(figsize=(7,4))
-    # ax = fig.add_subplot()
-
-    axes = []
-    axes.append(fig.add_subplot(3,1,1))
-    axes.append(fig.add_subplot(3,1,2))
-    axes.append(fig.add_subplot(3,1,3))
-
-
-
-    # for memcoh, config_data_dict in data.items():
-    #     print(f'{memcoh}')
-    #     for config,inj_data_dict in config_data_dict.items():
-    #         print(f'\t{config}')
-    #         for ir, pl in inj_data_dict.items():
-    #             print(f'\t\t{ir} : {pl}')
-
-
-    config_data_dict = data[param_mem_or_coh]
-    # for config,inj_data_dict in config_data_dict.items():
-    #     if config not in desired_topologies:
-    #         print(f'config {config} not in desired {desired_topologies}')
-    #         continue
-
-    mylabels = []
-
-    inj_rate_end = 0.20
-    end_idx = int(inj_rate_end / 0.01)
-
-    for config in desired_topologies_30r:
-        try:
-            inj_data_dict = config_data_dict[config]
-        except:
-            continue
-        # print(f'\t{config}')
-        injs = []
-        lats = []
-        for ir, pl in inj_data_dict.items():
-            # print(f'\t\t{ir} : {pl}')
-
-            injs.append(ir)
-            lats.append(pl)
-
-
-
-        # small
-        size = 0
-        if '_2ll_' in config:
-            size = 1
-        elif 'ft_x' in config:
-            size = 1
-        elif 'med' in config:
-            size = 1
-        elif '_25ll_' in config:
-            size = 2
-        elif 'dbl' in config or 'butt' in config:
-            size = 2
-        elif 'large' in config:
-            size = 2
-
-        print(f'{config} : size={size}')
-
-
-
-        new_name = rename_dict[config]
-        try:
-            new_new_name = double_rename[new_name]
-        except:
-            new_new_name = new_name
-        mylabels.append(new_name)
-        mark = label_to_marker[new_name]
-        col = color_dict[new_name]
-
-        # print(f'plotting {injs} : {lats}')
-
-        sorted_lats = [x for _,x in sorted(zip(injs,lats))]
-        sorted_injs= [x for x,_ in sorted(zip(injs,lats))]
-
-
-        print(f'plotting {sorted_injs} : {sorted_lats}')
-
-        # plt.plot(injs, lats, label=new_new_name,linestyle='--', color=col,marker = mark)
-        axes[size].plot(sorted_injs, sorted_lats, label=new_new_name,linestyle='--', color=col,marker = mark)
-
-    # quit()
-
-    y = np.arange(5.0,36,10)
-    y_minor = np.arange(5.0,36,5)
-
-    for ax in axes:
-        ax.set_yticks(y)
-        ax.set_yticks(y_minor,minor=True)
-    x = np.arange(0,.20,.02)
-    xmin = np.arange(0,.20,.01)
-
-
-    for ax in axes:
-        ax.set_xticks(x)
-        ax.set_xticks(xmin,minor=True)
-        ax.grid(which='major',alpha=0.5)
-        ax.grid(which='minor',alpha=0.3)
-        ax.set_ylim([5, 35])
-        ax.set_xlim([0.0, 0.11])
-
-
-    axes[1].set_xticklabels([])
-    axes[0].set_xticklabels([])
-
-    axes[2].set_xlabel("Injection Rate  (pkts/cpu/cycle)")
-    axes[1].set_ylabel("Avg. Pkt. Latency (ns)")
-
-
-
-    twins = []
-    for ax in axes:
-        twins.append(ax.twinx())
-
-    twins[0].set_ylabel('Small')
-    twins[1].set_ylabel('Medium')
-    twins[2].set_ylabel('Large')
-    twins[0].set_yticklabels([])
-    twins[1].set_yticklabels([])
-    twins[2].set_yticklabels([])
-
-
-    # handles, labels = ax.get_legend_handles_labels()
-
-
-
-    labels = []
-    handles = []
-    for ax in axes:
-        _handles, _labels = ax.get_legend_handles_labels()
-        for h in _handles:
-            handles.append(h)
-        for l in _labels:
-            labels.append(l)
-
-    print(f'labels={labels}')
-    print(f'handles={handles}')
-
-
-    # proxy0 = plt.plot([],[],color='none',label='Small')
-    # proxy3 = plt.plot([],[],color='none',label=' ')
-    # proxy4 = plt.plot([],[],color='none',label=' ')
-
-
-    proxy0 = plt.plot([],[],color='none',label=' ')
-    proxy3 = plt.plot([],[],color='none',label=' ')
-
-    proxy4 = plt.plot([],[],color='none',label=' ')
-    proxy5 = plt.plot([],[],color='none',label=' ')
-
-    proxy8 = plt.plot([],[],color='none',label=' ')
-
-    # proxy5 = plt.plot([],[],color='none',label='Medium')
-    proxy9 = plt.plot([],[],color='none',label=' ')
-
-    proxy10 = plt.plot([],[],color='none',label=' ')
-    # proxy14 = plt.plot([],[],color='none',label=' ')
-
-    handles.insert(0,proxy0[0])
-    handles.insert(3,proxy3[0])
-    handles.insert(4,proxy4[0])
-    handles.insert(5,proxy4[0])
-
-    # handles.insert(8,proxy8[0])
-    handles.insert(9,proxy9[0])
-    handles.insert(10,proxy10[0])
-
-    # handles.insert(5,proxy5[0])
-    # # handles.insert(6,proxy6[0])
-    # handles.insert(9,proxy9[0])
-
-    # handles.insert(10,proxy10[0])
-
-    # print(proxy3)
-
-    labels.insert(0,r'\underline{Small}')
-    labels.insert(3,r' ')
-
-    labels.insert(4,r' ')
-    labels.insert(5,r'\underline{Medium}')
-    # labels.insert(8,r' ')
-    labels.insert(9,r' ')
-
-    labels.insert(10,r'\underline{Large}')
-
-
-    # print(handles)
-    # quit()
-    # labels.insert(0,'Small')
-    # labels.insert(3,' ')
-    # labels.insert(4,' ')
-
-    # labels.insert(5,'Medium')
-    # # labels.insert(6,' ')
-    # labels.insert(9,' ')
-
-    # labels.insert(10,'Large')
-
-    # ax.legend(mylabels,ncol=3, bbox_to_anchor=(-0.1, 1.0, 1., .102), loc='lower left')
-
-    if param_mem_or_coh == 'coh':
-        ax.legend(handles, labels,ncol=3, bbox_to_anchor=(0.045, 3.4, 1., .102), loc='lower left')
-
-    name = f'./synthgraph_30r_{param_mem_or_coh}_lb_mixed_max.png'
-    plt.savefig(name,bbox_inches='tight',dpi=900)
-    print(f'wrote to {name}')
-
 
 
 def main():

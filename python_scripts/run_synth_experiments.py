@@ -8,7 +8,7 @@ import argparse
 import numpy as np
 
 
-MAX_PROCS = 28
+MAX_PROCS = 14
 
 global num_threads
 num_threads = 0
@@ -42,6 +42,9 @@ topology_to_n_routers_dict = {
 
 sim_cycles = ['2147483647']
 inj_rates = [str(x/100.0) for x in range(1, 11)]
+
+
+noc_clk = '1.8GHz'
 
 
 # topologies
@@ -113,7 +116,17 @@ base_flags = ['--network','garnet',
 
 
 global outdir
-outdir = './synth_outputs/simple'
+outdir = './synth_outputs/experiments'
+
+global nr_list_path_base
+# nr_list_path_base = 'configs/topologies/nr_list3/'
+nr_list_path_base = 'configs/topologies/nr_list_mclb/'
+
+
+global vn_map_path_base
+# vn_map_path_base = 'configs/topologies/vn_maps3/'
+vn_map_path_base = 'configs/topologies/vn_maps_mclb/'
+
 
 class BenchmarkRun:
 
@@ -133,15 +146,17 @@ class BenchmarkRun:
             return f'{sc//1000000000}b'
 
 
-    def __init__(self, map_file, memcoh, sim_cycle, inj_rate, hetero, alg_type, lb_type, n_evns,tot_vcs, noc_clk, n_cpus, dir_mult):
+    def __init__(self, experiment, map_file, memcoh, sim_cycle, inj_rate, hetero, alg_type, lb_type, n_evns,tot_vcs):
+
+        print('here')
+
+
+        self.experiment = experiment
 
         # simulation configs
         self.mem_or_coh = memcoh
         self.sim_cycles = sim_cycle
         self.inj_rate = inj_rate
-
-        self.n_cpus = n_cpus
-        self.dir_mult = dir_mult
 
         # topology configs
         self.topology = ((map_file).split('.')[0])
@@ -161,10 +176,10 @@ class BenchmarkRun:
 
 
         vn_file = f'{self.topology}_{self.alg_type}_{self.lb_type}_{n_evns}vns.vn'
-        self.topology_vn_file = os.path.join('configs/topologies/vn_maps_mclb/',vn_file)
+        self.topology_vn_file = os.path.join(vn_map_path_base,vn_file)
 
         nrl_file = f'{self.topology}_{self.alg_type}.nrl'
-        self.topology_nr_list_file = os.path.join('configs/topologies/nr_list_mclb/',nrl_file)
+        self.topology_nr_list_file = os.path.join(nr_list_path_base,nrl_file)
 
         self.hetero = hetero
 
@@ -174,9 +189,27 @@ class BenchmarkRun:
         if not hetero:
             sd_str = 'same'
 
+        # outdir stuff
+        # global outdir
+        
+        # if self.experiment == 'single_topo':
+        #     outdir += f'_singletopo'
 
+        # print('here')
 
-        self.noc_clk = f'{noc_clk}GHz'
+        this_outdir = outdir
+        
+        if self.experiment is not None:
+            this_outdir += f'_{self.experiment}'
+
+        out_path_suffix = f'{self.name_sim_cycles(self.sim_cycles)}/{sd_str}/{self.alg_type}_{self.lb_type}_{self.n_evns}_{self.tot_vcs}/{self.mem_or_coh}/{self.topology}/{inj_rate_str}/'
+
+        self.output_dir = os.path.join(this_outdir,out_path_suffix)
+
+        if 'double_cpu_clk' in self.experiment:
+            noc_clk = '3.6GHz'
+
+        self.noc_clk = noc_clk
 
         self.noi_clk = self.noc_clk
 
@@ -211,14 +244,13 @@ class BenchmarkRun:
 
         self.n_routers = n_routers
 
-        desc = f'{self.alg_type}_{self.lb_type}_{self.n_evns}_{self.tot_vcs}_{self.n_cpus}cpus_{self.dir_mult}xdirs_{self.noc_clk}'
-
-        out_path_suffix = f'{self.name_sim_cycles(self.sim_cycles)}/{sd_str}/{desc}/{self.mem_or_coh}/{self.topology}/{inj_rate_str}/'
-
-        self.output_dir = os.path.join(outdir,out_path_suffix)
 
 
     def run(self):
+
+
+        # print('here')
+
 
         global config_status
 
@@ -246,24 +278,51 @@ class BenchmarkRun:
 
 
 
+        n_dirs_mem = str(16)        
+        n_dirs_coh = str(20)
+
+        if 'memdirs' in self.experiment :
+            exp_list = self.experiment.split('_')
+            n_dirs_mem = exp_list[-1]
+
+        if 'double_ej' in self.experiment:
+            n_dirs_mem = '32'
+            n_dirs_coh = '40'
+
+        if 'double_injej' in self.experiment:
+            n_dirs_mem = '32'
+            n_dirs_coh = '40'
+
+
         if self.mem_or_coh == 'mem':
-            base_dirs = 16
+            if self.n_routers == '20' or self.n_routers == '24':
+                cmd += ['--num-dirs', n_dirs_mem]
+            elif self.n_routers == '64':
+                cmd += ['--num-dirs', n_dirs_mem]
 
             cmd += ['--mem_or_coh','mem']
         # coh
         else:
 
-            base_dirs = self.n_cpus
+            cmd += ['--num-dirs', n_dirs_coh]
+            # cmd += ['--num-dirs', '40']
+
             cmd += ['--mem_or_coh','coh']
 
-        n_cpus = self.n_cpus
-        n_dirs = self.dir_mult*base_dirs
+            # this is a multiple of 20, to match n_routers
+            if self.n_routers == '20':
+                cmd += ['--mem-size','20480']
 
-        cmd += ['--mem-size','320000000']
-        cmd += ['--num-dirs', str(n_dirs)]
-        cmd += ['--num-cpus',str(n_cpus)]
+        n_cpus = '20'
+        if 'double_injej' in self.experiment:
+            n_cpus = '40'
+
+        cmd += ['--num-cpus',n_cpus]
 
         cmd += base_flags
+
+        # print('heree')
+
 
 
         cmd += ['--vcs-per-vnet',f'{self.tot_vcs}',
@@ -275,7 +334,8 @@ class BenchmarkRun:
         os.chdir(home)
 
 
-        desc = f'{self.topology} : {self.alg_type}_{self.lb_type}_{self.n_evns}_{self.tot_vcs} @ inj {self.inj_rate} w/ {self.n_cpus} cpus, {self.dir_mult}x dirs {self.noc_clk}'
+        desc = f'{self.topology} : {self.alg_type}_{self.lb_type}_{self.n_evns}_{self.tot_vcs} @ inj {self.inj_rate}'
+
         
         print(f'Runnning {desc}')
 
@@ -283,15 +343,14 @@ class BenchmarkRun:
         ###############################################################
 
 
-        print(' '.join(cmd))
-        return
+        # print(' '.join(cmd))
+        # return
 
         res = None
 
-        # res = subprocess.run(cmd, shell=True)
-        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,universal_newlines=True)
+        # subprocess.run(setup, shell=True)
+        res = subprocess.run(cmd , stdout=subprocess.PIPE, stderr=subprocess.PIPE,universal_newlines=True)
 
-    
 
         status = 'No error'
         
@@ -368,10 +427,7 @@ def main():
     parser.add_argument('--tot_vcs',type=int)
 
     parser.add_argument('--map_file_dir',type=str,default='./configs/topologies/paper_solutions/')
-
-    parser.add_argument('--sys_clk',type=float,default=4.0)
-    parser.add_argument('--num_cpus',type=int,default=40)
-    parser.add_argument('--dir_mult',type=int,default=8)
+    parser.add_argument('--experiment',type=str)
 
     args = parser.parse_args()
 
@@ -395,7 +451,7 @@ def main():
     #     inj_rates = [str(x/1000.0) for x in range(a,b,c)]
 
     inj_rates = np.arange(args.inj_start, args.inj_end,args.inj_step)
-    inj_rates = [str(round(x,3)) for x in inj_rates]
+    inj_rates = [str(round(x,2)) for x in inj_rates]
 
     print(f'inj_rates = {inj_rates}')
     
@@ -439,7 +495,7 @@ def main():
         map_files = [s for s in map_files if u not in s]
 
     map_files = [m for m in map_files if 'noci' not in m]
-    map_files = [m for m in map_files if '20' not in m  ]
+    map_files = [m for m in map_files if '20' not in m ]
     map_files = [m for m in map_files if 'timed' not in m]
     map_files = [m for m in map_files if 'opt' not in m]
     map_files = [m for m in map_files if 'cmesh' not in m]
@@ -459,7 +515,9 @@ def main():
     print(f'{map_files}')
     # quit()
 
-    alg_types = ['naive','bsorm','bsorm_zindexed','cload','cload_zindexed']
+    alg_types = ['naive','bsorm','bsorm_zindexed','cload','cload_zindexed',
+                # new ones
+                'cload2','cload3', 'mclb']
 
     if args.naive_only:
         alg_types = ['naive']
@@ -475,28 +533,27 @@ def main():
 
     if args.no_lb_only:
         lb_types = ['none']
-    elif args.hops_lb_only:
+    elif args.hops_lb_only: 
         lb_types = ['hops']
     elif args.paths_lb_only:
         lb_types = ['paths']
 
-    n_evns = [3,4]
+    n_evns = [4]
 
     if args.n_evn:
         n_evns = [int(args.n_evn)]
 
-    tot_vcs = 4
+    tot_vcs = [6]
     if args.tot_vcs:
         tot_vcs = [int(args.tot_vcs)]
 
+
+    exper = args.experiment
+
     # map_files = [s for s in map_files if 'kite_large' in s]
 
-
-    clk = args.sys_clk
-    n_cpus = args.num_cpus
-    dir_mult = args.dir_mult
-
     i = 0
+
     for het in het_tf:
         for mc in memcoh:
             for ir in inj_rates:
@@ -505,8 +562,8 @@ def main():
                         for lb_t in lb_types:
                             for vn in n_evns:
                                 for tv in tot_vcs:
-                                    print(f'{i:04} : Adding {sf} {a_t} {lb_t} {ir} {mc} {vn}/{tv} w/ {n_cpus}cpus {dir_mult}x(20/8)dirs @ {clk}GHz')
-                                    runs += [BenchmarkRun(sf, mc, sim_cycle, ir, het, a_t, lb_t, vn, tv, clk, n_cpus, dir_mult)]
+                                    print(f'{i:04} : Adding {exper} w/ {sf} {a_t} {lb_t} {ir} {mc} {vn}/{tv}')
+                                    runs += [BenchmarkRun(exper, sf, mc, sim_cycle, ir, het, a_t, lb_t, vn, tv)]
                                     i+=1
 
     #quit()

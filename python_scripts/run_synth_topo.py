@@ -44,6 +44,8 @@ sim_cycles = ['2147483647']
 inj_rates = [str(x/100.0) for x in range(1, 11)]
 
 
+
+
 # topologies
 noi_clks_dict = {'mesh':'4GHz',
             'cmesh':'3.6GHz',
@@ -113,7 +115,17 @@ base_flags = ['--network','garnet',
 
 
 global outdir
-outdir = './synth_outputs/simple'
+outdir = './synth_outputs/single_topo'
+
+global nr_list_path_base
+# nr_list_path_base = 'configs/topologies/nr_list3/'
+nr_list_path_base = 'configs/topologies/nr_list_mclb/'
+
+
+global vn_map_path_base
+# vn_map_path_base = 'configs/topologies/vn_maps3/'
+vn_map_path_base = 'configs/topologies/vn_maps_mclb/'
+
 
 class BenchmarkRun:
 
@@ -133,15 +145,15 @@ class BenchmarkRun:
             return f'{sc//1000000000}b'
 
 
-    def __init__(self, map_file, memcoh, sim_cycle, inj_rate, hetero, alg_type, lb_type, n_evns,tot_vcs, noc_clk, n_cpus, dir_mult):
+    def __init__(self,  map_file, memcoh, sim_cycle, inj_rate, hetero, alg_type, lb_type, n_evns,tot_vcs,traf_type, cpu_mult, dir_mult, noc_clk_float):
+
+
+        self.traf_type = traf_type
 
         # simulation configs
         self.mem_or_coh = memcoh
         self.sim_cycles = sim_cycle
         self.inj_rate = inj_rate
-
-        self.n_cpus = n_cpus
-        self.dir_mult = dir_mult
 
         # topology configs
         self.topology = ((map_file).split('.')[0])
@@ -161,10 +173,10 @@ class BenchmarkRun:
 
 
         vn_file = f'{self.topology}_{self.alg_type}_{self.lb_type}_{n_evns}vns.vn'
-        self.topology_vn_file = os.path.join('configs/topologies/vn_maps_mclb/',vn_file)
+        self.topology_vn_file = os.path.join(vn_map_path_base,vn_file)
 
         nrl_file = f'{self.topology}_{self.alg_type}.nrl'
-        self.topology_nr_list_file = os.path.join('configs/topologies/nr_list_mclb/',nrl_file)
+        self.topology_nr_list_file = os.path.join(nr_list_path_base,nrl_file)
 
         self.hetero = hetero
 
@@ -174,9 +186,48 @@ class BenchmarkRun:
         if not hetero:
             sd_str = 'same'
 
+        if 'mesh' in self.topology:
+            n_routers = 64
+        else:
+            n_routers = 20
+
+        self.n_routers = str(n_routers)
+
+        n_cpus = n_routers
+
+        if self.mem_or_coh == 'mem':
+            n_dirs = 8
+        # coh
+        else:
+            n_dirs = 20
+
+        n_dirs *= dir_mult
+        n_cpus *= cpu_mult
+
+        self.n_dirs = str(n_dirs)
+
+        self.n_cpus = str(n_cpus)
 
 
-        self.noc_clk = f'{noc_clk}GHz'
+        # outdir stuff
+        # global outdir
+        
+        # if self.experiment == 'single_topo':
+        #     outdir += f'_singletopo'
+
+        # print('here')
+
+        this_outdir = outdir
+
+        if self.topology is not None:
+            this_outdir += f'/{self.topology}_{self.n_cpus}cpus_{self.n_dirs}dirs_{noc_clk_float}GHz'
+        
+
+        out_path_suffix = f'{self.traf_type}/{self.name_sim_cycles(self.sim_cycles)}/{sd_str}/{self.alg_type}_{self.lb_type}_{self.n_evns}_{self.tot_vcs}/{self.mem_or_coh}/{self.topology}/{inj_rate_str}/'
+
+        self.output_dir = os.path.join(this_outdir,out_path_suffix)
+
+        self.noc_clk = f'{noc_clk_float}GHz'
 
         self.noi_clk = self.noc_clk
 
@@ -203,22 +254,14 @@ class BenchmarkRun:
 
         #self.output_dir = f'./outputs/{self.sim_cycles}/{self.noi_clk}/{self.mem_or_coh}/{self.topology}/{inj_rate_str}/''
 
-        n_routers = -1
-        if 'mesh' in self.topology:
-            n_routers = '64'
-        else:
-            n_routers = '20'
 
-        self.n_routers = n_routers
-
-        desc = f'{self.alg_type}_{self.lb_type}_{self.n_evns}_{self.tot_vcs}_{self.n_cpus}cpus_{self.dir_mult}xdirs_{self.noc_clk}'
-
-        out_path_suffix = f'{self.name_sim_cycles(self.sim_cycles)}/{sd_str}/{desc}/{self.mem_or_coh}/{self.topology}/{inj_rate_str}/'
-
-        self.output_dir = os.path.join(outdir,out_path_suffix)
 
 
     def run(self):
+
+
+        # print('here')
+
 
         global config_status
 
@@ -230,6 +273,7 @@ class BenchmarkRun:
                 # '--stdout-file log.out --stderr-file log.err -r -e',
                 '-d', self.output_dir,
                 conf_script,
+                '--synthetic',self.traf_type,
                 '--topology',topo_conf_script,
                 '--noi_routers',self.n_routers,
                 '--sim-cycles',self.sim_cycles,
@@ -246,24 +290,21 @@ class BenchmarkRun:
 
 
 
-        if self.mem_or_coh == 'mem':
-            base_dirs = 16
+        cmd += ['--mem_or_coh',self.mem_or_coh]
 
-            cmd += ['--mem_or_coh','mem']
-        # coh
-        else:
+        cmd += ['--num-dirs', self.n_dirs]
+        cmd += ['--num-cpus',self.n_cpus]
 
-            base_dirs = self.n_cpus
-            cmd += ['--mem_or_coh','coh']
 
-        n_cpus = self.n_cpus
-        n_dirs = self.dir_mult*base_dirs
+        # this is a multiple of 20 and 16 to match dirs for coh and mem
+        if self.n_routers == '20':
+            cmd += ['--mem-size','320000000']
 
-        cmd += ['--mem-size','320000000']
-        cmd += ['--num-dirs', str(n_dirs)]
-        cmd += ['--num-cpus',str(n_cpus)]
 
         cmd += base_flags
+
+        # print('heree')
+
 
 
         cmd += ['--vcs-per-vnet',f'{self.tot_vcs}',
@@ -275,7 +316,8 @@ class BenchmarkRun:
         os.chdir(home)
 
 
-        desc = f'{self.topology} : {self.alg_type}_{self.lb_type}_{self.n_evns}_{self.tot_vcs} @ inj {self.inj_rate} w/ {self.n_cpus} cpus, {self.dir_mult}x dirs {self.noc_clk}'
+        desc = f'{self.mem_or_coh} {self.topology} : {self.alg_type}_{self.lb_type}_{self.n_evns}_{self.tot_vcs} @ inj {self.inj_rate} @ {self.noc_clk} noc & {self.noi_clk} noi w {self.traf_type} w/ {self.n_cpus} cpus and {self.n_dirs} dirs'
+
         
         print(f'Runnning {desc}')
 
@@ -283,15 +325,14 @@ class BenchmarkRun:
         ###############################################################
 
 
-        print(' '.join(cmd))
-        return
+        # print(' '.join(cmd))
+        # return
 
         res = None
 
-        # res = subprocess.run(cmd, shell=True)
-        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,universal_newlines=True)
+        # subprocess.run(setup, shell=True)
+        res = subprocess.run(cmd , stdout=subprocess.PIPE, stderr=subprocess.PIPE,universal_newlines=True)
 
-    
 
         status = 'No error'
         
@@ -368,10 +409,11 @@ def main():
     parser.add_argument('--tot_vcs',type=int)
 
     parser.add_argument('--map_file_dir',type=str,default='./configs/topologies/paper_solutions/')
+    parser.add_argument('--experiment',type=str)
+    parser.add_argument('--topology',type=str)
+    parser.add_argument('--all_traf',action='store_true')
 
-    parser.add_argument('--sys_clk',type=float,default=4.0)
-    parser.add_argument('--num_cpus',type=int,default=40)
-    parser.add_argument('--dir_mult',type=int,default=8)
+    parser.add_argument('--small_topo_batch',action='store_true')
 
     args = parser.parse_args()
 
@@ -395,7 +437,7 @@ def main():
     #     inj_rates = [str(x/1000.0) for x in range(a,b,c)]
 
     inj_rates = np.arange(args.inj_start, args.inj_end,args.inj_step)
-    inj_rates = [str(round(x,3)) for x in inj_rates]
+    inj_rates = [str(round(x,4)) for x in inj_rates]
 
     print(f'inj_rates = {inj_rates}')
     
@@ -411,10 +453,14 @@ def main():
         memcoh = ['coh']
 
     het_tf = [True, False]
-    if args.samefreq_only:
+    if args.samefreq_only and args.mixedfreq_only:
+        print(f'Cannot have both mixed and same. Exiting...')
+        quit(-1)
+    elif args.samefreq_only:
         het_tf = [False]
     elif args.mixedfreq_only:
         het_tf = [True]
+
 
     # start back
     map_files.reverse()
@@ -429,17 +475,28 @@ def main():
                         or 'ft' in s\
                         or 'lpbt' in s]
 
-
     ###################################################################
     # here for manual changes
 
-    undesired = []#['butter','mesh','cmesh']
+    undesired = ['mesh','cmesh','latop','bwop','power']
+    small_batch = ['ns_m_scop','ft_x']
 
-    for u in undesired:
-        map_files = [s for s in map_files if u not in s]
+    if args.small_topo_batch:
+        # for u in undesired:
+        #     map_files = [s for s in map_files if u not in s]
+
+        # print(f'map_files={map_files}')
+
+        map_files = [s for s in map_files if s.split('.')[0] in small_batch]
+
+    # desired = ['ns_s_scop','ns_m_scop','ns_l_scop','ft_x','kite_large']
+
+    # for u in desired:
+    #     print(f'{u}, map_files')
+    #     map_files = [s for s in map_files if u in s]
 
     map_files = [m for m in map_files if 'noci' not in m]
-    map_files = [m for m in map_files if '20' not in m  ]
+    map_files = [m for m in map_files if '20' not in m ]
     map_files = [m for m in map_files if 'timed' not in m]
     map_files = [m for m in map_files if 'opt' not in m]
     map_files = [m for m in map_files if 'cmesh' not in m]
@@ -457,9 +514,11 @@ def main():
     map_files = [s for s in map_files if 'noci' not in s]
 
     print(f'{map_files}')
-    # quit()
+    # quit()s
 
-    alg_types = ['naive','bsorm','bsorm_zindexed','cload','cload_zindexed']
+    alg_types = ['naive','bsorm','bsorm_zindexed','cload','cload_zindexed',
+                # new ones
+                'cload2','cload3', 'mclb']
 
     if args.naive_only:
         alg_types = ['naive']
@@ -475,39 +534,61 @@ def main():
 
     if args.no_lb_only:
         lb_types = ['none']
-    elif args.hops_lb_only:
+    elif args.hops_lb_only: 
         lb_types = ['hops']
     elif args.paths_lb_only:
         lb_types = ['paths']
 
-    n_evns = [3,4]
+    n_evns = [4]
 
     if args.n_evn:
         n_evns = [int(args.n_evn)]
 
-    tot_vcs = 4
+    tot_vcs = [6]
     if args.tot_vcs:
         tot_vcs = [int(args.tot_vcs)]
 
-    # map_files = [s for s in map_files if 'kite_large' in s]
 
+    traf_types = ['uniform_random']
 
-    clk = args.sys_clk
-    n_cpus = args.num_cpus
-    dir_mult = args.dir_mult
+    if args.all_traf:
+        traf_types += ['tornado','neighbor','shuffle','transpose']
+
+    # TODO as CLA
+    cpu_mult = [1, 2, 4]
+    cpu_mult = [1]
+    dir_mult = [1,2,4,8]
+    dir_mult = [8]
+    noc_clks = [1.8,
+                # 2.1,
+                2.4,
+                2.7,
+                3.0,
+                3.3,
+                3.6, 
+                3.9]
+
+    # map_files = [s for s in map_files if args.topology in s]
 
     i = 0
+
     for het in het_tf:
         for mc in memcoh:
             for ir in inj_rates:
-                for sf in map_files:
+                for topo in map_files:
                     for a_t in alg_types:
                         for lb_t in lb_types:
                             for vn in n_evns:
                                 for tv in tot_vcs:
-                                    print(f'{i:04} : Adding {sf} {a_t} {lb_t} {ir} {mc} {vn}/{tv} w/ {n_cpus}cpus {dir_mult}x(20/8)dirs @ {clk}GHz')
-                                    runs += [BenchmarkRun(sf, mc, sim_cycle, ir, het, a_t, lb_t, vn, tv, clk, n_cpus, dir_mult)]
-                                    i+=1
+                                    for tt in traf_types:
+                                        for cm in cpu_mult:
+                                            for dm in dir_mult:
+                                                for clk in noc_clks:
+                                                # for ir in inj_rates:
+
+                                                    print(f'{i:04} : {topo} : {a_t} {lb_t} {ir} {mc} {vn}/{tv} for traffic {tt}')
+                                                    runs += [BenchmarkRun(topo, mc, sim_cycle, ir, het, a_t, lb_t, vn, tv, tt,cm,dm,clk)]
+                                                    i+=1
 
     #quit()
 
@@ -519,6 +600,7 @@ def main():
     num_threads = len(threads)
 
     print("Dispatching " + str(num_threads) + " threads")
+    # quit()
 
     for thread in threads:
         thread.start()

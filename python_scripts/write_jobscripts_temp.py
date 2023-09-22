@@ -3,7 +3,7 @@ import os
 
 import sys
 
-DATE = 'aug20'
+DATE = 'jul20'
 
 
 # topologies
@@ -72,7 +72,7 @@ def write_jobscript(n_inst, n_warmup_inst, topology, alg_type, lb_type, benchmar
 
     # construct outdir_name
     # outdir_name = f'slurm/job_scripts/parsec_noci_32GB_l2caches'
-    outdir_name = f'slurm/job_scripts/parsec_noci_32GBxDDR4'
+    outdir_name = f'slurm/job_scripts/inj_analysis/parsec_noci_32GBxDDR4'
     
     if moesi:
         outdir_name += '_moesi'
@@ -110,7 +110,7 @@ def write_jobscript(n_inst, n_warmup_inst, topology, alg_type, lb_type, benchmar
     # slurm_out = f'parsec_noci/{benchmark}_{topology}_{inst_str}_4GHzcpu_500MBL2{DATE}.out'
     # slurm_out = f'parsec_noci/{benchmark}_{topology}_{alg_type}_{lb_type}_{inst_str}_{clk_str}_{l2_size}_32GB_l2l2caches_{DATE}.out'
 
-    slurm_out = f'parsec_noci/{benchmark}_{topology}_{alg_type}_{lb_type}_{warmup_inst_str}_{inst_str}_{clk_str}_{l2_size}'
+    slurm_out = f'parsec_noci/inj_analysis/{benchmark}_{topology}_{alg_type}_{lb_type}_{warmup_inst_str}_{inst_str}_{clk_str}_{l2_size}'
 
     if n_l2s == 4:
         slurm_out += f'x{n_l2s}'
@@ -158,8 +158,7 @@ def write_jobscript(n_inst, n_warmup_inst, topology, alg_type, lb_type, benchmar
     # upping minimum required mem to avoid memory issues
     # gem5 using 32GB so ~36 to be safe
     # reduce for parallelism. observed to be ~10GB?
-    # slurm limits parallel runs anyway
-    s = '#SBATCH --mem-per-cpu=36GB\n'
+    s = '#SBATCH --mem-per-cpu=20GB\n'
     lines.append(s)
 
     s = f'#SBATCH --output=slurm/outputs/{slurm_out}\n'
@@ -196,14 +195,14 @@ def write_jobscript(n_inst, n_warmup_inst, topology, alg_type, lb_type, benchmar
     # noci restore
 
     # order of these following three matters
-    cmd = f'srun ./build/X86/gem5.fast'
+    cmd = f'./build/X86/gem5.fast'
     if moesi:
         cmd = f'./build/X86_MOESI_hammer/gem5.fast'
     
 
 
     # output dir
-    cmd += f' -d ./parsec_results/noci_32GBxDDR4'
+    cmd += f' -d ./parsec_results/injrate_analysis/noci_32GBxDDR4'
     if moesi:
         cmd += '_moesi'
     if nreps is not None:
@@ -231,10 +230,12 @@ def write_jobscript(n_inst, n_warmup_inst, topology, alg_type, lb_type, benchmar
 
     # cmd += f' -d ./paper_outputs/parsec_noci_largemem/{inst_str}/{benchmark}/{topology}/'
 
-    if not all_threads:
-        cmd += f' configs/auto_top/auto_top_fs_v2.py'
-    else:
-        cmd += f' configs/auto_top/auto_top_fs_v3.py'
+    # if not all_threads:
+    #     cmd += f' configs/auto_top/auto_top_fs_v2.py'
+    # else:
+    #     cmd += f' configs/auto_top/auto_top_fs_v3.py'
+
+    cmd += f' configs/auto_top/auto_top_fs_analyze_parsec.py'
 
     # after this, order doesnt matter
 
@@ -277,8 +278,6 @@ def write_jobscript(n_inst, n_warmup_inst, topology, alg_type, lb_type, benchmar
         vn_dir = 'vn_maps3'
     elif alg_type == 'augmclb':
         vn_dir = 'vn_maps_augmclb'
-    elif 'mclb' in alg_type:
-        vn_dir = 'vn_maps'
 
     cmd += f' --flat_vn_map_file configs/topologies/{vn_dir}/{topology}_{alg_type}_{lb_type}'
 
@@ -291,8 +290,6 @@ def write_jobscript(n_inst, n_warmup_inst, topology, alg_type, lb_type, benchmar
         nrl_dir = 'nr_list3'
     elif alg_type == 'augmclb':
         nrl_dir = 'nr_list_augmclb'
-    elif 'mclb' in alg_type:
-        nrl_dir = 'nr_list'
     
 
     cmd += f' --flat_nr_map_file configs/topologies/{nrl_dir}/{topology}_{alg_type}.nrl'
@@ -404,6 +401,8 @@ def write_jobscript(n_inst, n_warmup_inst, topology, alg_type, lb_type, benchmar
     # better memory?
     cmd += ' --mem-type DDR4_2400_16x4'
 
+    # cmd += 
+
     cmd += '\n'
 
     lines.append(cmd)
@@ -460,12 +459,13 @@ def main():
 
     topologies = [a for a in topologies if 'noci' in a]
 
+    # just test ns_l_scop across all bench?
+    topologies = [a for a in topologies if 'ns_l_scop' in a]
 
 
     # topologies = [a for a in topologies if 'small' in a or '_l_' in a or 'mesh' in a or '_m_' in a]
     # topologies = [a for a in topologies if 'mesh' in a]
-    # topologies = [a for a in topologies if 'lpbt' not in a]
-    # topologies = [a for a in topologies if 'bwop' not in a]
+    # topologies = [a for a in topologies if 'cmesh' not in a]
 
 
     print(f'topologies ({len(topologies)})={topologies}')
@@ -476,8 +476,7 @@ def main():
 
     # manually configure
 
-    # cpu_freqs = [1.8,3.6]
-    cpu_freqs = [4]
+    cpu_freqs = [4.0]
 
     # l2_sizes = ['250kB','500 kB','2MB']
     # l2_sizes = ['500kB']
@@ -488,27 +487,19 @@ def main():
 
     # alg_types = ['naive','cload','bsorm']
 
-    alg_types = ['naive','cload','mclb''augmclb']
-    alg_types = ['picky_cohmem_prioritized_doubley_memory_mclb']
-
+    alg_types = ['naive','cload','mclb']
+    alg_types = ['augmclb']
     lb_types = ['hops']
 
     # False => not simple
     cpu_types = [False]#,True]
 
-    # evns = 4
-    # 6 for picky_cohmem_prioritized_doubley_memory
-    evns = 6
-
+    evns = 4
     reps = None
-
     is_picky = True
-
     n_vcs = 6
-    # + 2 from minimum for picky_cohmem_prioritized_doubley_memory
-    n_vcs = 8
     # link widht. 128 is default
-    link_widths = [128]#[32,64,128]
+    link_widths = [128]
     rlat=1
 
     use_moesi = False

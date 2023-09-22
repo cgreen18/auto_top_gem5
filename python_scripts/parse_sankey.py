@@ -5,10 +5,15 @@ in_path = sys.argv[1]
 
 sankey_lines = []
 
+sankey_type = '.sankey.'
+
 with open(in_path, 'r') as inf:
     for line in inf:
-        if '.sankey.' in line:
+        if sankey_type in line:
             sankey_lines.append(line)
+
+        if 'average_packet_latency' in line:
+            print(f'# avg pkt lat = {line.split(" ")[1]}')
 
 sankey_dict = {}
 
@@ -35,8 +40,26 @@ for sl in sankey_lines:
     except:
         sankey_dict.update({ivc : {ovc : val}})
 
-totvcs = 9
+totvcs = 4
 ns = totvcs*3
+
+
+
+mysum = 0
+for i in range(totvcs):
+    for j in range(ns):
+        mysum += sankey_dict[i][j]
+
+
+print(f'ilow [{mysum}] olow')
+
+mysum = 0
+for i in range(2*totvcs,3*totvcs):
+    for j in range(ns):
+        mysum += sankey_dict[i][j]
+
+print(f'ihigh [{mysum}] ohigh')
+
 
 for i in range(ns):
     for j in range(ns):

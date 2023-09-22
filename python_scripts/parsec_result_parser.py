@@ -10,6 +10,8 @@ metrics = [
             'numCycles',
 #             'numInsts',
             'average_packet_latency',
+            # 'average_flit_latency',
+
             # 'packets_received::total',
             # 'packets_injected::total',
             # 'hops',
@@ -174,8 +176,10 @@ for root, dirs, files, in os.walk(data_dir):
 
         data += block
 
-
+        # if len(data) >= 4:
+            # print(f'data = {data}')
         print(f'data = {data}')
+
         if data != []:
             csv_lines.append(data)
 

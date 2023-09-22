@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import csv
 import numpy as np
+import sys
 
 from matplotlib import rc
 
@@ -15,14 +16,23 @@ infile_name = 'parsec_results/w_warmup_100m_100m.csv'
 infile_name = 'parsec_results/128kb_18ghz_1m.csv'
 infile_name = 'parsec_results/3rlat.csv'
 infile_name = 'parsec_results/best_100m.csv'
-infile_name = 'parsec_results/8reps_10m.csv'
+infile_name = 'parsec_results/csvs/64width_100m.csv'
+infile_name = 'parsec_results/csvs/8reps_100m.csv'
+infile_name = 'parsec_results/csvs/64width_18GHz_100mwarm_100msim_3jul.csv'
+infile_name = 'parsec_results/csvs/64width_36GHz_10mwarm_100msim_4jul.csv'
+# infile_name = 'parsec_results/csvs/moesi.csv'
+
 
 
 # True
 # False
 
-use_totcycles = True
-use_numcycles = False
+use_totcycles = False
+# use_totcycles = True
+
+use_numcycles = True
+# use_numcycles = False
+
 use_simticks = False
 
 use_pkt_lat = True
@@ -34,9 +44,17 @@ outfile_suffix = '500kB_10m_both_simticks_lim_v3'
 
 outfile_suffix = '128kb_18ghz_1m_both'
 outfile_suffix = '3rlat_both'
-outfile_suffix = 'best_100m_both'
-outfile_suffix = '8reps_10m_focues_both'
+outfiitle_suffix = 'best_100m_both'
+outfile_suffix = '64width_18GHz_100m_both'
+outfile_suffix = '64width_36GHz_10mwarm_100msimul_both'
+# outfile_suffix = 'moesi'
 
+
+try:
+    infile_name = sys.argv[1]
+    outfile_suffix = sys.argv[2]
+except:
+    pass
 
 if use_numcycles:
     outfile_suffix += '_ncycles'
@@ -55,14 +73,17 @@ bad_benches = []
 # bad_benches += ['x264']
 
 # bad_benches += ['swaptions','fluidanimate','raytrace']
-bad_benches += ['vips','dedup','ferret']
+# bad_benches += []
+# bad_benches += ['canneal','fluidanimate','facesim','swaptions']
+# bad_benches += ['raytrace','dedup','ferret']
 
-# 250kB
-# bad_benches = ['blackscholes','raytrace','x264']
+# # # 250kB
+# bad_benches += ['blackscholes']
 
-# bad_benches = ['raytrace','vips','streamcluster']
-
-#bad_benches = ['bodytrack','fluidanimate']
+# actuyally just slow
+bad_benches = ['swaptions','fluidanimate']
+bad_benches += ['raytrace']
+# bad_benches += ['dedup']
 
 topos = []
 
@@ -76,19 +97,30 @@ double_rename = {'Kite Small':'Kite',
 'NS-BWOp Small':'NS-BWOp',
 'NS-BWOp Med':'NS-BWOp',
 'NS-BWOp Large':'NS-BWOp',
+'NS-SCOp Small':'NS-SCOp',
+'NS-SCOp Med':'NS-SCOp',
+'NS-SCOp Large':'NS-SCOp',
 'LPBT-Power Small':'LPBT-P',
 'LPBT-Hops Small':'LPBT-H',
 'LPBT-Hops Med':'LPBT-P',
+'Folded Torus':'Folded Torus',
+'Butter Donut':'Butter Donut',
+'Dbl Butterfly':'Dbl Butterfly'
+
 }
 
 
 color_dict = {'NS-LatOp Small':'tab:blue',
                 'NS-BWOp Small':'tab:orange',
+                'NS-SCOp Small':'tab:orange',
 
               'NS-LatOp Med':'tab:red',
               'NS-BWOp Med':'tab:purple',
+              'NS-SCOp Med':'tab:purple',
+
               'NS-LatOp Large':'tab:green',
               'NS-BWOp Large':'tab:gray',
+              'NS-SCOp Large':'tab:gray',
 
               'Kite Small':'tab:olive',
               'LPBT-Power Small':'blueviolet',
@@ -138,6 +170,15 @@ rename_dict = { '20r_15ll_opt_ulinks_noci':'NS-LatOp Small',
                 'lpbt_20r_5p_15ll_power_runsol_noci':'LPBT-Power Small',
                 'lpbt_20r_5p_15ll_total_hops_runsol_noci':'LPBT-Hops Small',
                 'lpbt_20r_5p_2ll_total_hops_runsol_noci':'LPBT-Hops Med',
+                'lpbt_s_power_noci':'LPBT-Power Small',
+                'lpbt_s_latop_noci':'LPBT-Hops Small',
+                'lpbt_m_latop_noci':'LPBT-Hops Med',
+                'ns_s_scop':'NS-SCOp Small',
+                'ns_m_scop':'NS-SCOp Med',
+                'ns_l_scop':'NS-SCOp Large',
+                'ns_s_scop_noci':'NS-SCOp Small',
+                'ns_m_scop_noci':'NS-SCOp Med',
+                'ns_l_scop_noci':'NS-SCOp Large',
                 }
 
 # desired_topologies=[
@@ -163,19 +204,22 @@ desired_topologies = [
 'LPBT-Power Small',
 'LPBT-Hops Small',
 'NS-LatOp Small',
-'NS-BWOp Small',
+# 'NS-BWOp Small',
+'NS-SCOp Small',
 
 'Folded Torus',
 'Kite Med',
 'LPBT-Hops Med',
 'NS-LatOp Med',
-'NS-BWOp Med',
+# 'NS-BWOp Med',
+'NS-SCOp Med',
 
 'Butter Donut',
 'Dbl Butterfly',
 'Kite Large',
 'NS-LatOp Large',
-'NS-BWOp Large',
+# 'NS-BWOp Large',
+'NS-SCOp Large',
 
 # 'CMesh'
 ]
@@ -213,6 +257,8 @@ with open(infile_name, 'r') as inf:
 
         topo = topo.replace('_naive_hops','')
         topo = topo.replace('_cload_picky_hops','')
+        topo = topo.replace('_augmclb_hops','')
+        topo = topo.replace('_picky_cohmem_prioritized_doubley_memory_mclb_hops','')
 
         renamed_topo = rename_dict[topo]
 
@@ -396,7 +442,9 @@ for topo in desired_topologies:
 
     try:
         new_name = double_rename[topo]
-    except:
+    except Exception as e:
+        print(f'e={e}')
+        quit()
         new_name = topo
 
     y_labels.append(topo)
@@ -508,8 +556,10 @@ ax.set_xticks(x)
 # ax.set_xticklabels(x_val_list)#,horizontalalignment='left', rotation=-20, rotation_mode="anchor")
 ax.set_xticklabels(x_val_list,horizontalalignment='left', rotation=-20, rotation_mode="anchor")
 
+max_x = max(x)
 
-ax.set_xlim([-3.5,81.25])
+ax.set_xlim([-3.5,max_x+(1.5*mult*width)])
+# ax.set_xlim([-3.5,110])
 
 
 y = np.arange(0.5,4.0,0.05)
@@ -519,7 +569,12 @@ ax.set_yticks(y_minor,minor=True)
 
 # FLAG
 
-ax.set_ylim([1.0,1.20])
+# ax.set_ylim([1.0,1.5])
+# ax2.set_ylim([1.0,1.4])
+
+# FLAG y lim ylim
+
+ax.set_ylim([.95,1.4])
 ax2.set_ylim([1.0,1.5])
 
 ax.grid(which='major',alpha=0.5)
@@ -589,7 +644,8 @@ ax.legend(handles, labels,ncol=6,bbox_to_anchor=(0.075, 1.0, 0.1, .1),loc='lower
 
 outname=f'./parsec_results/graphs/parsec_bar_{outfile_suffix}.png'
 print(f'writing out to : {outname}')
-plt.savefig(outname,bbox_inches='tight',dpi=900)
+# plt.savefig(outname,bbox_inches='tight',dpi=900)
+plt.savefig(outname,bbox_inches='tight')
 print(f'wrote out to : {outname}')
 
 plt.show()

@@ -5,15 +5,19 @@ import numpy as np
 
 from matplotlib import rc
 
-infile_name = 'dsent_sorted_2.csv'
+infile_name = 'dsent_sorted_micro.csv'
+infile_name = 'dsent_wscop_5jul.csv'
 
 color_dict = {'NS-LatOp Small':'tab:blue',
                 'NS-BWOp Small':'tab:orange',
+                'NS-SCOp Small':'tab:orange',
 
               'NS-LatOp Med':'tab:red',
               'NS-BWOp Med':'tab:purple',
+              'NS-SCOp Med':'tab:purple',
               'NS-LatOp Large':'tab:green',
               'NS-BWOp Large':'tab:gray',
+              'NS-SCOp Large':'tab:gray',
 
               'Kite Small':'tab:olive',
               'LPBT-Power Small':'blueviolet',
@@ -59,6 +63,9 @@ rename_dict = { '20r_15ll_opt_ulinks_noci':'NS-LatOp Small',
                 'ns_m_bwop':'NS-BWOp Med',
                 'ns_l_latop':'NS-LatOp Large',
                 'ns_l_bwop':'NS-BWOp Large',
+                'ns_s_scop':'NS-SCOp Small',
+                'ns_m_scop':'NS-SCOp Med',
+                'ns_l_scop':'NS-SCOp Large',
                 'butter donut':'Butter Donut',
                 'dbl bfly':'Dbl Butterfly',
                 'kite small':'Kite Small',
@@ -87,9 +94,10 @@ desired_topologies=[
 'ns_m_latop',
 'ns_l_latop',
 'ns_m_bwop',
-'ns_l_bwop',
+
 
 'butter_donut_x', 'dbl_bfly_x',
+'ns_l_bwop',
 'kite_large', 
 # 'cmesh_x',
 
@@ -102,20 +110,22 @@ desired_topologies = [
 'LPBT-Power Small',
 'LPBT-Hops Small',
 'NS-LatOp Small',
-'NS-BWOp Small',
+# 'NS-BWOp Small',
+'NS-SCOp Small',
 
 'Folded Torus',
 'Kite Med',
 'LPBT-Hops Med',
 'NS-LatOp Med',
-'NS-BWOp Med',
+# 'NS-BWOp Med',
+'NS-SCOp Med',
 
 'Butter Donut',
 'Dbl Butterfly',
 'Kite Large',
 'NS-LatOp Large',
-'NS-BWOp Large',
-
+# 'NS-BWOp Large',
+'NS-SCOp Large',
 # 'Mesh'
 
 # 'CMesh'
@@ -157,11 +167,18 @@ with open(infile_name, 'r') as inf:
 
         renamed_topo = rename_dict[topo]
 
-        dyn_pow = float(line[rel_dyn_pow_idx])
-        leak_pow = float(line[rel_leak_pow_idx])
+        try:
+            dyn_pow = float(line[rel_dyn_pow_idx])
+            leak_pow = float(line[rel_leak_pow_idx])
 
-        r_area = float(line[rel_router_area])
-        w_area = float(line[rel_wire_area])
+            r_area = float(line[rel_router_area])
+            w_area = float(line[rel_wire_area])
+        except:
+            dyn_pow = 0.0
+            leak_pow = 0.0
+
+            r_area = 0.0
+            w_area = 0.0
 
         try:
             g_dyn_pow = float(line[glob_rel_dyn_pow_idx])
@@ -408,7 +425,9 @@ r'\underline{Small}',
 'LPBT-Hops',
 'LPBT-Power',
 'NS-LatOp',
-'NS-BWOp',
+
+# 'NS-BWOp',
+'NS-SCOp',
 
 r'\underline{Medium}',
 
@@ -419,7 +438,9 @@ r'\underline{Medium}',
 
 # '',
 'NS-LatOp',
-'NS-BWOp',
+# 'NS-BWOp',
+'NS-SCOp',
+
 # '',
 
 r'\underline{Large}',
@@ -428,7 +449,8 @@ r'\underline{Large}',
 'Kite',
 # '',
 'NS-LatOp',
-'NS-BWOp',
+# 'NS-BWOp',
+'NS-SCOp',
 
 # 'CMesh',
 'Mesh'
@@ -449,6 +471,6 @@ custom_handles.append(ax.bar([0],[0],edgecolor='k',facecolor='none',label=custom
 leg2 = ax.legend(custom_handles,custom_labels,ncol=2,loc='upper left')
 ax.add_artist(leg1)
 
-outname = f'./dsent_22nm_stacked_globpow.png'
+outname = f'./dsent_22nm_stacked_globpow_wscop.png'
 print(f'writing to {outname}')
 plt.savefig(outname,bbox_inches='tight',dpi=800)

@@ -5,21 +5,21 @@ import sys
 
 # topos for parsec
 
-# desired_topologies=[
+desired_topologies=[
 
-#     'ns_s_latop','ns_s_bwop',
-#     'ns_m_latop','ns_m_bwop',
-#     'ns_l_latop','ns_l_bwop',
+    'ns_s_latop','ns_s_bwop',
+    'ns_m_latop','ns_m_bwop',
+    'ns_l_latop','ns_l_bwop',
 
-#     'ft_x_noci',
+    'ft_x_noci',
 
-#     'butter_donut_x_noci', 'dbl_bfly_x_noci',
+    'butter_donut_x_noci', 'dbl_bfly_x_noci',
 
-#     'kite_large_noci', 'kite_medium_noci',
-#     'kite_small_noci',
+    'kite_large_noci', 'kite_medium_noci',
+    'kite_small_noci',
 
-#     'cmesh_x_noci', 'mesh_noci'
-#     ]
+    'cmesh_x_noci', 'mesh_noci'
+    ]
 
 # desired_topologies = ['ft_x_noci']
 
@@ -51,26 +51,26 @@ def main():
     #                     "facesim", "raytrace"]
 
     # # all, important in order, others not
-    # benchmarks = [ "canneal", "bodytrack",
-    #                     "swaptions", "fluidanimate",
-    #                     "facesim", "raytrace",
-    #                     "blackscholes", "dedup",
-    #                     "ferret",  "freqmine",
-    #                     "streamcluster", "vips", "x264"]
-
-
-
-    benchmarks = [
-         "canneal", 
-         "bodytrack",
-                        "streamcluster", "vips", 
+    benchmarks = [ "canneal", "bodytrack",
                         "swaptions", "fluidanimate",
                         "facesim", "raytrace",
-                        
+                        "blackscholes", "dedup",
                         "ferret",  "freqmine",
-                        "blackscholes", 
-                        "dedup","x264"
-                        ]
+                        "streamcluster", "vips", "x264"]
+
+
+
+    # benchmarks = [
+    #      "canneal", 
+    #     #  "bodytrack",
+    #                     # "streamcluster", "vips", 
+    #                     "swaptions", "fluidanimate",
+    #                     "facesim", "raytrace",
+                        
+    #                     "ferret",  "freqmine",
+    #                     "blackscholes", 
+    #                     "dedup","x264"
+    #                     ]
 
     # benchmarks = [  "bodytrack"]
 
@@ -111,9 +111,7 @@ def main():
 
     description = 'moesi_10mwarm'
 
-    description = 'picky_cohmem_prioritized_doubley_memory_mclb'
-
-
+    description = 'inj_analysis'
 
     niceness = 1
 
@@ -156,8 +154,7 @@ def main():
     # topologies = [a for a in topologies if 'small' in a or '_s_' in a or 'mesh' in a]
     # topologies = [a for a in topologies if 'med' in a or '_m_' in a ]
 
-    topologies = [a for a in topologies if 'bwop' not in a]
-    topologies = [a for a in topologies if 'lpbt' not in a]
+    # topologies = [a for a in topologies if 'bwop' not in a]
 
     topologies = [a for a in topologies if 'noci' in a]
 
@@ -167,17 +164,16 @@ def main():
     # desired_topologies = ['kite_small_noci','ns_s_latop_noci','lpbt_s_latop_noci',
     #                         'kite_medium_noci','ns_m_scop_noci','ft_x_noci',
     #                         'ns_l_scop_noci','kite_large_noci','mesh_noci']
-    # # desired_topologies = ['mesh_noci']
+    desired_topologies = ['ns_l_scop_noci']
 
-    # topologies = [t for t in topologies if t in desired_topologies]
+    topologies = [t for t in topologies if t in desired_topologies]
 
     print(f'topologies={topologies}')
     # quit()
 
-    # alg_types = ['naive','cload','bsorm',
-    #                   'augmclb','bsorm_picky']
+    # alg_types = ['naive','cload','bsorm']
 
-    alg_types = ['picky_cohmem_prioritized_doubley_memory_mclb']
+    alg_types = ['augmclb']#,'bsorm_picky']
 
     lb_types = ['hops']
 
@@ -213,8 +209,8 @@ def main():
 
     cpu_freqs= [i/10 for i in range(18,30,3)]
 
-    cpu_freqs =[1.8,3.6,4]
-    cpu_freqs =[4]
+    cpu_freqs =[1.8]
+    cpu_freqs =[4.0]
 
     l2_sizes = ['250kB','500kB','2MB']
     l2_sizes = ['500kB']
@@ -222,13 +218,8 @@ def main():
     n_l2s = 64
 
     reps = None
-    # n_evns = 4
-    # tot_vcs = 6
-
-    # for icky_cohmem_prioritized_doubley_memory_mclb
-    n_evns = 6
-    tot_vcs = 8
-
+    n_evns = 4
+    tot_vcs = 6
     # is_picky = True
 
     use_simple = [False]
@@ -246,7 +237,7 @@ def main():
                         clk_str = f'{cf}GHz'.replace('.','')
                         # s = f'sbatch --exclude=mnemosyne -t $TLIM slurm/job_scripts/parsec_noci_largemem_{clk_str}/{inst_str}/{js}\n'
 
-                        js_path = f'slurm/job_scripts/parsec_noci_32GBxDDR4'
+                        js_path = f'slurm/job_scripts/inj_analysis/parsec_noci_32GBxDDR4'
 
                         if moesi:
                             js_path += '_moesi'
@@ -293,7 +284,7 @@ def main():
 
     print(lines)
 
-    name = f'slurm/run_scripts/run_{description}_noci_warm{warm_str}_simul{inst_str}.sh'
+    name = f'slurm/run_scripts/run_{description}_noci_{inst_str}.sh'
     with open(name, 'w+') as of:
         of.writelines(lines)
 

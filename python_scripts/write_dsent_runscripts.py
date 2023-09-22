@@ -7,21 +7,21 @@ DATE = '_nov10'
 
 # topos for parsec
 
-desired_topologies=[
-#'20r_15ll_opt', '20r_15ll_opt_ulinks',
-#'20r_25ll_timed7days', '20r_25ll_timed7days_ulinks',
-#'20r_2ll_opt', '20r_2ll_runsol_ulinks',
-# 'butter_donut_x', 'dbl_bfly_x',
-# 'kite_large', 'kite_medium', 'kite_small',
-# 'cmesh_x', 'mesh',
+desired_topologies=[\
+#     '20r_15ll_opt', '20r_15ll_opt_ulinks',
+# '20r_25ll_timed7days', '20r_25ll_timed7days_ulinks',
+# '20r_2ll_opt', '20r_2ll_runsol_ulinks',
+
+'butter_donut_x', 'dbl_bfly_x',
+'kite_large', 'kite_medium', 'kite_small',
+'cmesh_x', 'mesh',
 'ft_x',
-# 'ns_s_latop','ns_s_bwop',
-# 'ns_m_latop','ns_m_bwop',
-# 'ns_l_latop','ns_l_bwop',
-# 'lpbt_s_power',
-'lpbt_s_latop',
-    'lpbt_m_latop'
-                    ]
+'ns_s_latop','ns_s_bwop','ns_s_scop',
+'ns_m_latop','ns_m_bwop','ns_m_scop',
+'ns_l_latop','ns_l_bwop','ns_l_scop',
+'lpbt_s_latop','lpbt_s_power',
+'lpbt_m_latop'
+]
 
 def name_num_insts(sc):
     try:
@@ -61,7 +61,7 @@ def main():
     # description = 'allbutx264'
     description = 'all'
     # description = '4vc3escape'
-    description = 'extras_missed'
+    description = 'dsent_scop'
 
     n_inst = 100000
     try:
@@ -98,8 +98,11 @@ def main():
 
     topologies = [a for a in topologies if a in desired_topologies]
 
+    topologies = [a for a in topologies if 'scop' in a]
+
+
     print(f'topologies={topologies}')
-    #quit()
+    # quit()
 
     jobscripts = []
     for bench in benchmarks:

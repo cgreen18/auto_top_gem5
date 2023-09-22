@@ -1,6 +1,8 @@
 
 import sys
 import os
+
+
 data_dir = sys.argv[1]
 
 
@@ -18,6 +20,7 @@ for root, dirs, files, in os.walk(data_dir):
         bench = root.split('/')[-2]
 
         util = 0
+        lat = 0
 
         with open(in_path, 'r') as inf:
             for line in inf:
@@ -30,5 +33,14 @@ for root, dirs, files, in os.walk(data_dir):
                             util = float(l)
                         except:
                             pass
+                if 'packet_lat' in line:
+                    ipc_lines.append(line)
 
-        print(f'{bench} : {topo} : {util}')
+                    l_split = line.split(' ')
+                    for l in l_split:
+                        try:
+                            lat = float(l)
+                        except:
+                            pass
+
+        print(f'{bench} : {topo} : {util} util : {lat} lat')

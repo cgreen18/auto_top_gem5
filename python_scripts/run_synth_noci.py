@@ -1,5 +1,3 @@
-
-
 import os
 import subprocess
 import sys
@@ -24,7 +22,7 @@ home = '/home/yara/mithuna2/green456/netsmith_autotop/auto_top_gem5'
 setup = ['cd', home, ';', 'module','load','gcc',';']
 gem5_build = './build/Garnet_standalone/gem5.fast'
 conf_script = 'configs/auto_top/auto_top_synth.py'
-topo_conf_script = 'EscapeVirtualNetworks'
+topo_conf_script = 'NoCI_EscapeVirtualNetworks'
 topology_to_n_routers_dict = {
     'cmesh_x':'20',
     'butter_donut_x':'20',
@@ -71,12 +69,6 @@ noi_clks_dict = {'mesh':'4GHz',
             'ns_m_bwop_noci':'3.0GHz',
             'ns_l_latop_noci':'2.7GHz',
             'ns_l_bwop_noci':'2.7GHz',
-            '20r_4p_15ll_runsol_scbw':'3.6GHz',
-            '20r_4p_2ll_runsol_scbw':'3.0GHz',
-            '20r_4p_25ll_runsol_scbw':'2.7GHz',
-            'ns_s_scop':'3.6GHz',
-            'ns_m_scop':'3.0GHz',
-            'ns_l_scop':'2.7GHz',
             'dbl_bfly_x_noci':'2.7GHz',
             'butter_donut_x_noci':'2.7GHz',
             'kite_small_noci':'3.6GHz',
@@ -90,6 +82,31 @@ noi_clks_dict = {'mesh':'4GHz',
             'm':'3.0GHz',
             'l':'2.7GHz',
             'mesh_noci':'4.0GHz'}
+# topologies
+noi_clks_dict.update({'mesh':'4GHz',
+            'cmesh':'3.6GHz',
+            'cmesh_x':'3.6GHz',
+            'dbl_bfly':'2.7GHz',
+            'dbl_bfly_x':'2.7GHz',
+            'butter_donut_x':'2.7GHz',
+            'kite_small':'3.6GHz',
+            'kite_medium':'3.0GHz',
+            'ft_x_noci':'3.0GHz',
+            'kite_large':'2.7GHz',
+            'dbl_bfly_x_noci':'2.7GHz',
+            'butter_donut_x_noci':'2.7GHz',
+            'kite_small_noci':'3.6GHz',
+            'kite_medium_noci':'3.0GHz',
+            'kite_large_noci':'2.7GHz',
+            'mesh_noci':'4GHz',
+            'cmesh_x_noci':'3.6GHz',
+            # these will match part of name of our files
+            '15ll':'3.6GHz',
+            '2ll':'3.0GHz',
+            '25ll':'2.7GHz',
+            's':'3.6GHz',
+            'm':'3.0GHz',
+            'l':'2.7GHz'})
 
 
 global map_files
@@ -113,7 +130,7 @@ base_flags = ['--network','garnet',
 
 
 global outdir
-outdir = './synth_outputs/simple'
+outdir = './synth_outputs/noci'
 
 class BenchmarkRun:
 
@@ -133,7 +150,7 @@ class BenchmarkRun:
             return f'{sc//1000000000}b'
 
 
-    def __init__(self, map_file, memcoh, sim_cycle, inj_rate, hetero, alg_type, lb_type, n_evns,tot_vcs, noc_clk, n_cpus, dir_mult):
+    def __init__(self, map_file, memcoh, sim_cycle, inj_rate, hetero, alg_type, lb_type, n_evns, tot_vcs, noc_clk, n_cpus, dir_mult, weighted_mclb):
 
         # simulation configs
         self.mem_or_coh = memcoh
@@ -157,14 +174,20 @@ class BenchmarkRun:
         self.tot_vcs = tot_vcs
         self.n_dl_free = 1
         self.dl_part = self.tot_vcs - self.n_dl_free*self.min_n_dl_free
-        
 
+        vn_dir = 'configs/topologies/vn_maps/'
+        if weighted_mclb:
+            vn_dir = 'configs/topologies/vn_maps_augmclb_nocnocweighted/'
 
-        vn_file = f'{self.topology}_{self.alg_type}_{self.lb_type}_{n_evns}vns.vn'
-        self.topology_vn_file = os.path.join('configs/topologies/vn_maps_mclb/',vn_file)
+        vn_file = f'{self.topology}_{alg_type}_{lb_type}_{n_evns}vns.vn'
+        self.topology_vn_file = os.path.join(vn_dir,vn_file)
 
-        nrl_file = f'{self.topology}_{self.alg_type}.nrl'
-        self.topology_nr_list_file = os.path.join('configs/topologies/nr_list_mclb/',nrl_file)
+        nrl_dir = 'configs/topologies/nr_list/'
+        if weighted_mclb:
+            nrl_dir = 'configs/topologies/nr_list_augmclb_nocnocweighted/'
+
+        nrl_file = f'{self.topology}_{alg_type}.nrl'
+        self.topology_nr_list_file = os.path.join(nrl_dir,nrl_file)
 
         self.hetero = hetero
 
@@ -217,7 +240,6 @@ class BenchmarkRun:
 
         self.output_dir = os.path.join(outdir,out_path_suffix)
 
-
     def run(self):
 
         global config_status
@@ -244,8 +266,6 @@ class BenchmarkRun:
                 '--ruby'
                 ]
 
-
-
         if self.mem_or_coh == 'mem':
             base_dirs = 16
 
@@ -259,11 +279,13 @@ class BenchmarkRun:
         n_cpus = self.n_cpus
         n_dirs = self.dir_mult*base_dirs
 
-        cmd += ['--mem-size','320000000']
+        # cmd += ['--mem-size','3200000']
+        # cmd += ['--mem-size','131072']
         cmd += ['--num-dirs', str(n_dirs)]
         cmd += ['--num-cpus',str(n_cpus)]
 
         cmd += base_flags
+
 
 
         cmd += ['--vcs-per-vnet',f'{self.tot_vcs}',
@@ -271,37 +293,28 @@ class BenchmarkRun:
                 '--evn_n_deadlock_free',f'{self.n_dl_free}',
                 '--evn_min_n_deadlock_free',f'{self.min_n_dl_free}']
 
-
         os.chdir(home)
-
-
-        desc = f'{self.topology} : {self.alg_type}_{self.lb_type}_{self.n_evns}_{self.tot_vcs} @ inj {self.inj_rate} w/ {self.n_cpus} cpus, {self.dir_mult}x dirs {self.noc_clk}'
-        
-        print(f'Runnning {desc}')
 
         # comment in/out to test script
         ###############################################################
-
 
         print(' '.join(cmd))
         return
 
         res = None
 
-        # res = subprocess.run(cmd, shell=True)
+        # subprocess.run(setup, shell=True)
         res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,universal_newlines=True)
 
-    
 
         status = 'No error'
-        
         if res.returncode != 0:
-            print(f"Config {desc}: gem5 exited with error code " \
+            print("Config " + self.topology_map_file + ": gem5 exited with error code " \
                     + str(res.returncode))
             status = str(res.returncode)
 
         else:
-            print(f"Config {desc} complete.")
+            print("Config " + self.topology_map_file + " complete.")
 
         try:
             with open(os.path.join(self.output_dir, "stdout_stderr"), "w+") as fp:
@@ -337,7 +350,7 @@ def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-s','--sim_cycles',type=str,
-                default='1000',help='TODO')  # max is 2147483647
+                default='1000',help='TODO')
     parser.add_argument('--mem_only',action='store_true')
     parser.add_argument('--coh_only',action='store_true')
 
@@ -351,7 +364,8 @@ def main():
     parser.add_argument('--naive_only',action='store_true')
     parser.add_argument('--bsorm_only',action='store_true')
     parser.add_argument('--cload_only',action='store_true')
-    parser.add_argument('--mclb_only',action='store_true')
+    parser.add_argument('--augmclb_only',action='store_true')
+    parser.add_argument('--alg',type=str)
 
     # to limit load balncing
     parser.add_argument('--no_lb_only',action='store_true')
@@ -363,15 +377,17 @@ def main():
     parser.add_argument('--inj_end',type=float,default=0.1)
     parser.add_argument('--inj_step',type=float,default=0.01)
 
-    parser.add_argument('--one_topo',type=str)
     parser.add_argument('--n_evn',type=int)
     parser.add_argument('--tot_vcs',type=int)
 
+    parser.add_argument('--sys_clk',type=float,default=2.0)
+    parser.add_argument('--num_cpus',type=int,default=128)
+    parser.add_argument('--dir_mult',type=int,default=8)
+
     parser.add_argument('--map_file_dir',type=str,default='./configs/topologies/paper_solutions/')
 
-    parser.add_argument('--sys_clk',type=float,default=4.0)
-    parser.add_argument('--num_cpus',type=int,default=40)
-    parser.add_argument('--dir_mult',type=int,default=8)
+    parser.add_argument('--weighted_mclb',action='store_true')
+
 
     args = parser.parse_args()
 
@@ -395,12 +411,10 @@ def main():
     #     inj_rates = [str(x/1000.0) for x in range(a,b,c)]
 
     inj_rates = np.arange(args.inj_start, args.inj_end,args.inj_step)
-    inj_rates = [str(round(x,3)) for x in inj_rates]
+    inj_rates = [str(round(x,4)) for x in inj_rates]
 
-    print(f'inj_rates = {inj_rates}')
-    
+    # print(f'inj_rates={inj_rates}')
     # quit()
-
 
     runs = []
 
@@ -437,39 +451,30 @@ def main():
 
     for u in undesired:
         map_files = [s for s in map_files if u not in s]
-
-    map_files = [m for m in map_files if 'noci' not in m]
-    map_files = [m for m in map_files if '20' not in m  ]
-    map_files = [m for m in map_files if 'timed' not in m]
-    map_files = [m for m in map_files if 'opt' not in m]
-    map_files = [m for m in map_files if 'cmesh' not in m]
-    map_files = [m for m in map_files if 'mesh' not in m]
-    map_files = [m for m in map_files if 'vll' not in m]
-    map_files = [m for m in map_files if 'memopt' not in m and 'cohopt' not in m]
-
-    if args.one_topo:
-        map_files = [m for m in map_files if args.one_topo in m]
-
     ###################################################################
 
 
     # map_files = [s for s in map_files if 'butter' in s]
-    map_files = [s for s in map_files if 'noci' not in s]
+    map_files = [s for s in map_files if 'noci' in s]
 
-    print(f'{map_files}')
+    map_files = ['mesh_noci.map']
+
+    print(f'map_files={map_files}')
     # quit()
 
-    alg_types = ['naive','bsorm','bsorm_zindexed','cload','cload_zindexed']
+    alg_types = ['naive','bsorm','bsorm_zindexed','cload_picky']#,'cload_zindexed']
 
     if args.naive_only:
         alg_types = ['naive']
     elif args.bsorm_only:
-        alg_types = ['bsorm']
+        alg_types = ['bsorm','bsorm_zindexed']
     elif args.cload_only:
-        alg_types = ['cload']#,'cload_zindexed']
-    elif args.mclb_only:
-        alg_types = ['mclb']
+        alg_types = ['cload_picky']#,'cload_zindexed']
+    elif args.augmclb_only:
+        alg_types = ['augmclb']
 
+    if args.alg is not None:
+        alg_types = [args.alg]
 
     lb_types = ['none','hops','paths']
 
@@ -480,6 +485,9 @@ def main():
     elif args.paths_lb_only:
         lb_types = ['paths']
 
+
+    # map_files = [s for s in map_files if 'kite_large' in s]
+
     n_evns = [3,4]
 
     if args.n_evn:
@@ -489,12 +497,12 @@ def main():
     if args.tot_vcs:
         tot_vcs = [int(args.tot_vcs)]
 
-    # map_files = [s for s in map_files if 'kite_large' in s]
-
-
     clk = args.sys_clk
     n_cpus = args.num_cpus
     dir_mult = args.dir_mult
+
+    weighted_mclb = args.weighted_mclb
+
 
     i = 0
     for het in het_tf:
@@ -505,13 +513,14 @@ def main():
                         for lb_t in lb_types:
                             for vn in n_evns:
                                 for tv in tot_vcs:
-                                    print(f'{i:04} : Adding {sf} {a_t} {lb_t} {ir} {mc} {vn}/{tv} w/ {n_cpus}cpus {dir_mult}x(20/8)dirs @ {clk}GHz')
-                                    runs += [BenchmarkRun(sf, mc, sim_cycle, ir, het, a_t, lb_t, vn, tv, clk, n_cpus, dir_mult)]
+                                    print(f'{i:04} : Adding {sf} {a_t} {lb_t} {ir} {mc}')
+                                    runs += [BenchmarkRun(sf, mc, sim_cycle, ir, het, a_t, lb_t, vn, tv, clk, n_cpus, dir_mult,weighted_mclb)]
                                     i+=1
 
     #quit()
 
     threads = [threading.Thread(target=run_benchmark, args=(x,)) for x in runs]
+
 
     # threads = [threads[0]]
 
