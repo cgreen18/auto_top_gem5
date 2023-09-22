@@ -201,3 +201,290 @@ run --debug-break=3892 configs/auto_top/auto_top_synth.py --topology NoCI_Escape
 
 
 ./build/X86/gem5.fast -d ./parsec_noci_checkpoints/roi_checkpoint/system_5/bodytrack_4reps configs/auto_top/auto_top_fs_readfile_loop.py --num-cpus 64 --num-dirs 16 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --caches --l2_size 500kB --num-l2caches 64 --sys-clock 1.8GHz --benchmark_parsec bodytrack --restore-with-cpu X86KvmCPU -r 1 --checkpoint-dir ./after_boot/system_5/
+
+
+
+./build/Garnet_standalone/gem5.opt --debug-flags RubyNetwork configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 100000 --injectionrate 0.25 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.6GHz --router_map_file configs/topologies/paper_solutions/lpbt_s_latop.map --flat_vn_map_file configs/topologies/vn_maps/lpbt_s_latop_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list/lpbt_s_latop_naive.nrl --ruby --num-dirs 20 --mem_or_coh coh --mem-size 20000000 --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 6 --evn_deadlock_partition 3 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > qt.txt
+
+
+
+./build/Garnet_standalone/gem5.opt --debug-flags RubyNetwork configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 100000 --injectionrate 0.05 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.6GHz --router_map_file configs/topologies/paper_solutions/lpbt_s_latop.map --flat_vn_map_file configs/topologies/vn_maps/lpbt_s_latop_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list/lpbt_s_latop_naive.nrl --ruby --num-dirs 20 --mem_or_coh coh --mem-size 20000000 --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 6 --evn_deadlock_partition 3 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 --single-sender-id 19 --inj-vnet 0 > qt.txt
+
+
+./build/Garnet_standalone/gem5.opt -d debug_dlocks --debug-flags RubyNetwork --debug-start 29850000 configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 30000000 --injectionrate 0.19 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --router_map_file configs/topologies/paper_solutions/dbl_bfly_x.map --flat_vn_map_file configs/topologies/vn_maps/dbl_bfly_x_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list/dbl_bfly_x_naive.nrl --ruby --num-dirs 20 --mem_or_coh coh --mem-size 20000000 --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 4 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > debug_dlocks.txt
+
+
+
+./build/Garnet_standalone/gem5.fast configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 2147483647 --injectionrate 0.10 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --router_map_file configs/topologies/paper_solutions/ns_l_latop.map --flat_vn_map_file configs/topologies/vn_maps3/ns_l_latop_naive_paths_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/ns_l_latop_naive.nrl --ruby --num-dirs 20 --mem_or_coh coh --mem-size 20480 --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 4 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3
+
+./build/Garnet_standalone/gem5.fast configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 2147483647 --injectionrate 0.10 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --router_map_file configs/topologies/paper_solutions/ns_l_latop.map --flat_vn_map_file configs/topologies/vn_maps3/ns_l_latop_naive_paths_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/ns_l_latop_naive.nrl --ruby --num-dirs 20 --mem_or_coh mem --mem-size 20480 --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 4 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3
+
+./build/Garnet_standalone/gem5.opt --debug-flags RubyNetwork configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 100000 --injectionrate 0.1 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --router_map_file configs/topologies/paper_solutions/ns_l_latop.map --flat_vn_map_file configs/topologies/vn_maps3/ns_l_latop_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/ns_l_latop_naive.nrl --ruby --num-dirs 20 --mem_or_coh coh --mem-size 20480 --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 4 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > qt.txt
+
+
+./build/Garnet_standalone/gem5.opt --debug-flags RubyNetwork configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 100000 --injectionrate 0.1 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --router_map_file configs/topologies/paper_solutions/ns_l_latop.map --flat_vn_map_file configs/topologies/vn_maps3/ns_l_latop_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/ns_l_latop_naive.nrl --ruby --num-dirs 20 --mem_or_coh coh --mem-size 20480 --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 6 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > qt.txt
+
+
+
+
+
+./build/Garnet_standalone/gem5.opt -d debug_dlocks --debug-flags RubyNetwork --debug-start 926589256 configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 1126589256 --injectionrate 0.18 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.0GHz --router_map_file configs/topologies/paper_solutions/ft_x.map --flat_vn_map_file configs/topologies/vn_maps3/ft_x_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/ft_x_naive.nrl --ruby --num-dirs 16 --mem_or_coh mem --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 4 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > debug_dlocks.txt
+
+
+
+
+./build/Garnet_standalone/gem5.opt -d debug_dlocks2 --debug-flags RubyNetwork --debug-start 28000000 configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 29000000 --injectionrate 0.31 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.0GHz --router_map_file configs/topologies/paper_solutions/lpbt_m_latop.map --flat_vn_map_file configs/topologies/vn_maps3/lpbt_m_latop_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/lpbt_m_latop_naive.nrl --ruby --num-dirs 16 --mem_or_coh mem --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 4 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > debug_dlocks2.txt
+
+
+
+./build/Garnet_standalone/gem5.opt -d debug_dlocks2 --debug-flags RubyNetwork --debug-start 21000000 configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 25000000 --injectionrate 0.26 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.6GHz --router_map_file configs/topologies/paper_solutions/lpbt_s_latop.map --flat_vn_map_file configs/topologies/vn_maps3/lpbt_s_latop_cload_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/lpbt_s_latop_cload.nrl --ruby --num-dirs 16 --mem_or_coh mem --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 10 --evn_deadlock_partition 7 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > debug_dlocks3.txt
+
+
+./build/Garnet_standalone/gem5.opt -d debug_dlocks2 --debug-flags RubyNetwork configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 500000 --injectionrate 0.2 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.6GHz --router_map_file configs/topologies/paper_solutions/lpbt_s_latop.map --flat_vn_map_file configs/topologies/vn_maps3/lpbt_s_latop_cload_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/lpbt_s_latop_cload.nrl --ruby --num-dirs 16 --mem_or_coh mem --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 10 --evn_deadlock_partition 7 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > debug_dlocks3.txt
+
+
+./build/Garnet_standalone/gem5.opt -d rej_ft_x configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 2147483647 --injectionrate 0.18 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.0GHz --router_map_file configs/topologies/paper_solutions/ft_x.map --flat_vn_map_file configs/topologies/vn_maps3/ft_x_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/ft_x_naive.nrl --ruby --num-dirs 16 --mem_or_coh mem --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 4 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3
+
+./build/Garnet_standalone/gem5.opt -d rej_ft_x_long configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 2147483647 --injectionrate 0.18 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.0GHz --router_map_file configs/topologies/paper_solutions/ft_x.map --flat_vn_map_file configs/topologies/vn_maps3/ft_x_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/ft_x_naive.nrl --ruby --num-dirs 16 --mem_or_coh mem --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 4 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3
+
+./build/Garnet_standalone/gem5.opt -d rej_20r_4p_2ll_runsol_scbw_long configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 2147483647 --injectionrate 0.18 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.0GHz --router_map_file configs/topologies/paper_solutions/20r_4p_2ll_runsol_scbw.map --flat_vn_map_file configs/topologies/vn_maps3/20r_4p_2ll_runsol_scbw_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/20r_4p_2ll_runsol_scbw_naive.nrl --ruby --num-dirs 16 --mem_or_coh mem --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 4 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3
+
+./build/Garnet_standalone/gem5.opt --debug-flags RubyNetwork -d rej_20r_4p_2ll_runsol_scbw_long configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 21474836 --injectionrate 0.18 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.0GHz --router_map_file configs/topologies/paper_solutions/20r_4p_2ll_runsol_scbw.map --flat_vn_map_file configs/topologies/vn_maps3/20r_4p_2ll_runsol_scbw_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/20r_4p_2ll_runsol_scbw_naive.nrl --ruby --num-dirs 16 --mem_or_coh mem --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 4 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > debug_stats.txt
+
+
+
+./build/Garnet_standalone/gem5.opt -d rej_20r_4p_2ll_runsol_scbw_32dirs configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 21474836 --injectionrate 0.18 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.0GHz --router_map_file configs/topologies/paper_solutions/20r_4p_2ll_runsol_scbw.map --flat_vn_map_file configs/topologies/vn_maps3/20r_4p_2ll_runsol_scbw_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/20r_4p_2ll_runsol_scbw_naive.nrl --ruby --num-dirs 32 --mem_or_coh mem --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 4 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3
+
+
+
+./build/Garnet_standalone/gem5.opt -d rej_ft_x_32dirs configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 21474836 --injectionrate 0.18 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.0GHz --router_map_file configs/topologies/paper_solutions/ft_x.map --flat_vn_map_file configs/topologies/vn_maps3/ft_x_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/ft_x_naive.nrl --ruby --num-dirs 32 --mem_or_coh mem --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 4 --evn_deadlock_partition 1 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3
+
+
+# 26 June
+python3 python_scripts/run_synth_experiments.py --mclb_only --hops_lb_only --n_evn 4 --samefreq_only -s 5000000000 --tot_vcs 6 --mem_only --inj_start .01 --inj_end .20 --experiment mclb
+python3 python_scripts/run_synth_experiments.py --mclb_only --hops_lb_only --n_evn 4 --samefreq_only -s 5000000000 --tot_vcs 6 --coh_only --inj_start .01 --inj_end .20 --experiment mclb
+
+
+./build/X86/gem5.opt -d debug_fs --debug-flags RubyNetwork configs/auto_top/auto_top_fs_v3.py -I 1000 --insts_after_warmup 1000 --benchmark_parsec x264 -r 1 --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_5/x264 --router_map_file configs/topologies/paper_solutions/ns_s_scop_noci.map --flat_vn_map_file configs/topologies/vn_maps_augmclb/ns_s_scop_noci_augmclb_hops_4vns.vn --flat_nr_map_file configs/topologies/nr_list_augmclb/ns_s_scop_noci_augmclb.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.6GHz --num-cpus 64 --mem_or_coh mem --num-dirs 16 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 4 --evn_deadlock_partition 2 --mem-type DDR4_2400_16x4 
+
+
+./build/Garnet_standalone/gem5.opt configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 25000000 --injectionrate 0.26 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.6GHz --router_map_file configs/topologies/paper_solutions/lpbt_s_latop.map --flat_vn_map_file configs/topologies/vn_maps3/lpbt_s_latop_cload_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/lpbt_s_latop_cload.nrl --ruby --num-dirs 16 --mem_or_coh mem --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 10 --evn_deadlock_partition 7 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > debug_dlocks3.txt
+
+
+
+# 27 June
+
+./build/X86/gem5.opt -d debug_fs --debug-flags RubyNetwork configs/auto_top/auto_top_fs_v3.py -I 100000 --insts_after_warmup 100000 --benchmark_parsec raytrace -r 1 --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_5/raytrace --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps_augmclb/butter_donut_x_noci_augmclb_hops_4vns.vn --flat_nr_map_file configs/topologies/nr_list_augmclb/butter_donut_x_noci_augmclb.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --link-width-bits 64 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 4 --evn_deadlock_partition 2 --mem-type DDR4_2400_16x4
+
+
+./build/X86/gem5.opt -d debug_fs --debug-flags RubyNetwork configs/auto_top/auto_top_fs_v3.py -I 1000 --insts_after_warmup 1000 --benchmark_parsec canneal -r 1 --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_5/canneal --router_map_file configs/topologies/paper_solutions/mesh_noci.map --flat_vn_map_file configs/topologies/vn_maps_augmclb/mesh_noci_augmclb_hops_5vns.vn --flat_nr_map_file configs/topologies/nr_list_augmclb/mesh_noci_augmclb.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 64 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 4GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 5 --evn_deadlock_partition 1 --mem-type DDR4_2400_16x4
+
+
+
+
+# July 1
+
+./build/X86/gem5.fast -d ./parsec_results/noci_32GBxDDR4__4envs_18GHz_2MBl2_allthreads_64lwidth/100mwarmup_100msimul/bodytrack/dbl_bfly_x_noci_augmclb_hops/ configs/auto_top/auto_top_fs_v3.py -I 100000000 --insts_after_warmup 100000000 --benchmark_parsec bodytrack -r 1 --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_5/bodytrack --router_map_file configs/topologies/paper_solutions/dbl_bfly_x_noci.map --flat_vn_map_file configs/topologies/vn_maps_augmclb/dbl_bfly_x_noci_augmclb_hops_4vns.vn --flat_nr_map_file configs/topologies/nr_list_augmclb/dbl_bfly_x_noci_augmclb.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --link-width-bits 64 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 4 --evn_deadlock_partition 2 --mem-type DDR4_2400_16x4
+
+
+
+
+./build/Garnet_standalone/gem5.fast configs/auto_top/auto_top_synth.py --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --sim-cycles 2100000000 --injectionrate 0.26 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --router_map_file configs/topologies/paper_solutions/dbl_bfly_x_noci.map --flat_vn_map_file configs/topologies/vn_maps_augmclb/dbl_bfly_x_noci_augmclb_hops_4vns.vn --flat_nr_map_file configs/topologies/nr_list_augmclb/dbl_bfly_x_noci_augmclb.nrl --ruby --num-dirs 32 --mem_or_coh mem --num-cpus 64 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 6 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 4 --link-width-bits 64 > debug_dlocks3.txt
+
+
+
+
+./build/X86/gem5.fast configs/auto_top/auto_top_fs_v3.py -I 100000000 --insts_after_warmup 100000000 --benchmark_parsec bodytrack -r 1 --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_5/bodytrack --router_map_file configs/topologies/paper_solutions/dbl_bfly_x_noci.map --flat_vn_map_file configs/topologies/vn_maps_augmclb/dbl_bfly_x_noci_augmclb_hops_4vns.vn --flat_nr_map_file configs/topologies/nr_list_augmclb/dbl_bfly_x_noci_augmclb.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --link-width-bits 64 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 4 --evn_deadlock_partition 2 --mem-type DDR4_2400_16x4
+
+
+
+./build/X86/gem5.fast configs/auto_top/auto_top_fs_v3.py -I 10000 --insts_after_warmup 100000000 --benchmark_parsec bodytrack -r 1 --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_5/bodytrack --router_map_file configs/topologies/paper_solutions/dbl_bfly_x_noci.map --flat_vn_map_file configs/topologies/vn_maps_augmclb/dbl_bfly_x_noci_augmclb_hops_4vns.vn --flat_nr_map_file configs/topologies/nr_list_augmclb/dbl_bfly_x_noci_augmclb.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --link-width-bits 64 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 4 --evn_deadlock_partition 2 --mem-type DDR4_2400_16x4
+
+
+
+642829555614664
+
+642661253223156
+
+642661253000000 for 100000000 results in 51GB
+./build/X86/gem5.opt -d debug_fs --debug-flags RubyNetwork --debug-start 642661253000000 configs/auto_top/auto_top_fs_v3.py -I 10000 --insts_after_warmup 100000000 --benchmark_parsec bodytrack -r 1 --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_5/bodytrack --router_map_file configs/topologies/paper_solutions/dbl_bfly_x_noci.map --flat_vn_map_file configs/topologies/vn_maps_augmclb/dbl_bfly_x_noci_augmclb_hops_4vns.vn --flat_nr_map_file configs/topologies/nr_list_augmclb/dbl_bfly_x_noci_augmclb.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --link-width-bits 64 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 4 --evn_deadlock_partition 2 --mem-type DDR4_2400_16x4 > debug_fs.txt
+
+
+=> 642661253000000 for 10000000
+./build/X86/gem5.opt -d debug_fs --debug-flags RubyNetwork --debug-start 642661253000000 configs/auto_top/auto_top_fs_v3.py -I 10000 --insts_after_warmup 10000000 --benchmark_parsec bodytrack -r 1 --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_5/bodytrack --router_map_file configs/topologies/paper_solutions/dbl_bfly_x_noci.map --flat_vn_map_file configs/topologies/vn_maps_augmclb/dbl_bfly_x_noci_augmclb_hops_4vns.vn --flat_nr_map_file configs/topologies/nr_list_augmclb/dbl_bfly_x_noci_augmclb.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --link-width-bits 64 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 4 --evn_deadlock_partition 2 --mem-type DDR4_2400_16x4 > debug_fs.txt
+
+
+./build/X86/gem5.opt -d debug_fs_small --debug-flags RubyNetwork configs/auto_top/auto_top_fs_v3.py -I 100 --insts_after_warmup 1000 --benchmark_parsec bodytrack -r 1 --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_5/bodytrack --router_map_file configs/topologies/paper_solutions/dbl_bfly_x_noci.map --flat_vn_map_file configs/topologies/vn_maps_augmclb/dbl_bfly_x_noci_augmclb_hops_4vns.vn --flat_nr_map_file configs/topologies/nr_list_augmclb/dbl_bfly_x_noci_augmclb.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --link-width-bits 64 --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 4 --evn_deadlock_partition 2 --mem-type DDR4_2400_16x4 > debug_fs_small.txt
+
+
+
+
+build/VEGA_X86/gem5.opt configs/auto_top/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app nn -I 10000 --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps3/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_hops_6vns.vn --flat_nr_map_file configs/topologies/nr_list3/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 4GHz --sys-clock 4GHz --ruby-clock 4GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 8 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 6 --evn_deadlock_partition 2
+
+
+
+build/VEGA_X86/gem5.opt --debug-flags RubyNetwork configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app nn -I 10000 --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps3/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_hops_6vns.vn --flat_nr_map_file configs/topologies/nr_list3/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 4GHz --sys-clock 4GHz --ruby-clock 4GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 8 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 6 --evn_deadlock_partition 2
+
+
+
+build/VEGA_X86/gem5.opt --debug-flags RubyNetwork configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app nn -I 10000 --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb_hops_6vns.vn --flat_nr_map_file configs/topologies/nr_list/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb.nrl --cpu-topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 4GHz --sys-clock 4GHz --ruby-clock 4GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 8 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 6 --evn_deadlock_partition 2
+
+
+
+
+# GPU sites
+https://www.gem5.org/2023/02/13/moving-to-full-system-gpu.html
+https://www.gem5.org/assets/files/workshop-isca-2023/slides/improving-gem5s-gpufs-support.pdf
+
+build/VEGA_X86/gem5.opt --debug-flags RubyNetwork configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app nn -I 10000 --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb_hops_6vns.vn --flat_nr_map_file configs/topologies/nr_list/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb.nrl --noi_routers 20 --noc_clk 4GHz --sys-clock 4GHz --ruby-clock 4GHz --noi_clk 2.7GHz --num-cpus 1 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 8 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 6 --evn_deadlock_partition 2
+
+build/VEGA_X86/gem5.opt -d gpufs_bdonut configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app nn -I 10000 --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb_hops_6vns.vn --flat_nr_map_file configs/topologies/nr_list/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb.nrl --noi_routers 20 --noc_clk 4GHz --sys-clock 4GHz --ruby-clock 4GHz --noi_clk 2.7GHz --num-cpus 1 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 8 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 6 --evn_deadlock_partition 2 --gpu-topology GPUFS_NoCI_EscapeVirtualNetworks 
+
+build/VEGA_X86/gem5.opt -d gpufs_bdonut configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app nn -I 10000 --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb_hops_6vns.vn --flat_nr_map_file configs/topologies/nr_list/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb.nrl --noi_routers 20 --noc_clk 4GHz --sys-clock 4GHz --ruby-clock 4GHz --noi_clk 2.7GHz --num-cpus 1 --mem_or_coh mem --caches --l2_size 2MB --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 8 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 6 --evn_deadlock_partition 2 --gpu-topology GPUFS_NoCI_EscapeVirtualNetworks  --num_compute_units 64
+
+
+build/VEGA_X86/gem5.opt -d gpufs_bdonut configs/example/apu_se.py --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb_hops_6vns.vn --flat_nr_map_file configs/topologies/nr_list/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb.nrl --noi_routers 20 --noc_clk 4GHz --sys-clock 4GHz --ruby-clock 4GHz --noi_clk 2.7GHz --num-cpus 1 --mem_or_coh mem --caches --l2_size 2MB --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 8 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 6 --evn_deadlock_partition 2 --gpu-topology GPUFS_NoCI_EscapeVirtualNetworks  --num_compute_units 64
+
+
+# to figure out devices and traffic distribution
+build/VEGA_X86/gem5.fast -d gpufs_xbar configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app nn -I 10000 --ruby --network garnet --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1
+
+build/VEGA_X86/gem5.opt --debug-help --debug-flags RubyNetwork,RubyDma,GPUExec configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian -I 100000 --ruby --network garnet --cu-per-scalar-cache 4 --cu-per-sqc 4 --num-compute-units 4
+
+build/VEGA_X86/gem5.fast -d gpufs_one2one configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian -I 10000000 --ruby --network garnet --cu-per-scalar-cache 4 --cu-per-sqc 4 --num-compute-units 4 --gpu-topology OneToOneGarnet
+
+build/VEGA_X86/gem5.fast -d gpufs_one2oneplus_100k configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian -I 100000 --ruby --network garnet --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1 --gpu-topology OneToOnePlusGarnet
+
+build/VEGA_X86/gem5.fast -d gpufs_one2one_100k configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian -I 100000 --ruby --network garnet --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1 --gpu-topology OneToOneGarnet
+
+
+build/VEGA_X86/gem5.opt --debug-flags Ruby,RubyNetwork,Exec -d gpufs_one2oneplus_10 configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian -I 10 --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1 --gpu-topology OneToOnePlusGarnet 
+
+
+build/VEGA_X86/gem5.opt --debug-start 100 --debug-flags Ruby,RubySystem,RubyNetwork,Exec -d gpufs_xbar_10 configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian -I 10 --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1
+
+build/VEGA_X86/gem5.opt --debug-flags RubySystem,RubyNetwork,Exec -d gpufs_xbar_100k configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian -I 100000 --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1
+
+build/VEGA_X86/gem5.opt --debug-flags RubySystem,RubyNetwork,Exec -d gpufs configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app streamcluster --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 8 --cpu-topology OneToOnePlusGarnet --gpu-topology OneToOnePlusGarnet
+
+build/VEGA_X86/gem5.opt --debug-flags RubySystem,RubyNetwork,Exec -d gpufs configs/example/gpufs/hip_samples.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app RecursiveGaussian --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 8 --cpu-topology OneToOnePlusGarnet --gpu-topology OneToOnePlusGarnet
+
+
+build/VEGA_X86/gem5.fast configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 8 --gpu-topology OneToOnePlusGarnet
+
+
+
+
+
+./build/Garnet_standalone/gem5.opt --debug-flags RubySystem,RubyNetwork configs/auto_top/auto_top_synth.py --topology EscapeVirtualNetworks --noi_routers 20 --sim-cycles 100000 --injectionrate 0.25 --noc_clk 1.8GHz --sys-clock 1.8GHz --ruby-clock 1.8GHz --noi_clk 3.6GHz --router_map_file configs/topologies/paper_solutions/lpbt_s_latop.map --flat_vn_map_file configs/topologies/vn_maps/lpbt_s_latop_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list/lpbt_s_latop_naive.nrl --ruby --num-dirs 20 --mem_or_coh coh --mem-size 20000000 --num-cpus 20 --network garnet --mem-type SimpleMemory --routing-algorithm 2 --use_escape_vns --synth_traffic --vcs-per-vnet 6 --evn_deadlock_partition 3 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > qt.txt
+
+build/VEGA_X86/gem5.opt --debug-flags RubyNetwork configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1 --gpu-topology OneToOneGarnet --cpu-topology OneToOneGarnet --noi_routers 11 --router_map_file configs/topologies/paper_solutions/gpu_1cu_1t1.map --flat_vn_map_file configs/topologies/vn_maps3/gpu_1cu_1t1_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/gpu_1cu_1t1_naive.nrl --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_deadlock_partition 3 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > qt2.txt
+
+
+build/VEGA_X86/gem5.opt --debug-flags RubyNetwork configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1 --gpu-topology OneToOnePlusGarnet --cpu-topology OneToOnePlusGarnet --noi_routers 22 --router_map_file configs/topologies/paper_solutions/gpu_1cu.map --flat_vn_map_file configs/topologies/vn_maps3/gpu_1cu_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/gpu_1cu_naive.nrl --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_deadlock_partition 3 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 > qt.txt
+
+build/VEGA_X86/gem5.fast -d gpufs_fast configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1 --gpu-topology OneToOnePlusGarnet --cpu-topology OneToOnePlusGarnet --noi_routers 22 --router_map_file configs/topologies/paper_solutions/gpu_1cu.map --flat_vn_map_file configs/topologies/vn_maps3/gpu_1cu_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/gpu_1cu_naive.nrl --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_deadlock_partition 3 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3
+
+build/VEGA_X86/gem5.fast -d gpufs_fast configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1 --gpu-topology OneToOneGarnet --cpu-topology OneToOneGarnet --noi_routers 11 --router_map_file configs/topologies/paper_solutions/gpu_1cu_1t1.map --flat_vn_map_file configs/topologies/vn_maps3/gpu_1cu_1t1_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/gpu_1cu_1t1_naive.nrl --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_deadlock_partition 3 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3
+
+
+build/VEGA_X86/gem5.fast configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1 --gpu-topology OneToOneGarnet --cpu-topology OneToOneGarnet --noi_routers 11 --router_map_file configs/topologies/paper_solutions/gpu_1cu_1t1.map --flat_vn_map_file configs/topologies/vn_maps3/gpu_1cu_1t1_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/gpu_1cu_1t1_naive.nrl --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_deadlock_partition 3 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3
+
+build/VEGA_X86/gem5.fast -d gpufs_kvm configs/example/gpufs/hip_rodinia.py --disk-image gpufs_disk_image/x86-gpu-fs-20220512.img --kernel gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace gpufs_disk_image/vega_mmio.log --app gaussian --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1 --gpu-topology OneToOneGarnet --cpu-topology OneToOneGarnet --noi_routers 11 --router_map_file configs/topologies/paper_solutions/gpu_1cu_1t1.map --flat_vn_map_file configs/topologies/vn_maps3/gpu_1cu_1t1_naive_hops_3vns.vn --flat_nr_map_file configs/topologies/nr_list3/gpu_1cu_1t1_naive.nrl --ruby --network garnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 6 --evn_deadlock_partition 3 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 3 --cpu-type X86KvmCPU
+
+
+
+
+
+
+
+
+# GPU doesnt even work???
+build/VEGA_X86/gem5.fast configs/example/gpufs/hip_rodinia.py --disk-image ../auto_top_gem5/gpufs_disk_image/x86-gpu-fs-20220512.img --kernel ../auto_top_gem5/gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace ../auto_top_gem5/gpufs_disk_image/vega_mmio.log --app nn --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+# use these configs for skylake
+https://github.com/darchr/gem5-skylake-config/blob/master/
+
+
+
+
+./build/X86/gem5.fast -d ./o3_test configs/auto_top/auto_top_fs_v4.py -I 100000000 --insts_after_warmup 100000000 --benchmark_parsec blackscholes -r 1 --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_5/blackscholes --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb_hops_6vns.vn --flat_nr_map_file configs/topologies/nr_list/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 4GHz --sys-clock 4GHz --ruby-clock 4GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 8 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 6 --evn_deadlock_partition 2 --mem-type DDR4_2400_16x4
+
+./build/X86/gem5.fast -d ./unconstr_test configs/auto_top/auto_top_fs_v4.py -I 100000000 --insts_after_warmup 100000000 --benchmark_parsec blackscholes -r 1 --checkpoint-dir ./parsec_noci_checkpoints/roi_checkpoint/system_5/blackscholes --router_map_file configs/topologies/paper_solutions/butter_donut_x_noci.map --flat_vn_map_file configs/topologies/vn_maps/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb_hops_6vns.vn --flat_nr_map_file configs/topologies/nr_list/butter_donut_x_noci_picky_cohmem_prioritized_doubley_memory_mclb.nrl --topology FS_NoCI_EscapeVirtualNetworks --noi_routers 20 --noc_clk 4GHz --sys-clock 4GHz --ruby-clock 4GHz --noi_clk 2.7GHz --num-cpus 64 --mem_or_coh mem --num-dirs 32 --caches --num-l2caches 64 --l2_size 2MB --num_chiplets 4 --mem-size 32GB --ruby --network garnet --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86O3CPU --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 8 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 6 --evn_deadlock_partition 2 --mem-type DDR4_2400_16x4 --use_skylake
+
+
+./build/X86/gem5.fast -d ./parsec_traffic_analysis configs/auto_top/auto_top_fs_analyze_parsec.py --benchmark_parsec blackscholes --cpu-type X86KvmCPU --switch_cpu X86O3CPU --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --num-cpus 2 --num-dirs 2 --num-l2caches 2 --caches --ruby --network garnet --topology CrossbarGarnet
+
+./build/X86/gem5.opt --debug-flags RubyNetwork -d ./parsec_traffic_analysis configs/auto_top/auto_top_fs_analyze_parsec.py --benchmark_parsec blackscholes --cpu-type X86KvmCPU --switch_cpu X86O3CPU --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --num-cpus 2 --num-dirs 2 --num-l2caches 2 --caches --ruby --network garnet --topology CrossbarGarnet
+
+
+./build/X86/gem5.fast -d ./parsec_traffic_analysis configs/auto_top/auto_top_fs_analyze_parsec.py --benchmark_parsec blackscholes --cpu-type X86KvmCPU --switch_cpu X86O3CPU --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --num-cpus 2 --num-dirs 2 --num-l2caches 2 --caches --ruby --network garnet --topology OneToOnePlusGarnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 4 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 2 --router_map_file configs/topologies/paper_solutions/cpu_parsec_2cpu_2dir_1t1p.map --flat_vn_map_file configs/topologies/vn_maps3/cpu_parsec_2cpu_2dir_1t1p_naive_hops_2vns.vn --flat_nr_map_file configs/topologies/nr_list3/cpu_parsec_2cpu_2dir_1t1p_naive.nrl
+
+./build/X86/gem5.fast -d ./parsec_traffic_analysis/100m/freqmine configs/auto_top/auto_top_fs_analyze_parsec.py --benchmark_parsec freqmine --cpu-type X86KvmCPU --switch_cpu X86O3CPU --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --num-cpus 2 --num-dirs 2 --num-l2caches 2 --caches --ruby --network garnet --topology OneToOnePlusGarnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 4 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 2 --router_map_file configs/topologies/paper_solutions/cpu_parsec_2cpu_2dir_1t1p.map --flat_vn_map_file configs/topologies/vn_maps3/cpu_parsec_2cpu_2dir_1t1p_naive_hops_2vns.vn --flat_nr_map_file configs/topologies/nr_list3/cpu_parsec_2cpu_2dir_1t1p_naive.nrl --insts_after_warmup 100000000
+
+
+
+./build/X86/gem5.fast configs/auto_top/auto_top_fs_analyze_parsec.py --benchmark_parsec streamcluster --cpu-type X86KvmCPU --switch_cpu X86O3CPU --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --num-cpus 16 --num-dirs 8 --num-l2caches 16 --caches --ruby --network garnet --topology OneToOneGarnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 4 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 2 --router_map_file configs/topologies/paper_solutions/cpu_parsec_16cpu_16dir_1t1.map --flat_vn_map_file configs/topologies/vn_maps3/cpu_parsec_16cpu_16dir_1t1_naive_hops_2vns.vn --flat_nr_map_file configs/topologies/nr_list3/cpu_parsec_16cpu_16dir_1t1_naive.nrl --insts_after_warmup 100000 --n_iters 1
+
+
+./build/X86/gem5.fast -d ./parsec_traffic_analysis/16cpu_8dir/100k/freqmine configs/auto_top/auto_top_fs_analyze_parsec.py --benchmark_parsec freqmine --cpu-type X86KvmCPU --switch_cpu X86O3CPU --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --num-cpus 16 --num-dirs 8 --num-l2caches 16 --caches --ruby --network garnet --topology OneToOneGarnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 4 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 2 --router_map_file configs/topologies/paper_solutions/cpu_parsec_16cpu_16dir_1t1.map --flat_vn_map_file configs/topologies/vn_maps3/cpu_parsec_16cpu_16dir_1t1_naive_hops_2vns.vn --flat_nr_map_file configs/topologies/nr_list3/cpu_parsec_16cpu_16dir_1t1_naive.nrl --insts_after_warmup 100000 --n_iters 1
+
+./build/X86/gem5.fast -d ./parsec_traffic_analysis/16cpu_8dir/100k/dedup configs/auto_top/auto_top_fs_analyze_parsec.py --benchmark_parsec dedup --cpu-type X86KvmCPU --switch_cpu X86O3CPU --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --num-cpus 16 --num-dirs 8 --num-l2caches 16 --caches --ruby --network garnet --topology OneToOneGarnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 4 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 2 --router_map_file configs/topologies/paper_solutions/cpu_parsec_16cpu_16dir_1t1.map --flat_vn_map_file configs/topologies/vn_maps3/cpu_parsec_16cpu_16dir_1t1_naive_hops_2vns.vn --flat_nr_map_file configs/topologies/nr_list3/cpu_parsec_16cpu_16dir_1t1_naive.nrl --insts_after_warmup 100000 --n_iters 1
+
+
+./build/X86/gem5.fast -d ./parsec_traffic_analysis/16cpu_8dir/100m/canneal configs/auto_top/auto_top_fs_analyze_parsec.py --benchmark_parsec canneal --cpu-type X86KvmCPU --switch_cpu X86O3CPU --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --num-cpus 16 --num-dirs 8 --num-l2caches 16 --caches --ruby --network garnet --topology OneToOneGarnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 4 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 2 --router_map_file configs/topologies/paper_solutions/cpu_parsec_16cpu_16dir_1t1.map --flat_vn_map_file configs/topologies/vn_maps3/cpu_parsec_16cpu_16dir_1t1_naive_hops_2vns.vn --flat_nr_map_file configs/topologies/nr_list3/cpu_parsec_16cpu_16dir_1t1_naive.nrl --insts_after_warmup 100000000 --n_iters 1
+
+./build/X86/gem5.fast -d ./parsec_traffic_analysis/16cpu_8dir/100k/canneal configs/auto_top/auto_top_fs_analyze_parsec.py --benchmark_parsec canneal --cpu-type X86KvmCPU --switch_cpu X86O3CPU --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --num-cpus 16 --num-dirs 8 --num-l2caches 16 --caches --ruby --network garnet --topology OneToOneGarnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 4 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 2 --router_map_file configs/topologies/paper_solutions/cpu_parsec_16cpu_16dir_1t1.map --flat_vn_map_file configs/topologies/vn_maps3/cpu_parsec_16cpu_16dir_1t1_naive_hops_2vns.vn --flat_nr_map_file configs/topologies/nr_list3/cpu_parsec_16cpu_16dir_1t1_naive.nrl --insts_after_warmup 100000 --n_iters 1
+
+./build/X86/gem5.fast configs/auto_top/auto_top_fs_kvm_loop.py --benchmark_parsec canneal --cpu-type X86KvmCPU --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --num-cpus 16 --num-dirs 8 --num-l2caches 16 --caches --ruby --network garnet --topology OneToOneGarnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 4 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 2 --router_map_file configs/topologies/paper_solutions/cpu_parsec_16cpu_16dir_1t1.map --flat_vn_map_file configs/topologies/vn_maps3/cpu_parsec_16cpu_16dir_1t1_naive_hops_2vns.vn --flat_nr_map_file configs/topologies/nr_list3/cpu_parsec_16cpu_16dir_1t1_naive.nrl --n_iters 20
+
+
+./build/X86/gem5.fast -d ./parsec_traffic_analysis/16cpu_8dir/100k/canneal_skylake configs/auto_top/auto_top_fs_analyze_parsec.py --benchmark_parsec canneal --cpu-type X86KvmCPU --switch_cpu X86O3CPU --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --num-cpus 16 --num-dirs 8 --num-l2caches 16 --caches --ruby --network garnet --topology OneToOneGarnet --routing-algorithm 2 --use_escape_vns --vcs-per-vnet 4 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 2 --router_map_file configs/topologies/paper_solutions/cpu_parsec_16cpu_8dir_1t1.map --flat_vn_map_file configs/topologies/vn_maps3/cpu_parsec_16cpu_8dir_1t1_naive_hops_2vns.vn --flat_nr_map_file configs/topologies/nr_list3/cpu_parsec_16cpu_8dir_1t1_naive.nrl --insts_after_warmup 100000 --n_iters 1 --use_skylake
+
+
+
+python3 python_scripts/run_parsec_traf_saguaro.py --num_cpus 16 --num_dirs 8 --n_insts 100000 --use_skylake --big_caches --benchmark canneal
+
+
+
+
+
+# Sept 20
+
+./build/X86/gem5.fast -d ./parsec_traffic_analysis/100kcycles/16cpus_8dirs/4GHz_bigCaches_32bw/canneal/ configs/auto_top/auto_top_fs_analyze_parsec.py --topology OneToOneGarnet --kernel parsec_disk_image/vmlinux-4.4.186 --disk-image parsec_disk_image/x86-parsec --caches --ruby --network garnet --routing-algorithm 2 --use_escape_vns --benchmark_parsec canneal --router_map_file configs/topologies/paper_solutions/cpu_parsec_16cpu_8dir_1t1 --flat_vn_map_file configs/topologies/vn_maps3/cpu_parsec_16cpu_8dir_1t1_naive_hops_2vns.vn --flat_nr_map_file configs/topologies/nr_list3/cpu_parsec_16cpu_8dir_1t1_naive.nrl --cpu-clock 4GHz --sys-clock 4GHz --ruby-clock 4GHz --analysis_cycles 100000 --n_iters 2 --cpu-type X86KvmCPU --switch_cpu X86O3CPU --num-dirs 8 --num-cpus 16 --num-l2caches 16 --vcs-per-vnet 4 --evn_deadlock_partition 2 --evn_n_deadlock_free 1 --evn_min_n_deadlock_free 2 --l1d_size 64kB --l1d_assoc 16 --l1i_size 64kB --l1i_assoc 16 --l2_size 4MB --l2_assoc 16 --link-width-bits 32
+
+
++
+
+./build/X86/gem5.fast -d ./parsec_noci_checkpoints/roi_checkpoint/system_7/bodytrack_4reps configs/auto_top/auto_top_fs_readfile_loop.py --num-cpus 64 --num-dirs 16 --mem-size 32GB --kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec --cpu-type X86KvmCPU --caches --l2_size 2MB --num-l2caches 64 --sys-clock 1.8GHz --benchmark_parsec bodytrack --restore-with-cpu X86KvmCPU -r 1 --checkpoint-dir ./after_boot/system_7/
+
+=>
+
+
+./build/X86/gem5.fast -d ./parsec_noci_checkpoints/roi_checkpoint/system_7/bodytrack_4reps configs/auto_top/auto_top_fs_readfile_loop.py
+--num-cpus 64 --num-dirs 16 --mem-size 32GB
+--kernel parsec_disk_image/vmlinux-5.4.49 --disk-image parsec_disk_image/x86-parsec
+--cpu-type X86KvmCPU
+--caches --ruby --network garnet --routing-algorithm 2 --use_escape_vns
+--l1d_size 64kB --l1d_assoc 16 --l1i_size 64kB --l1i_assoc 16 --l2_size 4MB --l2_assoc 16
+--router_map_file configs/topologies/paper_solutions/cpu_parsec_16cpu_8dir_1t1 --flat_vn_map_file configs/topologies/vn_maps3/cpu_parsec_16cpu_8dir_1t1_naive_hops_2vns.vn --flat_nr_map_file configs/topologies/nr_list3/cpu_parsec_16cpu_8dir_1t1_naive.nrl
+
+--benchmark_parsec canneal
+
+
+
+
+# atomic gpufs
+build/VEGA_X86/gem5.fast -d test_gpufs_atomic configs/example/gpufs/hip_rodinia.py --disk-image ../auto_top_gem5/gpufs_disk_image/x86-gpu-fs-20220512.img --kernel ../auto_top_gem5/gpufs_disk_image/vmlinux-5.4.0-105-generic --gpu-mmio-trace ../auto_top_gem5/gpufs_disk_image/vega_mmio.log --app nn --ruby --network garnet --caches --cu-per-scalar-cache 1 --cu-per-sqc 1 --num-compute-units 1 --cpu-type AtomicSimpleCPU
