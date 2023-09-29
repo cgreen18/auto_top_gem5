@@ -176,6 +176,9 @@ def config_mem(options, system):
     opt_mem_channels_intlv = getattr(options, "mem_channels_intlv", 128)
     opt_xor_low_bit = getattr(options, "xor_low_bit", 0)
 
+    print(f'opt_mem_channels_intlv={opt_mem_channels_intlv}')
+    quit(-1)
+
     if opt_mem_type == "HMC_2500_1x32":
         HMChost = HMC.config_hmc_host_ctrl(options, system)
         HMC.config_hmc_dev(options, system, HMChost.hmc_host)
