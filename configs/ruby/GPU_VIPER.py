@@ -474,6 +474,7 @@ def construct_gpudirs(options, system, ruby_system, network):
     numa_bit = block_size_bits + dir_bits - 1
 
     gpu_mem_range = AddrRange(0, size = options.dgpu_mem_size)
+    print(f'total gpu mem range ({gpu_mem_range.size()}) =\n\t{gpu_mem_range}')
     for i in range(options.dgpu_num_dirs):
         addr_range = m5.objects.AddrRange(gpu_mem_range.start,
                                           size = gpu_mem_range.size(),
@@ -481,6 +482,28 @@ def construct_gpudirs(options, system, ruby_system, network):
                                           intlvBits = dir_bits,
                                           intlvMatch = i,
                                           xorHighBit = xor_low_bit)
+
+        # addr_range = m5.objects.AddrRange(gpu_mem_range.start,
+        #                                   size = gpu_mem_range.size(),
+        #                                 #   intlvHighBit = numa_bit,
+        #                                   intlvHighBit = 0,
+        #                                   intlvBits = 0,
+        #                                   intlvMatch = 0,
+        #                                 #   xorHighBit = xor_low_bit
+        #                                   xorHighBit = 0)
+
+
+        # for blocked
+        # slice_size = int(gpu_mem_range.size()/options.dgpu_num_dirs)
+        # slice_start = int(gpu_mem_range.start + i*slice_size)
+        # addr_range = m5.objects.AddrRange(slice_start,
+        #                                   size = slice_size,
+        #                                 #   intlvHighBit = numa_bit,
+        #                                   intlvHighBit = 0,
+        #                                   intlvBits = 0,
+        #                                   intlvMatch = 0,
+        #                                 #   xorHighBit = xor_low_bit
+        #                                   xorHighBit = 0)
 
         dir_cntrl = DirCntrl(noTCCdir = True, TCC_select_num_bits = TCC_bits)
         dir_cntrl.create(options, [addr_range], ruby_system, system)
@@ -519,9 +542,51 @@ def construct_gpudirs(options, system, ruby_system, network):
 
         # Create memory controllers too
         mem_type = ObjectList.mem_list.get(options.dgpu_mem_type)
-        dram_intf = MemConfig.create_mem_intf(mem_type, gpu_mem_range, i,
-            int(math.log(options.dgpu_num_dirs, 2)), options.cacheline_size,
-            xor_low_bit)
+
+        # gpu_mem_range_slice = AddrRange(0, size = options.dgpu_mem_size/options.num_dirs)
+        # dram_intf = MemConfig.create_blocked_mem_intf(mem_type, gpu_mem_range_slice,
+        #                     options.dgpu_num_dirs,
+        #                     xor_low_bit)
+
+
+        # is this culprit?
+        use_blocked_mem = False
+        # cu_to_dir_ratio = options.num_compute_units / options.dgpu_num_dirs
+        adjusted_intlv_size = options.dgpu_num_dirs*options.cacheline_size
+        adjusted_intlv_bits = int(math.log(options.dgpu_num_dirs, 2) / options.dgpu_num_dirs)
+
+
+        # print(f'cls was {options.cacheline_size}, now {adjusted_intlv_size}')
+        # print(f'intlv_bits was {int(math.log(options.dgpu_num_dirs, 2) )}, now {adjusted_intlv_bits}')
+        # quit(-1)
+
+        if use_blocked_mem:
+            dram_intf = MemConfig.create_blocked_mem_intf(mem_type, gpu_mem_range, options.dgpu_num_dirs, i)
+        else:
+
+            # original
+            # dram_intf = MemConfig.create_mem_intf(
+            #     mem_type,
+            #     gpu_mem_range,
+            #     i,
+            #     int(math.log(options.dgpu_num_dirs, 2)), # intlv_bits
+            #     options.cacheline_size, # intlv_size
+            #     xor_low_bit) # xor_low_bit
+
+            dram_intf = MemConfig.create_mem_intf(
+                mem_type,
+                gpu_mem_range,
+                i,
+                int(math.log(options.dgpu_num_dirs, 2)), # intlv_bits
+                adjusted_intlv_size, # intlv_size
+                xor_low_bit) # xor_low_bit
+
+
+        # print(f'dram intf {i} = {dram_intf}')
+        # print(f'\tw/ range {dram_intf.range}')
+        # for k,v in dram_intf.__dict__.items():
+        #     print(f'\t{k:40} : {v}')
+
         if issubclass(mem_type, DRAMInterface):
             mem_ctrl = m5.objects.MemCtrl(dram = dram_intf)
         else:
@@ -531,10 +596,20 @@ def construct_gpudirs(options, system, ruby_system, network):
         mem_ctrl.dram.enable_dram_powerdown = False
         dir_cntrl.addr_ranges = dram_intf.range
 
+        # print(f'')
+        # print(f'addr_range ({addr_range.size()})=\n\t{addr_range}')
+        # print(f'\t{addr_range.__dict__}')
+
+        # print(f'mem_type={mem_type}')
+        # print(f'')
+
         # Append
         exec("system.ruby.gpu_dir_cntrl%d = dir_cntrl" % i)
         dir_cntrl_nodes.append(dir_cntrl)
         mem_ctrls.append(mem_ctrl)
+
+    # quit(-1)
+
 
     system.gpu_mem_ctrls = mem_ctrls
 
